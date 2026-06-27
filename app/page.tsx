@@ -1,0 +1,44 @@
+"use client";
+
+import { useState } from "react";
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import Quiz from "./components/Quiz";
+import Results from "./components/Results";
+import { generateStack } from "./lib/engine";
+import { Answers, Supplement } from "./lib/types";
+
+type View = "hero" | "quiz" | "results";
+
+export default function Home() {
+  const [view, setView] = useState<View>("hero");
+  const [stack, setStack] = useState<Supplement[]>([]);
+
+  function handleComplete(answers: Answers) {
+    const result = generateStack(answers);
+    setStack(result);
+    setView("results");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function handleReset() {
+    setView("hero");
+    setStack([]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  return (
+    <>
+      <Navbar onLogoClick={handleReset} />
+      <main className="pt-16">
+        {view === "hero" && <Hero onStart={() => setView("quiz")} />}
+        {view === "quiz" && (
+          <Quiz onComplete={handleComplete} onBack={() => setView("hero")} />
+        )}
+        {view === "results" && (
+          <Results stack={stack} onReset={handleReset} />
+        )}
+      </main>
+    </>
+  );
+}
