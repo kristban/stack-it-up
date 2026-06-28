@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
+import HowItWorks from "./components/HowItWorks";
 import Quiz from "./components/Quiz";
 import Results from "./components/Results";
 import { generateStack } from "./lib/engine";
@@ -31,7 +32,12 @@ export default function Home() {
     <>
       <Navbar onLogoClick={handleReset} />
       <main className="pt-16">
-        {view === "hero" && <Hero onStart={() => setView("quiz")} />}
+        {view === "hero" && (
+          <>
+            <Hero onStart={() => setView("quiz")} />
+            <HowItWorks />
+          </>
+        )}
         {view === "quiz" && (
           <Quiz onComplete={handleComplete} onBack={() => setView("hero")} />
         )}
