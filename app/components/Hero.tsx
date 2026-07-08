@@ -9,95 +9,84 @@ const delay = (ms: number) => ({ animationDelay: `${ms}ms` });
 export default function Hero({ onStart }: HeroProps) {
   return (
     <section className="min-h-screen flex flex-col items-center justify-center px-4 py-16 text-center relative overflow-hidden">
-      {/* Background blobs */}
+      {/* Organic blob shapes */}
       <div
-        className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full opacity-10 blur-3xl pointer-events-none"
-        style={{ background: "#E11D48" }}
+        className="blob absolute -top-24 -left-24 w-80 h-80 opacity-90 pointer-events-none"
+        style={{ background: "#E3C39C" }}
       />
       <div
-        className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full opacity-10 blur-3xl pointer-events-none"
-        style={{ background: "#7C3AED" }}
+        className="blob-2 absolute top-1/3 -right-32 w-96 h-96 opacity-80 pointer-events-none"
+        style={{ background: "#262B30" }}
+      />
+      <div
+        className="blob-3 absolute -bottom-20 left-1/4 w-72 h-72 opacity-90 pointer-events-none"
+        style={{ background: "#C4744A" }}
       />
 
       {/* Badge */}
       <div
-        className="fade-in-up visible inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-8 border"
+        className="fade-in-up visible relative inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-8 border"
         style={{
-          background: "rgba(225, 29, 72, 0.08)",
-          borderColor: "rgba(225, 29, 72, 0.2)",
-          color: "#E11D48",
+          background: "rgba(255,255,255,0.85)",
+          borderColor: "rgba(38,32,25,0.12)",
+          color: "#6E6153",
           ...delay(0),
         }}
       >
-        <span>💊</span>
-        <span>AI-Powered Supplement Stacks</span>
+        <span>🌿</span>
+        <span>A calmer way to supplement</span>
       </div>
 
       <h1
-        className="fade-in-up visible text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-none mb-6"
-        style={{ color: "#1C1917", ...delay(80) }}
+        className="fade-in-up visible relative text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[0.95] mb-6"
+        style={{ color: "#262019", fontFamily: "var(--font-serif)", fontWeight: 700, ...delay(80) }}
       >
-        Stack
-        <span
-          className="block"
-          style={{
-            background: "linear-gradient(135deg, #E11D48, #7C3AED)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-          }}
-        >
-          It Up.
+        Your Personalized
+        <span className="block" style={{ color: "#C4744A" }}>
+          Supplement Routine
         </span>
       </h1>
 
       <p
-        className="fade-in-up visible text-lg sm:text-xl md:text-2xl max-w-2xl mx-auto mb-4 leading-relaxed"
-        style={{ color: "#78716C", ...delay(160) }}
+        className="fade-in-up visible relative text-lg sm:text-xl max-w-2xl mx-auto mb-4 leading-relaxed"
+        style={{ color: "#6E6153", ...delay(160) }}
       >
-        Answer 5 quick questions. Get a personalized supplement routine built
-        for your goals, activity level, and diet.
+        Answer five gentle questions and get a routine grounded in your
+        goals, your body, and your day.
       </p>
 
-      <p
-        className="fade-in-up visible text-sm mb-12"
-        style={{ color: "#A8A29E", ...delay(220) }}
-      >
-        No account needed. Free forever. Results in 60 seconds.
+      <p className="fade-in-up visible relative text-sm mb-12" style={{ color: "#8B7E6E", ...delay(220) }}>
+        No account. No pressure. Just clarity, in under a minute.
       </p>
 
-      <div className="fade-in-up visible" style={delay(300)}>
+      <div className="fade-in-up visible relative" style={delay(300)}>
         <button
           onClick={onStart}
-          className="group relative px-10 py-5 rounded-2xl text-white font-bold text-xl transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
-          style={{ background: "linear-gradient(135deg, #E11D48, #7C3AED)" }}
+          className="px-10 py-5 rounded-full text-lg font-medium transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] shadow-sm hover:shadow-md"
+          style={{ background: "#C4744A", color: "#FFFFFF" }}
         >
-          <span className="relative z-10 flex items-center gap-3">
-            Build My Stack
-            <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-          </span>
-          <div
-            className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-            style={{ background: "linear-gradient(135deg, #BE123C, #6D28D9)" }}
-          />
+          Find My Routine →
         </button>
       </div>
 
-      {/* Social proof */}
+      {/* Soft trust row */}
       <div
-        className="fade-in-up visible mt-16 flex flex-col sm:flex-row items-center gap-6 sm:gap-12"
+        className="fade-in-up visible relative mt-16 flex flex-col sm:flex-row items-center gap-6 sm:gap-12"
         style={delay(400)}
       >
         {[
-          { stat: "10,000+", label: "stacks built" },
-          { stat: "5 questions", label: "that's all it takes" },
-          { stat: "100% free", label: "no upsells" },
+          { stat: "5", label: "minutes, start to finish" },
+          { stat: "0", label: "accounts or email required" },
+          { stat: "100%", label: "free, always" },
         ].map((item) => (
-          <div key={item.stat} className="text-center">
-            <div className="text-2xl font-black" style={{ color: "#1C1917" }}>
+          <div key={item.label} className="text-center">
+            <div
+              className="text-2xl"
+              style={{ color: "#262019", fontFamily: "var(--font-serif)", fontWeight: 700 }}
+            >
               {item.stat}
             </div>
-            <div className="text-sm" style={{ color: "#A8A29E" }}>
+            <div className="text-sm" style={{ color: "#8B7E6E" }}>
               {item.label}
             </div>
           </div>

@@ -7,32 +7,32 @@ interface ResultsProps {
   onReset: () => void;
 }
 
-const TAG_COLORS: Record<string, { bg: string; text: string }> = {
-  muscle: { bg: "rgba(225,29,72,0.1)", text: "#E11D48" },
-  energy: { bg: "rgba(245,158,11,0.1)", text: "#D97706" },
-  recovery: { bg: "rgba(124,58,237,0.1)", text: "#7C3AED" },
-  health: { bg: "rgba(16,185,129,0.1)", text: "#059669" },
-  sleep: { bg: "rgba(99,102,241,0.1)", text: "#4F46E5" },
-  fat_loss: { bg: "rgba(239,68,68,0.1)", text: "#DC2626" },
-  stress: { bg: "rgba(245,158,11,0.1)", text: "#B45309" },
-  gut: { bg: "rgba(16,185,129,0.1)", text: "#047857" },
-  immune: { bg: "rgba(59,130,246,0.1)", text: "#2563EB" },
-  joints: { bg: "rgba(168,85,247,0.1)", text: "#7C3AED" },
-  brain: { bg: "rgba(6,182,212,0.1)", text: "#0891B2" },
-  performance: { bg: "rgba(225,29,72,0.1)", text: "#E11D48" },
-  strength: { bg: "rgba(225,29,72,0.12)", text: "#BE123C" },
-  vegan: { bg: "rgba(16,185,129,0.1)", text: "#047857" },
-  vegetarian: { bg: "rgba(16,185,129,0.1)", text: "#059669" },
-  keto: { bg: "rgba(245,158,11,0.1)", text: "#B45309" },
-  intense: { bg: "rgba(225,29,72,0.1)", text: "#E11D48" },
-  moderate: { bg: "rgba(124,58,237,0.08)", text: "#7C3AED" },
-};
+const TAG_PALETTE = [
+  { bg: "rgba(196,116,74,0.1)", text: "#C4744A" }, // terracotta
+  { bg: "rgba(38,43,48,0.08)", text: "#3D444B" }, // charcoal
+  { bg: "rgba(139,145,116,0.15)", text: "#5F6753" }, // olive
+  { bg: "rgba(227,195,156,0.35)", text: "#8A6A3E" }, // tan
+];
+
+const BLOBS = ["#E3C39C", "#8B9174", "#C4744A", "#262B30"];
+
+function tagColor(label: string) {
+  let hash = 0;
+  for (let i = 0; i < label.length; i++) hash = (hash * 31 + label.charCodeAt(i)) >>> 0;
+  return TAG_PALETTE[hash % TAG_PALETTE.length];
+}
+
+function blobColor(name: string) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+  return BLOBS[hash % BLOBS.length];
+}
 
 function Tag({ label }: { label: string }) {
-  const color = TAG_COLORS[label] ?? { bg: "rgba(28,25,23,0.08)", text: "#78716C" };
+  const color = tagColor(label);
   return (
     <span
-      className="text-xs font-semibold px-2 py-0.5 rounded-full capitalize"
+      className="text-xs font-medium px-2 py-0.5 rounded-full capitalize"
       style={{ background: color.bg, color: color.text }}
     >
       {label.replace("_", " ")}
@@ -47,24 +47,24 @@ export default function Results({ stack, onReset }: ResultsProps) {
         {/* Header */}
         <div className="text-center mb-14">
           <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-6 border"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6 border"
             style={{
-              background: "rgba(124,58,237,0.08)",
-              borderColor: "rgba(124,58,237,0.2)",
-              color: "#7C3AED",
+              background: "rgba(139,145,116,0.12)",
+              borderColor: "rgba(38,32,25,0.1)",
+              color: "#5F6753",
             }}
           >
             <span>✨</span>
-            <span>Your personalized stack is ready</span>
+            <span>Your personalized routine is ready</span>
           </div>
           <h2
-            className="text-4xl sm:text-5xl font-black mb-4 leading-tight"
-            style={{ color: "#1C1917" }}
+            className="text-4xl sm:text-5xl mb-4 leading-tight"
+            style={{ color: "#262019", fontFamily: "var(--font-serif)", fontWeight: 700 }}
           >
-            Your Stack
+            Your Daily Essentials
           </h2>
-          <p className="text-lg max-w-md mx-auto" style={{ color: "#78716C" }}>
-            {stack.length} supplement{stack.length !== 1 ? "s" : ""} chosen for
+          <p className="text-lg max-w-md mx-auto" style={{ color: "#6E6153" }}>
+            {stack.length} supplement{stack.length !== 1 ? "s" : ""}, chosen for
             your goals, activity level, and diet.
           </p>
         </div>
@@ -76,29 +76,37 @@ export default function Results({ stack, onReset }: ResultsProps) {
               key={supp.name}
               className="rounded-3xl p-6 sm:p-8 border transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
               style={{
-                background: "rgba(255,255,255,0.85)",
-                borderColor: "rgba(28,25,23,0.08)",
+                background: "#FFFFFF",
+                borderColor: "rgba(38,32,25,0.08)",
               }}
             >
-              <div className="flex items-start gap-4">
-                {/* Number + emoji */}
-                <div className="flex flex-col items-center gap-1 flex-shrink-0">
-                  <span
-                    className="text-xs font-black w-6 h-6 rounded-full flex items-center justify-center text-white"
-                    style={{ background: "linear-gradient(135deg, #E11D48, #7C3AED)" }}
-                  >
-                    {i + 1}
-                  </span>
-                  <span className="text-3xl">{supp.emoji}</span>
+              <div className="flex items-start gap-5">
+                {/* Icon on blob */}
+                <div className="relative w-16 h-16 flex-shrink-0">
+                  <div
+                    className="blob absolute inset-0"
+                    style={{ background: `${blobColor(supp.name)}30` }}
+                  />
+                  <div className="relative w-full h-full flex items-center justify-center text-3xl">
+                    {supp.emoji}
+                  </div>
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <h3
-                    className="text-xl sm:text-2xl font-black mb-1"
-                    style={{ color: "#1C1917" }}
-                  >
-                    {supp.name}
-                  </h3>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span
+                      className="text-xs w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                      style={{ background: "#E3C39C", color: "#262019" }}
+                    >
+                      {i + 1}
+                    </span>
+                    <h3
+                      className="text-xl sm:text-2xl"
+                      style={{ color: "#262019", fontFamily: "var(--font-serif)", fontWeight: 700 }}
+                    >
+                      {supp.name}
+                    </h3>
+                  </div>
 
                   {/* Tags */}
                   <div className="flex flex-wrap gap-1.5 mb-3">
@@ -107,7 +115,7 @@ export default function Results({ stack, onReset }: ResultsProps) {
                     ))}
                   </div>
 
-                  <p className="text-sm leading-relaxed mb-4" style={{ color: "#57534E" }}>
+                  <p className="text-sm leading-relaxed mb-4" style={{ color: "#4A4038" }}>
                     {supp.why}
                   </p>
 
@@ -115,23 +123,23 @@ export default function Results({ stack, onReset }: ResultsProps) {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div
                       className="rounded-xl p-3"
-                      style={{ background: "rgba(225,29,72,0.05)" }}
+                      style={{ background: "rgba(196,116,74,0.07)" }}
                     >
-                      <p className="text-xs font-bold uppercase tracking-wide mb-0.5" style={{ color: "#E11D48" }}>
+                      <p className="text-xs font-medium uppercase tracking-wide mb-0.5" style={{ color: "#C4744A" }}>
                         Dose
                       </p>
-                      <p className="text-sm font-semibold" style={{ color: "#1C1917" }}>
+                      <p className="text-sm font-medium" style={{ color: "#262019" }}>
                         {supp.dose}
                       </p>
                     </div>
                     <div
                       className="rounded-xl p-3"
-                      style={{ background: "rgba(124,58,237,0.05)" }}
+                      style={{ background: "rgba(139,145,116,0.1)" }}
                     >
-                      <p className="text-xs font-bold uppercase tracking-wide mb-0.5" style={{ color: "#7C3AED" }}>
+                      <p className="text-xs font-medium uppercase tracking-wide mb-0.5" style={{ color: "#5F6753" }}>
                         When to take
                       </p>
-                      <p className="text-sm font-semibold" style={{ color: "#1C1917" }}>
+                      <p className="text-sm font-medium" style={{ color: "#262019" }}>
                         {supp.timing}
                       </p>
                     </div>
@@ -146,12 +154,12 @@ export default function Results({ stack, onReset }: ResultsProps) {
         <div
           className="rounded-2xl p-5 mb-10 border text-sm leading-relaxed"
           style={{
-            background: "rgba(245,158,11,0.06)",
-            borderColor: "rgba(245,158,11,0.25)",
-            color: "#78716C",
+            background: "rgba(227,195,156,0.2)",
+            borderColor: "rgba(227,195,156,0.5)",
+            color: "#6E6153",
           }}
         >
-          <strong style={{ color: "#D97706" }}>⚠️ Heads up:</strong> This is for
+          <strong style={{ color: "#8A6A3E" }}>A gentle note:</strong> This is for
           informational purposes only. Always consult your doctor or a registered
           dietitian before starting any new supplement regimen, especially if you
           take medications or have a medical condition.
@@ -161,10 +169,10 @@ export default function Results({ stack, onReset }: ResultsProps) {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={onReset}
-            className="px-8 py-4 rounded-2xl font-bold text-base transition-all duration-200 hover:scale-105 active:scale-95 border-2"
+            className="px-8 py-4 rounded-full font-medium text-base transition-all duration-200 hover:scale-105 active:scale-95 border-2"
             style={{
-              borderColor: "#E11D48",
-              color: "#E11D48",
+              borderColor: "#C4744A",
+              color: "#C4744A",
               background: "transparent",
             }}
           >
@@ -172,10 +180,10 @@ export default function Results({ stack, onReset }: ResultsProps) {
           </button>
           <button
             onClick={() => window.print()}
-            className="px-8 py-4 rounded-2xl font-bold text-base text-white transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{ background: "linear-gradient(135deg, #E11D48, #7C3AED)" }}
+            className="px-8 py-4 rounded-full font-medium text-base transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{ background: "#C4744A", color: "#FFFFFF" }}
           >
-            🖨️ Print / Save
+            Print / Save
           </button>
         </div>
       </div>

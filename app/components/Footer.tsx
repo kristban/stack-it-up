@@ -23,23 +23,20 @@ export default function Footer() {
   return (
     <footer
       className="border-t px-4 py-12 sm:py-16"
-      style={{ borderColor: "rgba(28,25,23,0.08)" }}
+      style={{ borderColor: "rgba(38,32,25,0.08)" }}
     >
       <div className="max-w-4xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 mb-10">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2 font-black text-xl tracking-tight mb-3" style={{ color: "#1C1917" }}>
-              <span
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-black"
-                style={{ background: "linear-gradient(135deg, #E11D48, #7C3AED)" }}
-              >
-                S
-              </span>
+            <div
+              className="text-xl tracking-tight mb-3"
+              style={{ color: "#262019", fontFamily: "var(--font-serif)", fontWeight: 700 }}
+            >
               StackItUp
             </div>
-            <p className="text-sm leading-relaxed" style={{ color: "#78716C" }}>
-              Personalized supplement routines in 60 seconds. No account, no
+            <p className="text-sm leading-relaxed" style={{ color: "#6E6153" }}>
+              Personalized supplement routines in under a minute. No account, no
               spam, no upsells.
             </p>
           </div>
@@ -48,8 +45,8 @@ export default function Footer() {
           {LINK_COLUMNS.map((col) => (
             <div key={col.title}>
               <h3
-                className="text-xs font-bold uppercase tracking-wide mb-4"
-                style={{ color: "#A8A29E" }}
+                className="text-xs font-semibold uppercase tracking-wide mb-4"
+                style={{ color: "#8B7E6E" }}
               >
                 {col.title}
               </h3>
@@ -59,7 +56,7 @@ export default function Footer() {
                     <a
                       href={link.href}
                       className="text-sm font-medium transition-colors duration-150 hover:opacity-70"
-                      style={{ color: "#57534E" }}
+                      style={{ color: "#4A4038" }}
                     >
                       {link.label}
                     </a>
@@ -73,15 +70,15 @@ export default function Footer() {
         {/* Bottom bar */}
         <div
           className="pt-8 border-t flex flex-col sm:flex-row items-center justify-between gap-4"
-          style={{ borderColor: "rgba(28,25,23,0.08)" }}
+          style={{ borderColor: "rgba(38,32,25,0.08)" }}
         >
-          <p className="text-sm" style={{ color: "#A8A29E" }}>
+          <p className="text-sm" style={{ color: "#8B7E6E" }}>
             &copy; {year} StackItUp. All rights reserved.
           </p>
           <a
             href="mailto:hello@stackitup.app"
-            className="text-sm font-semibold transition-colors duration-150 hover:opacity-70"
-            style={{ color: "#E11D48" }}
+            className="text-sm font-medium transition-colors duration-150 hover:opacity-70"
+            style={{ color: "#C4744A" }}
           >
             hello@stackitup.app
           </a>

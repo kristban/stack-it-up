@@ -56,25 +56,25 @@ export default function Quiz({ onComplete, onBack }: QuizProps) {
           <button
             onClick={prev}
             className="flex items-center gap-2 text-sm font-medium transition-colors duration-150 hover:opacity-70"
-            style={{ color: "#78716C" }}
+            style={{ color: "#6E6153" }}
           >
             ← Back
           </button>
-          <span className="text-sm font-semibold" style={{ color: "#78716C" }}>
+          <span className="text-sm font-medium" style={{ color: "#8B7E6E" }}>
             {step + 1} / {questions.length}
           </span>
         </div>
 
         {/* Progress bar */}
         <div
-          className="w-full h-2 rounded-full mb-10 overflow-hidden"
-          style={{ background: "rgba(28, 25, 23, 0.1)" }}
+          className="w-full h-1.5 rounded-full mb-10 overflow-hidden"
+          style={{ background: "rgba(38,32,25,0.08)" }}
         >
           <div
             className="h-full rounded-full transition-all duration-500"
             style={{
               width: `${progress}%`,
-              background: "linear-gradient(90deg, #E11D48, #7C3AED)",
+              background: "#C4744A",
             }}
           />
         </div>
@@ -82,18 +82,18 @@ export default function Quiz({ onComplete, onBack }: QuizProps) {
         {/* Question */}
         <div className="mb-8">
           <h2
-            className="text-3xl sm:text-4xl font-black mb-2 leading-tight"
-            style={{ color: "#1C1917" }}
+            className="text-3xl sm:text-4xl mb-2 leading-tight"
+            style={{ color: "#262019", fontFamily: "var(--font-serif)", fontWeight: 700 }}
           >
             {current.question}
           </h2>
           {current.subtitle && (
-            <p className="text-base" style={{ color: "#78716C" }}>
+            <p className="text-base" style={{ color: "#6E6153" }}>
               {current.subtitle}
             </p>
           )}
           {current.type === "multi" && (
-            <p className="text-xs mt-1 font-medium" style={{ color: "#A8A29E" }}>
+            <p className="text-xs mt-1 font-medium" style={{ color: "#8B7E6E" }}>
               Select all that apply
             </p>
           )}
@@ -109,22 +109,20 @@ export default function Quiz({ onComplete, onBack }: QuizProps) {
                 onClick={() => toggle(opt.id)}
                 className="flex items-center gap-4 p-4 rounded-2xl border-2 text-left transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus-visible:ring-2"
                 style={{
-                  borderColor: isSelected ? "#E11D48" : "rgba(28,25,23,0.12)",
-                  background: isSelected
-                    ? "rgba(225,29,72,0.06)"
-                    : "rgba(255,255,255,0.7)",
-                  color: "#1C1917",
+                  borderColor: isSelected ? "#C4744A" : "rgba(38,32,25,0.1)",
+                  background: isSelected ? "rgba(196,116,74,0.07)" : "#FFFFFF",
+                  color: "#262019",
                 }}
                 aria-pressed={isSelected}
               >
                 <span className="text-2xl flex-shrink-0">{opt.emoji}</span>
-                <span className="font-semibold text-sm sm:text-base leading-snug">
+                <span className="font-medium text-sm sm:text-base leading-snug">
                   {opt.label}
                 </span>
                 {isSelected && (
                   <span
-                    className="ml-auto flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                    style={{ background: "#E11D48" }}
+                    className="ml-auto flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-white text-xs"
+                    style={{ background: "#C4744A" }}
                   >
                     ✓
                   </span>
@@ -138,15 +136,13 @@ export default function Quiz({ onComplete, onBack }: QuizProps) {
         <button
           onClick={next}
           disabled={selected.length === 0}
-          className="w-full py-5 rounded-2xl text-white font-bold text-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="w-full py-5 rounded-full font-medium text-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
           style={{
-            background:
-              selected.length > 0
-                ? "linear-gradient(135deg, #E11D48, #7C3AED)"
-                : "#D6D3D1",
+            background: selected.length > 0 ? "#C4744A" : "#DCCFBE",
+            color: "#FFFFFF",
           }}
         >
-          {isLast ? "Build My Stack 🚀" : "Next →"}
+          {isLast ? "Build My Routine" : "Next →"}
         </button>
       </div>
     </section>
