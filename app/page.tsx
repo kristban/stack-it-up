@@ -6,6 +6,7 @@ import Hero from "./components/Hero";
 import HowItWorks from "./components/HowItWorks";
 import Quiz from "./components/Quiz";
 import Results from "./components/Results";
+import Footer from "./components/Footer";
 import { generateStack } from "./lib/engine";
 import { Answers, Supplement } from "./lib/types";
 
@@ -45,6 +46,7 @@ export default function Home() {
           <Results stack={stack} onReset={handleReset} />
         )}
       </main>
+      <Footer />
     </>
   );
 }

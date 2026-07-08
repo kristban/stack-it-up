@@ -47,7 +47,7 @@ function FadeInSection({
 
 export default function HowItWorks() {
   return (
-    <section className="px-4 py-20 sm:py-28">
+    <section id="how-it-works" className="px-4 py-20 sm:py-28 scroll-mt-16">
       <div className="max-w-4xl mx-auto">
         {/* Heading */}
         <div className="text-center mb-14">
