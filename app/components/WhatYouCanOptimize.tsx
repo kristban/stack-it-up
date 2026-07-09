@@ -1,17 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useInView } from "../hooks/useInView";
-
-const BENEFITS = [
-  { emoji: "⚡", title: "Energy & Focus", description: "Steadier days, less afternoon slump.", blob: "#E3C39C" },
-  { emoji: "😴", title: "Sleep Quality", description: "Fall asleep easier, wake up rested.", blob: "#8B9174" },
-  { emoji: "💪", title: "Muscle & Strength", description: "Support training gains over time.", blob: "#C4744A" },
-  { emoji: "🔄", title: "Recovery", description: "Bounce back faster between sessions.", blob: "#262B30" },
-  { emoji: "🧘", title: "Stress & Calm", description: "Take the edge off a long day.", blob: "#8B9174" },
-  { emoji: "🫀", title: "Gut Health", description: "Ease digestion, feel less bloated.", blob: "#C4744A" },
-  { emoji: "🛡️", title: "Immune Support", description: "Stay resilient through the seasons.", blob: "#E3C39C" },
-  { emoji: "🦴", title: "Joint Comfort", description: "Move easier, ache less.", blob: "#262B30" },
-];
+import { OPTIMIZE_TOPICS } from "../lib/optimizeContent";
 
 function FadeInSection({
   children,
@@ -61,16 +52,18 @@ export default function WhatYouCanOptimize() {
             </h2>
             <p className="mt-4 text-lg max-w-xl mx-auto" style={{ color: "#6E6153" }}>
               Every routine is built around the areas that matter most to you.
+              Tap a card to learn more.
             </p>
           </FadeInSection>
         </div>
 
         {/* Benefit tiles */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
-          {BENEFITS.map((b, i) => (
-            <FadeInSection key={b.title} delay={(i % 4) * 100}>
-              <div
-                className="h-full rounded-3xl p-5 sm:p-6 border transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+          {OPTIMIZE_TOPICS.map((b, i) => (
+            <FadeInSection key={b.slug} delay={(i % 4) * 100}>
+              <Link
+                href={`/optimize/${b.slug}`}
+                className="group block h-full rounded-3xl p-5 sm:p-6 border transition-all duration-200 hover:-translate-y-1 hover:shadow-md focus:outline-none focus-visible:ring-2"
                 style={{
                   background: "#FFFFFF",
                   borderColor: "rgba(38,32,25,0.08)",
@@ -92,10 +85,16 @@ export default function WhatYouCanOptimize() {
                 >
                   {b.title}
                 </h3>
-                <p className="text-sm leading-relaxed" style={{ color: "#6E6153" }}>
-                  {b.description}
+                <p className="text-sm leading-relaxed mb-3" style={{ color: "#6E6153" }}>
+                  {b.tagline}
                 </p>
-              </div>
+                <span
+                  className="inline-flex items-center gap-1 text-xs font-semibold transition-transform duration-200 group-hover:translate-x-1"
+                  style={{ color: "#C4744A" }}
+                >
+                  Learn more →
+                </span>
+              </Link>
             </FadeInSection>
           ))}
         </div>

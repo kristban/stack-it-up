@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import HowItWorks from "./components/HowItWorks";
@@ -16,6 +16,13 @@ type View = "hero" | "quiz" | "results";
 export default function Home() {
   const [view, setView] = useState<View>("hero");
   const [stack, setStack] = useState<Supplement[]>([]);
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("start") === "quiz") {
+      setView("quiz");
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  }, []);
 
   function handleComplete(answers: Answers) {
     const result = generateStack(answers);

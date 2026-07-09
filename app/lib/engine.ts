@@ -1,6 +1,6 @@
 import { Answers, Supplement } from "./types";
 
-const ALL_SUPPLEMENTS: Record<string, Supplement> = {
+export const ALL_SUPPLEMENTS: Record<string, Supplement> = {
   creatine: {
     name: "Creatine Monohydrate",
     emoji: "⚡",
