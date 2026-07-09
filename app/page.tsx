@@ -4,6 +4,7 @@ import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import HowItWorks from "./components/HowItWorks";
+import WhatYouCanOptimize from "./components/WhatYouCanOptimize";
 import Quiz from "./components/Quiz";
 import Results from "./components/Results";
 import Footer from "./components/Footer";
@@ -37,6 +38,7 @@ export default function Home() {
           <>
             <Hero onStart={() => setView("quiz")} />
             <HowItWorks />
+            <WhatYouCanOptimize />
           </>
         )}
         {view === "quiz" && (
