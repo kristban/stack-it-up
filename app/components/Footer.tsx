@@ -4,15 +4,15 @@ const LINK_COLUMNS = [
     links: [
       { label: "How it works", href: "#how-it-works" },
       { label: "Build my stack", href: "#" },
-      { label: "FAQ", href: "#" },
+      { label: "FAQ", href: "/faq" },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "About", href: "#" },
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
+      { label: "About", href: "/about" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms" },
     ],
   },
 ];

@@ -42,7 +42,7 @@ export default function CookieBanner() {
           We use cookies to improve your experience and keep StackItUp running
           smoothly. By continuing, you agree to our use of cookies. Read more in
           our{" "}
-          <a href="#" className="underline font-medium" style={{ color: "#5F6753" }}>
+          <a href="/privacy" className="underline font-medium" style={{ color: "#5F6753" }}>
             Privacy Policy
           </a>
           .

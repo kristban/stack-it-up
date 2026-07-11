@@ -9,6 +9,7 @@ import {
 } from "../../lib/optimizeContent";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { Card, SectionHeading } from "../../components/PageCard";
 
 export function generateStaticParams() {
   return OPTIMIZE_TOPICS.map((topic) => ({ slug: topic.slug }));
@@ -26,29 +27,6 @@ export async function generateMetadata({
     title: `${topic.title} — StackItUp`,
     description: topic.tagline,
   };
-}
-
-function Card({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      className="rounded-3xl p-6 sm:p-8 border mb-6"
-      style={{ background: "#FFFFFF", borderColor: "rgba(38,32,25,0.08)" }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function SectionHeading({ emoji, children }: { emoji: string; children: React.ReactNode }) {
-  return (
-    <h2
-      className="text-xl mb-4 flex items-center gap-2"
-      style={{ color: "#262019", fontFamily: "var(--font-serif)", fontWeight: 700 }}
-    >
-      <span className="text-lg">{emoji}</span>
-      {children}
-    </h2>
-  );
 }
 
 export default async function OptimizeTopicPage({

@@ -37,9 +37,14 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  function handleStartQuiz() {
+    setView("quiz");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   return (
     <>
-      <Navbar onLogoClick={handleReset} />
+      <Navbar onLogoClick={handleReset} onStartQuiz={handleStartQuiz} />
       <main className="pt-16">
         {view === "hero" && (
           <>
