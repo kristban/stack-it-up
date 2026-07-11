@@ -197,7 +197,7 @@ export const OPTIMIZE_TOPICS: OptimizeTopic[] = [
   },
   {
     slug: "gut",
-    emoji: "🫀",
+    emoji: "🦠",
     title: "Gut Health",
     tagline: "Ease digestion, feel less bloated.",
     blob: "#C4744A",

@@ -34,7 +34,7 @@ export const questions: Question[] = [
     type: "multi",
     options: [
       { id: "stress", label: "High stress or anxiety", emoji: "😤" },
-      { id: "gut", label: "Gut health / digestion", emoji: "🫀" },
+      { id: "gut", label: "Gut health / digestion", emoji: "🦠" },
       { id: "immune", label: "Immune support", emoji: "🛡️" },
       { id: "joints", label: "Joint or muscle pain", emoji: "🦴" },
       { id: "brain", label: "Brain fog / memory", emoji: "🧠" },
