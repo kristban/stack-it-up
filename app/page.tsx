@@ -21,6 +21,8 @@ export default function Home() {
     if (new URLSearchParams(window.location.search).get("start") === "quiz") {
       setView("quiz");
       window.history.replaceState(null, "", window.location.pathname);
+    } else if (window.location.hash) {
+      document.getElementById(window.location.hash.slice(1))?.scrollIntoView();
     }
   }, []);
 
