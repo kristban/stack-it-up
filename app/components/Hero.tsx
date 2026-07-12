@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 interface HeroProps {
   onStart: () => void;
 }
@@ -69,10 +71,27 @@ export default function Hero({ onStart }: HeroProps) {
         </button>
       </div>
 
+      {/* Hero photo */}
+      <div
+        className="fade-in-up visible relative mt-14 w-full max-w-xl mx-auto rounded-[2.5rem] overflow-hidden shadow-xl border-4"
+        style={{ borderColor: "rgba(255,255,255,0.7)", ...delay(360) }}
+      >
+        <div className="relative w-full aspect-[16/10]">
+          <Image
+            src="https://images.unsplash.com/photo-1664956618021-73c47736845e?auto=format&fit=crop&w=1200&q=80"
+            alt="Natural supplement capsules spilling from a jar beside fresh greenery"
+            fill
+            sizes="(max-width: 640px) 100vw, 576px"
+            className="object-cover"
+            priority
+          />
+        </div>
+      </div>
+
       {/* Soft trust row */}
       <div
-        className="fade-in-up visible relative mt-16 flex flex-col sm:flex-row items-center gap-6 sm:gap-12"
-        style={delay(400)}
+        className="fade-in-up visible relative mt-12 flex flex-col sm:flex-row items-center gap-6 sm:gap-12"
+        style={delay(440)}
       >
         {[
           { stat: "5", label: "minutes, start to finish" },
