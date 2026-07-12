@@ -1,3 +1,5 @@
+import NewsletterSignup from "./NewsletterSignup";
+
 const LINK_COLUMNS = [
   {
     title: "Product",
@@ -5,6 +7,7 @@ const LINK_COLUMNS = [
       { label: "How it works", href: "#how-it-works" },
       { label: "Build my stack", href: "#" },
       { label: "FAQ", href: "/faq" },
+      { label: "Newsletter", href: "#newsletter" },
     ],
   },
   {
@@ -26,6 +29,8 @@ export default function Footer() {
       style={{ borderColor: "rgba(38,32,25,0.08)" }}
     >
       <div className="max-w-4xl mx-auto">
+        <NewsletterSignup />
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 mb-10">
           {/* Brand */}
           <div>

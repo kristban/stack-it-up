@@ -125,6 +125,14 @@ export default function Navbar({ onLogoClick, onStartQuiz }: NavbarProps) {
           FAQ
         </Link>
 
+        <a
+          href="#newsletter"
+          className="px-3 py-2 rounded-full text-sm font-medium transition-opacity hover:opacity-70"
+          style={{ color: "#262019" }}
+        >
+          Newsletter
+        </a>
+
         {onStartQuiz ? (
           <button onClick={handleStartQuizClick} className={quizButtonClass} style={quizButtonStyle}>
             Start Quiz
@@ -222,6 +230,15 @@ export default function Navbar({ onLogoClick, onStartQuiz }: NavbarProps) {
             >
               FAQ
             </Link>
+
+            <a
+              href="#newsletter"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center px-3 py-3 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(196,116,74,0.08)]"
+              style={{ color: "#262019" }}
+            >
+              Newsletter
+            </a>
           </div>
         </div>
       )}
