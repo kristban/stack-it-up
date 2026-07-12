@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F6F0E4;
+  --background: #F5F3EC;
   --surface: #FFFFFF;
-  --foreground: #262019;
-  --foreground-muted: #6E6153;
-  --primary: #C4744A;
-  --primary-dark: #A85F39;
-  --secondary: #262B30;
-  --accent: #E3C39C;
-  --sage: #8B9174;
-  --border: rgba(38, 32, 25, 0.1);
+  --foreground: #14130F;
+  --foreground-muted: #6B6558;
+  --ink: #111111;
+  --blue: #CFE0F7;
+  --blue-deep: #4A6FA5;
+  --yellow: #F4E14F;
+  --yellow-deep: #8A6F0E;
+  --border: rgba(17, 17, 17, 0.08);
 }
 
 @theme inline {
@@ -18,26 +18,25 @@
   --color-surface: var(--surface);
   --color-foreground: var(--foreground);
   --color-foreground-muted: var(--foreground-muted);
-  --color-primary: var(--primary);
-  --color-secondary: var(--secondary);
-  --color-accent: var(--accent);
-  --color-sage: var(--sage);
+  --color-ink: var(--ink);
+  --color-blue: var(--blue);
+  --color-yellow: var(--yellow);
   --font-sans: var(--font-geist-sans);
-  --font-serif: var(--font-slab);
+  --font-heading: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 body {
-  background: #F6F0E4 !important;
-  color: #262019 !important;
+  background: #F5F3EC !important;
+  color: #14130F !important;
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
 /* Force light theme — this app has a fixed brand palette */
 @media (prefers-color-scheme: dark) {
   body {
-    background: #F6F0E4 !important;
-    color: #262019 !important;
+    background: #F5F3EC !important;
+    color: #14130F !important;
   }
 }
 
@@ -62,19 +61,6 @@ body {
 
 .fade-in-up.visible {
   animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-/* Organic blob shapes for backgrounds and icon containers */
-.blob {
-  border-radius: 63% 37% 54% 46% / 43% 37% 63% 57%;
-}
-
-.blob-2 {
-  border-radius: 41% 59% 60% 40% / 51% 46% 54% 49%;
-}
-
-.blob-3 {
-  border-radius: 57% 43% 38% 62% / 61% 42% 58% 39%;
 }
 
 html {

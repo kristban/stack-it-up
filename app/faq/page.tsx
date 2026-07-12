@@ -99,30 +99,30 @@ export default function FaqPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-16">
+      <main className="pt-24">
         <section className="px-4 py-16 sm:py-24 relative overflow-hidden">
           <div
-            className="blob absolute -top-16 -right-24 w-72 h-72 opacity-70 pointer-events-none"
-            style={{ background: "#E3C39C" }}
+            className="absolute -top-16 -right-24 w-72 h-72 rounded-[3rem] opacity-60 pointer-events-none -rotate-6"
+            style={{ background: "#F4E14F" }}
           />
 
           <div className="max-w-2xl mx-auto relative">
             <Link
               href="/"
               className="inline-flex items-center gap-2 text-sm font-medium mb-8 transition-opacity hover:opacity-70"
-              style={{ color: "#6E6153" }}
+              style={{ color: "#6B6558" }}
             >
               ← Back to StackItUp
             </Link>
 
             <div className="mb-10">
               <h1
-                className="text-4xl sm:text-5xl mb-3 leading-tight"
-                style={{ color: "#262019", fontFamily: "var(--font-serif)", fontWeight: 700 }}
+                className="text-4xl sm:text-5xl mb-3 leading-tight tracking-tight"
+                style={{ color: "#111111", fontFamily: "var(--font-heading)", fontWeight: 800 }}
               >
                 Frequently Asked Questions
               </h1>
-              <p className="text-lg" style={{ color: "#6E6153" }}>
+              <p className="text-lg" style={{ color: "#6B6558" }}>
                 Everything you might want to know before, during, or after the quiz.
               </p>
             </div>
@@ -135,21 +135,21 @@ export default function FaqPage() {
                     <details
                       key={item.question}
                       className="group rounded-2xl p-4"
-                      style={{ background: "rgba(38,32,25,0.03)" }}
+                      style={{ background: "rgba(17,17,17,0.03)" }}
                     >
                       <summary
                         className="font-semibold text-base cursor-pointer list-none flex items-center justify-between gap-3"
-                        style={{ color: "#262019" }}
+                        style={{ color: "#111111" }}
                       >
                         {item.question}
                         <span
                           className="flex-shrink-0 transition-transform duration-200 group-open:rotate-45 text-lg"
-                          style={{ color: "#C4744A" }}
+                          style={{ color: "#4A6FA5" }}
                         >
                           +
                         </span>
                       </summary>
-                      <p className="text-sm leading-relaxed mt-3" style={{ color: "#6E6153" }}>
+                      <p className="text-sm leading-relaxed mt-3" style={{ color: "#6B6558" }}>
                         {item.answer}
                       </p>
                     </details>
@@ -160,11 +160,11 @@ export default function FaqPage() {
 
             <div
               className="rounded-3xl p-8 sm:p-10 text-center mb-10"
-              style={{ background: "#262B30" }}
+              style={{ background: "#111111" }}
             >
               <h2
-                className="text-2xl sm:text-3xl mb-3"
-                style={{ color: "#FFFFFF", fontFamily: "var(--font-serif)", fontWeight: 700 }}
+                className="text-2xl sm:text-3xl mb-3 tracking-tight"
+                style={{ color: "#FFFFFF", fontFamily: "var(--font-heading)", fontWeight: 800 }}
               >
                 Ready to build your routine?
               </h2>
@@ -174,7 +174,7 @@ export default function FaqPage() {
               <Link
                 href="/?start=quiz"
                 className="inline-flex items-center justify-center px-8 py-4 rounded-full font-medium text-base transition-all duration-200 hover:scale-105 active:scale-95"
-                style={{ background: "#C4744A", color: "#FFFFFF" }}
+                style={{ background: "#F4E14F", color: "#111111" }}
               >
                 Find My Routine →
               </Link>

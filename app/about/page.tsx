@@ -13,37 +13,37 @@ export default function AboutPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-16">
+      <main className="pt-24">
         <section className="px-4 py-16 sm:py-24 relative overflow-hidden">
           <div
-            className="blob absolute -top-16 -right-24 w-72 h-72 opacity-70 pointer-events-none"
-            style={{ background: "#8B9174" }}
+            className="absolute -top-16 -right-24 w-72 h-72 rounded-[3rem] opacity-60 pointer-events-none rotate-12"
+            style={{ background: "#CFE0F7" }}
           />
 
           <div className="max-w-2xl mx-auto relative">
             <Link
               href="/"
               className="inline-flex items-center gap-2 text-sm font-medium mb-8 transition-opacity hover:opacity-70"
-              style={{ color: "#6E6153" }}
+              style={{ color: "#6B6558" }}
             >
               ← Back to StackItUp
             </Link>
 
             <div className="mb-10">
-              <div className="relative w-16 h-16 mb-5">
-                <div className="blob absolute inset-0" style={{ background: "#8B917433" }} />
-                <div className="relative w-full h-full flex items-center justify-center text-3xl">
-                  🌿
-                </div>
+              <div
+                className="w-16 h-16 mb-5 rounded-2xl flex items-center justify-center text-3xl"
+                style={{ background: "#CFE0F7" }}
+              >
+                🌿
               </div>
 
               <h1
-                className="text-4xl sm:text-5xl mb-3 leading-tight"
-                style={{ color: "#262019", fontFamily: "var(--font-serif)", fontWeight: 700 }}
+                className="text-4xl sm:text-5xl mb-3 leading-tight tracking-tight"
+                style={{ color: "#111111", fontFamily: "var(--font-heading)", fontWeight: 800 }}
               >
                 About StackItUp
               </h1>
-              <p className="text-lg" style={{ color: "#6E6153" }}>
+              <p className="text-lg" style={{ color: "#6B6558" }}>
                 Personalized supplement routines, built without the noise.
               </p>
             </div>
@@ -51,14 +51,14 @@ export default function AboutPage() {
             <Card>
               <SectionHeading emoji="💭">Why we built this</SectionHeading>
               <div className="space-y-3">
-                <p className="text-base leading-relaxed" style={{ color: "#4A4038" }}>
+                <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
                   Supplement aisles and shopping sites are overwhelming — hundreds of
                   products, most making similar promises, few explaining why they'd
                   actually help you. We built StackItUp to cut through that: answer a
                   few honest questions about your goals and your day, and get a short,
                   specific routine instead of a wall of options.
                 </p>
-                <p className="text-base leading-relaxed" style={{ color: "#4A4038" }}>
+                <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
                   We're not a supplement brand and we don't sell anything here. The
                   recommendations are grounded in well-studied ingredients with clear,
                   plain-language reasoning — not trends.
@@ -78,9 +78,9 @@ export default function AboutPage() {
                   <li key={item} className="flex items-start gap-3">
                     <span
                       className="mt-1 w-1.5 h-1.5 rounded-full flex-shrink-0"
-                      style={{ background: "#8B9174" }}
+                      style={{ background: "#4A6FA5" }}
                     />
-                    <span className="text-base leading-relaxed" style={{ color: "#4A4038" }}>
+                    <span className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
                       {item}
                     </span>
                   </li>
@@ -90,13 +90,13 @@ export default function AboutPage() {
 
             <Card>
               <SectionHeading emoji="✉️">Get in touch</SectionHeading>
-              <p className="text-base leading-relaxed" style={{ color: "#4A4038" }}>
+              <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
                 Questions, feedback, or found something that seems off in a
                 recommendation? We'd like to hear about it at{" "}
                 <a
                   href="mailto:hello@stackitup.app"
                   className="font-medium underline"
-                  style={{ color: "#C4744A" }}
+                  style={{ color: "#111111" }}
                 >
                   hello@stackitup.app
                 </a>
@@ -106,11 +106,11 @@ export default function AboutPage() {
 
             <div
               className="rounded-3xl p-8 sm:p-10 text-center mb-10"
-              style={{ background: "#262B30" }}
+              style={{ background: "#111111" }}
             >
               <h2
-                className="text-2xl sm:text-3xl mb-3"
-                style={{ color: "#FFFFFF", fontFamily: "var(--font-serif)", fontWeight: 700 }}
+                className="text-2xl sm:text-3xl mb-3 tracking-tight"
+                style={{ color: "#FFFFFF", fontFamily: "var(--font-heading)", fontWeight: 800 }}
               >
                 Ready to build your routine?
               </h2>
@@ -120,7 +120,7 @@ export default function AboutPage() {
               <Link
                 href="/?start=quiz"
                 className="inline-flex items-center justify-center px-8 py-4 rounded-full font-medium text-base transition-all duration-200 hover:scale-105 active:scale-95"
-                style={{ background: "#C4744A", color: "#FFFFFF" }}
+                style={{ background: "#F4E14F", color: "#111111" }}
               >
                 Find My Routine →
               </Link>

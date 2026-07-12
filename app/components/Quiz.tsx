@@ -56,11 +56,14 @@ export default function Quiz({ onComplete, onBack }: QuizProps) {
           <button
             onClick={prev}
             className="flex items-center gap-2 text-sm font-medium transition-colors duration-150 hover:opacity-70"
-            style={{ color: "#6E6153" }}
+            style={{ color: "#6B6558" }}
           >
             ← Back
           </button>
-          <span className="text-sm font-medium" style={{ color: "#8B7E6E" }}>
+          <span
+            className="text-sm font-medium px-3 py-1 rounded-full"
+            style={{ color: "#111111", background: "#F4E14F" }}
+          >
             {step + 1} / {questions.length}
           </span>
         </div>
@@ -68,13 +71,13 @@ export default function Quiz({ onComplete, onBack }: QuizProps) {
         {/* Progress bar */}
         <div
           className="w-full h-1.5 rounded-full mb-10 overflow-hidden"
-          style={{ background: "rgba(38,32,25,0.08)" }}
+          style={{ background: "rgba(17,17,17,0.08)" }}
         >
           <div
             className="h-full rounded-full transition-all duration-500"
             style={{
               width: `${progress}%`,
-              background: "#C4744A",
+              background: "#111111",
             }}
           />
         </div>
@@ -82,18 +85,18 @@ export default function Quiz({ onComplete, onBack }: QuizProps) {
         {/* Question */}
         <div className="mb-8">
           <h2
-            className="text-3xl sm:text-4xl mb-2 leading-tight"
-            style={{ color: "#262019", fontFamily: "var(--font-serif)", fontWeight: 700 }}
+            className="text-3xl sm:text-4xl mb-2 leading-tight tracking-tight"
+            style={{ color: "#111111", fontFamily: "var(--font-heading)", fontWeight: 800 }}
           >
             {current.question}
           </h2>
           {current.subtitle && (
-            <p className="text-base" style={{ color: "#6E6153" }}>
+            <p className="text-base" style={{ color: "#6B6558" }}>
               {current.subtitle}
             </p>
           )}
           {current.type === "multi" && (
-            <p className="text-xs mt-1 font-medium" style={{ color: "#8B7E6E" }}>
+            <p className="text-xs mt-1 font-medium" style={{ color: "#8A8172" }}>
               Select all that apply
             </p>
           )}
@@ -109,9 +112,9 @@ export default function Quiz({ onComplete, onBack }: QuizProps) {
                 onClick={() => toggle(opt.id)}
                 className="flex items-center gap-4 p-4 rounded-2xl border-2 text-left transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus-visible:ring-2"
                 style={{
-                  borderColor: isSelected ? "#C4744A" : "rgba(38,32,25,0.1)",
-                  background: isSelected ? "rgba(196,116,74,0.07)" : "#FFFFFF",
-                  color: "#262019",
+                  borderColor: isSelected ? "#111111" : "rgba(17,17,17,0.1)",
+                  background: isSelected ? "#CFE0F7" : "#FFFFFF",
+                  color: "#111111",
                 }}
                 aria-pressed={isSelected}
               >
@@ -122,7 +125,7 @@ export default function Quiz({ onComplete, onBack }: QuizProps) {
                 {isSelected && (
                   <span
                     className="ml-auto flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-white text-xs"
-                    style={{ background: "#C4744A" }}
+                    style={{ background: "#111111" }}
                   >
                     ✓
                   </span>
@@ -138,7 +141,7 @@ export default function Quiz({ onComplete, onBack }: QuizProps) {
           disabled={selected.length === 0}
           className="w-full py-5 rounded-full font-medium text-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
           style={{
-            background: selected.length > 0 ? "#C4744A" : "#DCCFBE",
+            background: selected.length > 0 ? "#111111" : "#DCD8CB",
             color: "#FFFFFF",
           }}
         >

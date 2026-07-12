@@ -47,7 +47,7 @@ export default function Home() {
   return (
     <>
       <Navbar onLogoClick={handleReset} onStartQuiz={handleStartQuiz} />
-      <main className="pt-16">
+      <main className="pt-24">
         {view === "hero" && (
           <>
             <Hero onStart={() => setView("quiz")} />

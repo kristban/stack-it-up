@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { useInView } from "../hooks/useInView";
 import { OPTIMIZE_TOPICS } from "../lib/optimizeContent";
+import { accentFor, BLUE_ACCENT, YELLOW_ACCENT } from "../lib/theme";
+
+const GRID_COLS = 4;
 
 function FadeInSection({
   children,
@@ -33,9 +36,9 @@ export default function WhatYouCanOptimize() {
             <div
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-5 border"
               style={{
-                background: "rgba(196,116,74,0.1)",
-                borderColor: "rgba(38,32,25,0.1)",
-                color: "#A85F39",
+                background: "#F4E14F",
+                borderColor: "rgba(17,17,17,0.1)",
+                color: "#8A6F0E",
               }}
             >
               <span>◡</span>
@@ -45,12 +48,12 @@ export default function WhatYouCanOptimize() {
 
           <FadeInSection delay={80}>
             <h2
-              className="text-3xl sm:text-4xl md:text-5xl leading-tight"
-              style={{ color: "#262019", fontFamily: "var(--font-serif)", fontWeight: 700 }}
+              className="text-3xl sm:text-4xl md:text-5xl leading-tight tracking-tight"
+              style={{ color: "#111111", fontFamily: "var(--font-heading)", fontWeight: 800 }}
             >
               What you can optimize
             </h2>
-            <p className="mt-4 text-lg max-w-xl mx-auto" style={{ color: "#6E6153" }}>
+            <p className="mt-4 text-lg max-w-xl mx-auto" style={{ color: "#6B6558" }}>
               Every routine is built around the areas that matter most to you.
               Tap a card to learn more.
             </p>
@@ -59,44 +62,48 @@ export default function WhatYouCanOptimize() {
 
         {/* Benefit tiles */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
-          {OPTIMIZE_TOPICS.map((b, i) => (
-            <FadeInSection key={b.slug} delay={(i % 4) * 100}>
-              <Link
-                href={`/optimize/${b.slug}`}
-                className="group block h-full rounded-3xl p-5 sm:p-6 border transition-all duration-200 hover:-translate-y-1 hover:shadow-md focus:outline-none focus-visible:ring-2"
-                style={{
-                  background: "#FFFFFF",
-                  borderColor: "rgba(38,32,25,0.08)",
-                }}
-              >
-                <div className="relative w-12 h-12 mb-4">
+          {OPTIMIZE_TOPICS.map((b, i) => {
+            const col = i % GRID_COLS;
+            const row = Math.floor(i / GRID_COLS);
+            const featured = (row + col) % 2 === 1;
+            const featuredAccent = col < GRID_COLS / 2 ? BLUE_ACCENT : YELLOW_ACCENT;
+            const iconAccent = accentFor(b.slug);
+            return (
+              <FadeInSection key={b.slug} delay={(i % 4) * 100}>
+                <Link
+                  href={`/optimize/${b.slug}`}
+                  className="group block h-full rounded-3xl p-5 sm:p-6 border transition-all duration-200 hover:-translate-y-1 hover:shadow-md focus:outline-none focus-visible:ring-2"
+                  style={{
+                    background: featured ? featuredAccent.bg : "#FFFFFF",
+                    borderColor: featured ? "transparent" : "rgba(17,17,17,0.08)",
+                  }}
+                >
                   <div
-                    className="blob absolute inset-0"
-                    style={{ background: `${b.blob}33` }}
-                  />
-                  <div className="relative w-full h-full flex items-center justify-center text-xl">
+                    className="w-11 h-11 rounded-xl mb-4 flex items-center justify-center text-xl"
+                    style={{ background: featured ? "rgba(255,255,255,0.6)" : iconAccent.bg }}
+                  >
                     {b.emoji}
                   </div>
-                </div>
 
-                <h3
-                  className="text-base sm:text-lg mb-1 leading-snug"
-                  style={{ color: "#262019", fontFamily: "var(--font-serif)", fontWeight: 700 }}
-                >
-                  {b.title}
-                </h3>
-                <p className="text-sm leading-relaxed mb-3" style={{ color: "#6E6153" }}>
-                  {b.tagline}
-                </p>
-                <span
-                  className="inline-flex items-center gap-1 text-xs font-semibold transition-transform duration-200 group-hover:translate-x-1"
-                  style={{ color: "#C4744A" }}
-                >
-                  Learn more →
-                </span>
-              </Link>
-            </FadeInSection>
-          ))}
+                  <h3
+                    className="text-base sm:text-lg mb-1 leading-snug tracking-tight"
+                    style={{ color: "#111111", fontFamily: "var(--font-heading)", fontWeight: 700 }}
+                  >
+                    {b.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed mb-3" style={{ color: featured ? "#3A362E" : "#6B6558" }}>
+                    {b.tagline}
+                  </p>
+                  <span
+                    className="inline-flex items-center gap-1 text-xs font-semibold transition-transform duration-200 group-hover:translate-x-1"
+                    style={{ color: "#111111" }}
+                  >
+                    Learn more →
+                  </span>
+                </Link>
+              </FadeInSection>
+            );
+          })}
         </div>
       </div>
     </section>

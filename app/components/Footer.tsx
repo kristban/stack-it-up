@@ -26,7 +26,7 @@ export default function Footer() {
   return (
     <footer
       className="border-t px-4 py-12 sm:py-16"
-      style={{ borderColor: "rgba(38,32,25,0.08)" }}
+      style={{ borderColor: "rgba(17,17,17,0.08)" }}
     >
       <div className="max-w-4xl mx-auto">
         <NewsletterSignup />
@@ -35,12 +35,16 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div
-              className="text-xl tracking-tight mb-3"
-              style={{ color: "#262019", fontFamily: "var(--font-serif)", fontWeight: 700 }}
+              className="flex items-center gap-2 text-xl tracking-tight mb-3"
+              style={{ color: "#111111", fontFamily: "var(--font-heading)", fontWeight: 800 }}
             >
+              <span
+                className="w-5 h-5 rounded-full flex-shrink-0"
+                style={{ background: "linear-gradient(135deg, #CFE0F7 50%, #F4E14F 50%)" }}
+              />
               StackItUp
             </div>
-            <p className="text-sm leading-relaxed" style={{ color: "#6E6153" }}>
+            <p className="text-sm leading-relaxed" style={{ color: "#6B6558" }}>
               Personalized supplement routines in under a minute. No account, no
               spam, no upsells.
             </p>
@@ -51,7 +55,7 @@ export default function Footer() {
             <div key={col.title}>
               <h3
                 className="text-xs font-semibold uppercase tracking-wide mb-4"
-                style={{ color: "#8B7E6E" }}
+                style={{ color: "#8A8172" }}
               >
                 {col.title}
               </h3>
@@ -61,7 +65,7 @@ export default function Footer() {
                     <a
                       href={link.href}
                       className="text-sm font-medium transition-colors duration-150 hover:opacity-70"
-                      style={{ color: "#4A4038" }}
+                      style={{ color: "#14130F" }}
                     >
                       {link.label}
                     </a>
@@ -75,15 +79,15 @@ export default function Footer() {
         {/* Bottom bar */}
         <div
           className="pt-8 border-t flex flex-col sm:flex-row items-center justify-between gap-4"
-          style={{ borderColor: "rgba(38,32,25,0.08)" }}
+          style={{ borderColor: "rgba(17,17,17,0.08)" }}
         >
-          <p className="text-sm" style={{ color: "#8B7E6E" }}>
+          <p className="text-sm" style={{ color: "#8A8172" }}>
             &copy; {year} StackItUp. All rights reserved.
           </p>
           <a
             href="mailto:hello@stackitup.app"
             className="text-sm font-medium transition-colors duration-150 hover:opacity-70"
-            style={{ color: "#C4744A" }}
+            style={{ color: "#111111" }}
           >
             hello@stackitup.app
           </a>

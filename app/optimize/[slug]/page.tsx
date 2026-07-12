@@ -10,6 +10,7 @@ import {
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { Card, SectionHeading } from "../../components/PageCard";
+import { accentFor } from "../../lib/theme";
 
 export function generateStaticParams() {
   return OPTIMIZE_TOPICS.map((topic) => ({ slug: topic.slug }));
@@ -41,43 +42,44 @@ export default async function OptimizeTopicPage({
 
   const supplements = getSupplementDetails(topic.canHelp);
   const relatedTopics = getRelatedTopics(topic);
+  const accent = accentFor(topic.slug);
 
   return (
     <>
       <Navbar />
-      <main className="pt-16">
+      <main className="pt-24">
         <section className="px-4 py-16 sm:py-24 relative overflow-hidden">
-          {/* Decorative blob */}
+          {/* Decorative panel */}
           <div
-            className="blob absolute -top-16 -right-24 w-72 h-72 opacity-70 pointer-events-none"
-            style={{ background: topic.blob }}
+            className="absolute -top-16 -right-24 w-72 h-72 rounded-[3rem] opacity-60 pointer-events-none rotate-6"
+            style={{ background: accent.bg }}
           />
 
           <div className="max-w-2xl mx-auto relative">
             <Link
               href="/"
               className="inline-flex items-center gap-2 text-sm font-medium mb-8 transition-opacity hover:opacity-70"
-              style={{ color: "#6E6153" }}
+              style={{ color: "#6B6558" }}
             >
               ← Back to StackItUp
             </Link>
 
             {/* Header */}
             <div className="mb-10">
-              <div className="relative w-16 h-16 mb-5">
-                <div className="blob absolute inset-0" style={{ background: `${topic.blob}33` }} />
-                <div className="relative w-full h-full flex items-center justify-center text-3xl">
-                  {topic.emoji}
-                </div>
+              <div
+                className="w-16 h-16 mb-5 rounded-2xl flex items-center justify-center text-3xl"
+                style={{ background: accent.bg }}
+              >
+                {topic.emoji}
               </div>
 
               <h1
-                className="text-4xl sm:text-5xl mb-3 leading-tight"
-                style={{ color: "#262019", fontFamily: "var(--font-serif)", fontWeight: 700 }}
+                className="text-4xl sm:text-5xl mb-3 leading-tight tracking-tight"
+                style={{ color: "#111111", fontFamily: "var(--font-heading)", fontWeight: 800 }}
               >
                 {topic.title}
               </h1>
-              <p className="text-lg" style={{ color: "#6E6153" }}>
+              <p className="text-lg" style={{ color: "#6B6558" }}>
                 {topic.tagline}
               </p>
             </div>
@@ -87,7 +89,7 @@ export default async function OptimizeTopicPage({
               <SectionHeading emoji="💡">Why it matters</SectionHeading>
               <div className="space-y-3">
                 {topic.whyItMatters.map((paragraph, i) => (
-                  <p key={i} className="text-base leading-relaxed" style={{ color: "#4A4038" }}>
+                  <p key={i} className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
                     {paragraph}
                   </p>
                 ))}
@@ -102,9 +104,9 @@ export default async function OptimizeTopicPage({
                   <li key={sign} className="flex items-start gap-3">
                     <span
                       className="mt-1 w-1.5 h-1.5 rounded-full flex-shrink-0"
-                      style={{ background: "#C4744A" }}
+                      style={{ background: "#4A6FA5" }}
                     />
-                    <span className="text-base leading-relaxed" style={{ color: "#4A4038" }}>
+                    <span className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
                       {sign}
                     </span>
                   </li>
@@ -120,19 +122,19 @@ export default async function OptimizeTopicPage({
                   <div
                     key={supp.name}
                     className="flex items-start gap-4 rounded-2xl p-4"
-                    style={{ background: "rgba(196,116,74,0.05)" }}
+                    style={{ background: "#F5F3EC" }}
                   >
                     <span className="text-2xl flex-shrink-0">{supp.emoji}</span>
                     <div className="min-w-0">
-                      <h3 className="font-semibold text-base mb-0.5" style={{ color: "#262019" }}>
+                      <h3 className="font-semibold text-base mb-0.5" style={{ color: "#111111" }}>
                         {supp.name}
                       </h3>
-                      <p className="text-sm leading-relaxed mb-2" style={{ color: "#6E6153" }}>
+                      <p className="text-sm leading-relaxed mb-2" style={{ color: "#6B6558" }}>
                         {supp.why}
                       </p>
                       <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium">
-                        <span style={{ color: "#A85F39" }}>Dose: {supp.dose}</span>
-                        <span style={{ color: "#5F6753" }}>{supp.timing}</span>
+                        <span style={{ color: "#4A6FA5" }}>Dose: {supp.dose}</span>
+                        <span style={{ color: "#8A6F0E" }}>{supp.timing}</span>
                       </div>
                     </div>
                   </div>
@@ -148,11 +150,11 @@ export default async function OptimizeTopicPage({
                   <li key={habit} className="flex items-start gap-3">
                     <span
                       className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs"
-                      style={{ background: "rgba(139,145,116,0.2)", color: "#5F6753" }}
+                      style={{ background: "#CFE0F7", color: "#4A6FA5" }}
                     >
                       ✓
                     </span>
-                    <span className="text-base leading-relaxed" style={{ color: "#4A4038" }}>
+                    <span className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
                       {habit}
                     </span>
                   </li>
@@ -168,21 +170,21 @@ export default async function OptimizeTopicPage({
                   <details
                     key={item.question}
                     className="group rounded-2xl p-4"
-                    style={{ background: "rgba(38,32,25,0.03)" }}
+                    style={{ background: "rgba(17,17,17,0.03)" }}
                   >
                     <summary
                       className="font-semibold text-base cursor-pointer list-none flex items-center justify-between gap-3"
-                      style={{ color: "#262019" }}
+                      style={{ color: "#111111" }}
                     >
                       {item.question}
                       <span
                         className="flex-shrink-0 transition-transform duration-200 group-open:rotate-45 text-lg"
-                        style={{ color: "#C4744A" }}
+                        style={{ color: "#4A6FA5" }}
                       >
                         +
                       </span>
                     </summary>
-                    <p className="text-sm leading-relaxed mt-3" style={{ color: "#6E6153" }}>
+                    <p className="text-sm leading-relaxed mt-3" style={{ color: "#6B6558" }}>
                       {item.answer}
                     </p>
                   </details>
@@ -193,11 +195,11 @@ export default async function OptimizeTopicPage({
             {/* CTA */}
             <div
               className="rounded-3xl p-8 sm:p-10 text-center mb-10"
-              style={{ background: "#262B30" }}
+              style={{ background: "#111111" }}
             >
               <h2
-                className="text-2xl sm:text-3xl mb-3"
-                style={{ color: "#FFFFFF", fontFamily: "var(--font-serif)", fontWeight: 700 }}
+                className="text-2xl sm:text-3xl mb-3 tracking-tight"
+                style={{ color: "#FFFFFF", fontFamily: "var(--font-heading)", fontWeight: 800 }}
               >
                 Ready to build your routine?
               </h2>
@@ -208,7 +210,7 @@ export default async function OptimizeTopicPage({
               <Link
                 href="/?start=quiz"
                 className="inline-flex items-center justify-center px-8 py-4 rounded-full font-medium text-base transition-all duration-200 hover:scale-105 active:scale-95"
-                style={{ background: "#C4744A", color: "#FFFFFF" }}
+                style={{ background: "#F4E14F", color: "#111111" }}
               >
                 Find My Routine →
               </Link>
@@ -217,8 +219,8 @@ export default async function OptimizeTopicPage({
             {/* Related topics */}
             <div>
               <h2
-                className="text-lg mb-4"
-                style={{ color: "#262019", fontFamily: "var(--font-serif)", fontWeight: 700 }}
+                className="text-lg mb-4 tracking-tight"
+                style={{ color: "#111111", fontFamily: "var(--font-heading)", fontWeight: 700 }}
               >
                 Explore related topics
               </h2>
@@ -228,15 +230,15 @@ export default async function OptimizeTopicPage({
                     key={related.slug}
                     href={`/optimize/${related.slug}`}
                     className="group flex items-center gap-3 rounded-2xl p-4 border transition-all duration-150 hover:-translate-y-0.5 hover:shadow-sm"
-                    style={{ background: "#FFFFFF", borderColor: "rgba(38,32,25,0.08)" }}
+                    style={{ background: "#FFFFFF", borderColor: "rgba(17,17,17,0.08)" }}
                   >
                     <span className="text-xl flex-shrink-0">{related.emoji}</span>
-                    <span className="text-sm font-medium" style={{ color: "#262019" }}>
+                    <span className="text-sm font-medium" style={{ color: "#111111" }}>
                       {related.title}
                     </span>
                     <span
                       className="ml-auto text-sm transition-transform duration-200 group-hover:translate-x-1"
-                      style={{ color: "#C4744A" }}
+                      style={{ color: "#111111" }}
                     >
                       →
                     </span>
