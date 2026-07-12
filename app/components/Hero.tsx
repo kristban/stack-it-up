@@ -71,9 +71,9 @@ export default function Hero({ onStart }: HeroProps) {
         </button>
       </div>
 
-      {/* Hero photo */}
+      {/* Hero photo (hidden on mobile) */}
       <div
-        className="fade-in-up visible relative mt-14 w-full max-w-xl mx-auto rounded-[2.5rem] overflow-hidden shadow-xl border-4"
+        className="fade-in-up visible relative mt-14 w-full max-w-xl mx-auto rounded-[2.5rem] overflow-hidden shadow-xl border-4 hidden sm:block"
         style={{ borderColor: "rgba(255,255,255,0.7)", ...delay(360) }}
       >
         <div className="relative w-full aspect-[16/10]">
@@ -81,9 +81,8 @@ export default function Hero({ onStart }: HeroProps) {
             src="https://images.unsplash.com/photo-1664956618021-73c47736845e?auto=format&fit=crop&w=1200&q=80"
             alt="Natural supplement capsules spilling from a jar beside fresh greenery"
             fill
-            sizes="(max-width: 640px) 100vw, 576px"
+            sizes="576px"
             className="object-cover"
-            priority
           />
         </div>
       </div>
