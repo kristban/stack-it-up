@@ -58,10 +58,10 @@ export default function HowItWorks() {
               style={{
                 background: "#CFE0F7",
                 borderColor: "rgba(17,17,17,0.1)",
-                color: "#4A6FA5",
+                color: "#2F5580",
               }}
             >
-              <span>◡</span>
+              <span aria-hidden="true">◡</span>
               <span>Simple, on purpose</span>
             </div>
           </FadeInSection>
@@ -100,6 +100,7 @@ export default function HowItWorks() {
                   </span>
 
                   <div
+                    aria-hidden="true"
                     className="w-14 h-14 rounded-2xl mb-5 flex items-center justify-center text-2xl"
                     style={{ background: accent.bg }}
                   >

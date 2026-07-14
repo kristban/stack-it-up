@@ -28,7 +28,7 @@ export default function Hero({ onStart }: HeroProps) {
                 color: "#6B6558",
               }}
             >
-              <span>🌿</span>
+              <span aria-hidden="true">🌿</span>
               <span>A calmer way to supplement</span>
             </div>
           </div>
@@ -105,7 +105,7 @@ export default function Hero({ onStart }: HeroProps) {
             className="lg:col-span-5 rounded-3xl p-6 flex flex-col items-center justify-center gap-4 fade-in-up visible"
             style={{ background: "#CFE0F7", ...delay(320) }}
           >
-            <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: "#4A6FA5" }}>
+            <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: "#2F5580" }}>
               Explore
             </span>
             <div className="flex flex-wrap justify-center gap-3">
@@ -116,7 +116,7 @@ export default function Hero({ onStart }: HeroProps) {
                   className="px-4 py-2 rounded-full bg-white text-sm font-medium shadow-sm transition-transform duration-200 hover:scale-105"
                   style={{ color: "#14130F", transform: `rotate(${CHIP_ROTATIONS[i]})` }}
                 >
-                  {topic.emoji} {topic.title}
+                  <span aria-hidden="true">{topic.emoji}</span> {topic.title}
                 </Link>
               ))}
             </div>

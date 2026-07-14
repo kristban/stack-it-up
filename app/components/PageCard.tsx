@@ -19,6 +19,7 @@ export function SectionHeading({ emoji, children }: { emoji: string; children: R
       style={{ color: "#14130F", fontFamily: "var(--font-heading)", fontWeight: 700 }}
     >
       <span
+        aria-hidden="true"
         className="w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0"
         style={{ background: accent.bg }}
       >

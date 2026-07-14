@@ -1,3 +1,4 @@
+import Link from "next/link";
 import NewsletterSignup from "./NewsletterSignup";
 
 const LINK_COLUMNS = [
@@ -60,17 +61,23 @@ export default function Footer() {
                 {col.title}
               </h3>
               <ul className="space-y-2.5">
-                {col.links.map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-sm font-medium transition-colors duration-150 hover:opacity-70"
-                      style={{ color: "#14130F" }}
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
+                {col.links.map((link) => {
+                  const linkClass = "text-sm font-medium transition-colors duration-150 hover:opacity-70";
+                  const linkStyle = { color: "#14130F" };
+                  return (
+                    <li key={link.label}>
+                      {link.href.startsWith("#") ? (
+                        <a href={link.href} className={linkClass} style={linkStyle}>
+                          {link.label}
+                        </a>
+                      ) : (
+                        <Link href={link.href} className={linkClass} style={linkStyle}>
+                          {link.label}
+                        </Link>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}

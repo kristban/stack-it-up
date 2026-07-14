@@ -38,7 +38,7 @@ export default function CookieBanner() {
     >
       <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
         <p className="text-sm leading-relaxed text-center sm:text-left flex-1" style={{ color: "#14130F" }}>
-          <span className="mr-1.5">🍪</span>
+          <span aria-hidden="true" className="mr-1.5">🍪</span>
           We use cookies to improve your experience and keep StackItUp running
           smoothly. By continuing, you agree to our use of cookies. Read more in
           our{" "}

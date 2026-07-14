@@ -41,7 +41,7 @@ export default function WhatYouCanOptimize() {
                 color: "#8A6F0E",
               }}
             >
-              <span>◡</span>
+              <span aria-hidden="true">◡</span>
               <span>Tailored to you</span>
             </div>
           </FadeInSection>
@@ -79,6 +79,7 @@ export default function WhatYouCanOptimize() {
                   }}
                 >
                   <div
+                    aria-hidden="true"
                     className="w-11 h-11 rounded-xl mb-4 flex items-center justify-center text-xl"
                     style={{ background: featured ? "rgba(255,255,255,0.6)" : iconAccent.bg }}
                   >

@@ -128,7 +128,7 @@ export default function Navbar({ onLogoClick, onStartQuiz }: NavbarProps) {
                   className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors duration-150 hover:bg-[rgba(207,224,247,0.4)]"
                   style={{ color: "#3A362E" }}
                 >
-                  <span>{topic.emoji}</span>
+                  <span aria-hidden="true">{topic.emoji}</span>
                   <span className="font-medium">{topic.title}</span>
                 </Link>
               ))}
@@ -238,7 +238,7 @@ export default function Navbar({ onLogoClick, onStartQuiz }: NavbarProps) {
                   className="flex items-center gap-3 px-3 py-3 rounded-xl text-base transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
                   style={{ color: "#111111" }}
                 >
-                  <span className="text-lg">{topic.emoji}</span>
+                  <span aria-hidden="true" className="text-lg">{topic.emoji}</span>
                   <span className="font-medium">{topic.title}</span>
                 </Link>
               ))}

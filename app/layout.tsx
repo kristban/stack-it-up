@@ -31,6 +31,9 @@ export default function RootLayout({
       style={{ colorScheme: "light" }}
     >
       <body className="min-h-full flex flex-col">
+        <noscript>
+          <style>{`.fade-in-up { opacity: 1 !important; }`}</style>
+        </noscript>
         {children}
         <CookieBanner />
       </body>

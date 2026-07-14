@@ -67,6 +67,7 @@ export default async function OptimizeTopicPage({
             {/* Header */}
             <div className="mb-10">
               <div
+                aria-hidden="true"
                 className="w-16 h-16 mb-5 rounded-2xl flex items-center justify-center text-3xl"
                 style={{ background: accent.bg }}
               >
@@ -124,7 +125,7 @@ export default async function OptimizeTopicPage({
                     className="flex items-start gap-4 rounded-2xl p-4"
                     style={{ background: "#F5F3EC" }}
                   >
-                    <span className="text-2xl flex-shrink-0">{supp.emoji}</span>
+                    <span aria-hidden="true" className="text-2xl flex-shrink-0">{supp.emoji}</span>
                     <div className="min-w-0">
                       <h3 className="font-semibold text-base mb-0.5" style={{ color: "#111111" }}>
                         {supp.name}
@@ -149,8 +150,9 @@ export default async function OptimizeTopicPage({
                 {topic.dailyHabits.map((habit) => (
                   <li key={habit} className="flex items-start gap-3">
                     <span
+                      aria-hidden="true"
                       className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs"
-                      style={{ background: "#CFE0F7", color: "#4A6FA5" }}
+                      style={{ background: "#CFE0F7", color: "#2F5580" }}
                     >
                       ✓
                     </span>
@@ -232,7 +234,7 @@ export default async function OptimizeTopicPage({
                     className="group flex items-center gap-3 rounded-2xl p-4 border transition-all duration-150 hover:-translate-y-0.5 hover:shadow-sm"
                     style={{ background: "#FFFFFF", borderColor: "rgba(17,17,17,0.08)" }}
                   >
-                    <span className="text-xl flex-shrink-0">{related.emoji}</span>
+                    <span aria-hidden="true" className="text-xl flex-shrink-0">{related.emoji}</span>
                     <span className="text-sm font-medium" style={{ color: "#111111" }}>
                       {related.title}
                     </span>

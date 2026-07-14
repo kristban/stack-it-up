@@ -65,6 +65,7 @@ export default function Results({ stack, onReset }: ResultsProps) {
                 <div className="flex items-start gap-5">
                   {/* Icon tile */}
                   <div
+                    aria-hidden="true"
                     className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
                     style={{ background: accent.bg }}
                   >
@@ -104,7 +105,7 @@ export default function Results({ stack, onReset }: ResultsProps) {
                         className="rounded-xl p-3"
                         style={{ background: "#CFE0F7" }}
                       >
-                        <p className="text-xs font-medium uppercase tracking-wide mb-0.5" style={{ color: "#4A6FA5" }}>
+                        <p className="text-xs font-medium uppercase tracking-wide mb-0.5" style={{ color: "#2F5580" }}>
                           Dose
                         </p>
                         <p className="text-sm font-medium" style={{ color: "#111111" }}>

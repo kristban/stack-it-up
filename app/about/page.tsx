@@ -31,6 +31,7 @@ export default function AboutPage() {
 
             <div className="mb-10">
               <div
+                aria-hidden="true"
                 className="w-16 h-16 mb-5 rounded-2xl flex items-center justify-center text-3xl"
                 style={{ background: "#CFE0F7" }}
               >

@@ -30,7 +30,7 @@ export default function NotFound() {
               color: "#6B6558",
             }}
           >
-            <span>🌿</span>
+            <span aria-hidden="true">🌿</span>
             <span>Lost your way?</span>
           </div>
 

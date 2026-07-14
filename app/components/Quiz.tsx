@@ -118,12 +118,13 @@ export default function Quiz({ onComplete, onBack }: QuizProps) {
                 }}
                 aria-pressed={isSelected}
               >
-                <span className="text-2xl flex-shrink-0">{opt.emoji}</span>
+                <span aria-hidden="true" className="text-2xl flex-shrink-0">{opt.emoji}</span>
                 <span className="font-medium text-sm sm:text-base leading-snug">
                   {opt.label}
                 </span>
                 {isSelected && (
                   <span
+                    aria-hidden="true"
                     className="ml-auto flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-white text-xs"
                     style={{ background: "#111111" }}
                   >
