@@ -23,3 +23,10 @@ export interface Supplement {
 }
 
 export type Answers = Record<string, string[]>;
+
+export interface Subscriber {
+  id: string;
+  first_name: string;
+  email: string;
+  created_at: string;
+}
