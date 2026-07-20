@@ -1,12 +1,25 @@
 "use client";
 
 import { useState } from "react";
+import { subscribeToNewsletter } from "@/app/lib/actions/newsletter";
 
 export default function NewsletterSignup() {
-  const [status, setStatus] = useState<"idle" | "submitted">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "submitted">("idle");
+  const [error, setError] = useState<string | null>(null);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setStatus("submitting");
+    setError(null);
+
+    const result = await subscribeToNewsletter(new FormData(e.currentTarget));
+
+    if (result.error) {
+      setError(result.error);
+      setStatus("idle");
+      return;
+    }
+
     setStatus("submitted");
   }
 
@@ -32,43 +45,51 @@ export default function NewsletterSignup() {
             Thanks for subscribing! Check your inbox soon.
           </p>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
-            <label htmlFor="newsletter-first-name" className="sr-only">
-              First name
-            </label>
-            <input
-              id="newsletter-first-name"
-              name="firstName"
-              type="text"
-              required
-              placeholder="First name"
-              autoComplete="given-name"
-              className="flex-1 min-w-0 px-4 py-2.5 rounded-full border text-sm outline-none transition-colors focus:border-[#111111]"
-              style={{ borderColor: "rgba(17,17,17,0.15)", background: "#FFFFFF", color: "#111111" }}
-            />
+          <>
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+              <label htmlFor="newsletter-first-name" className="sr-only">
+                First name
+              </label>
+              <input
+                id="newsletter-first-name"
+                name="firstName"
+                type="text"
+                required
+                placeholder="First name"
+                autoComplete="given-name"
+                className="flex-1 min-w-0 px-4 py-2.5 rounded-full border text-sm outline-none transition-colors focus:border-[#111111]"
+                style={{ borderColor: "rgba(17,17,17,0.15)", background: "#FFFFFF", color: "#111111" }}
+              />
 
-            <label htmlFor="newsletter-email" className="sr-only">
-              Email address
-            </label>
-            <input
-              id="newsletter-email"
-              name="email"
-              type="email"
-              required
-              placeholder="Email address"
-              autoComplete="email"
-              className="flex-1 min-w-0 px-4 py-2.5 rounded-full border text-sm outline-none transition-colors focus:border-[#111111]"
-              style={{ borderColor: "rgba(17,17,17,0.15)", background: "#FFFFFF", color: "#111111" }}
-            />
+              <label htmlFor="newsletter-email" className="sr-only">
+                Email address
+              </label>
+              <input
+                id="newsletter-email"
+                name="email"
+                type="email"
+                required
+                placeholder="Email address"
+                autoComplete="email"
+                className="flex-1 min-w-0 px-4 py-2.5 rounded-full border text-sm outline-none transition-colors focus:border-[#111111]"
+                style={{ borderColor: "rgba(17,17,17,0.15)", background: "#FFFFFF", color: "#111111" }}
+              />
 
-            <button
-              type="submit"
-              className="px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 whitespace-nowrap"
-              style={{ background: "#111111", color: "#FFFFFF" }}
-            >
-              Subscribe
-            </button>
-          </form>
+              <button
+                type="submit"
+                disabled={status === "submitting"}
+                className="px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 whitespace-nowrap disabled:opacity-60 disabled:hover:scale-100"
+                style={{ background: "#111111", color: "#FFFFFF" }}
+              >
+                {status === "submitting" ? "Subscribing…" : "Subscribe"}
+              </button>
+            </form>
+            {error && (
+              <p className="text-sm font-medium mt-3" style={{ color: "#8A2E2E" }} role="alert">
+                {error}
+              </p>
+            )}
+          </>
         )}
       </div>
     </div>
