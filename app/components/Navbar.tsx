@@ -137,6 +137,14 @@ export default function Navbar({ onLogoClick, onStartQuiz }: NavbarProps) {
         </div>
 
         <Link
+          href="/supplements"
+          className="px-3 py-2 rounded-full text-sm font-medium transition-opacity hover:opacity-70"
+          style={{ color: "#111111" }}
+        >
+          Supplements
+        </Link>
+
+        <Link
           href="/faq"
           className="px-3 py-2 rounded-full text-sm font-medium transition-opacity hover:opacity-70"
           style={{ color: "#111111" }}
@@ -245,9 +253,18 @@ export default function Navbar({ onLogoClick, onStartQuiz }: NavbarProps) {
             </div>
 
             <Link
-              href="/faq"
+              href="/supplements"
               onClick={() => setMobileOpen(false)}
               className="flex items-center px-3 py-3 mt-4 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
+              style={{ color: "#111111" }}
+            >
+              Supplements
+            </Link>
+
+            <Link
+              href="/faq"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center px-3 py-3 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
               style={{ color: "#111111" }}
             >
               FAQ

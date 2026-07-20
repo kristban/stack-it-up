@@ -11,3 +11,16 @@ export async function getSupplements(): Promise<Supplement[]> {
 
   return data;
 }
+
+export async function getSupplement(key: string): Promise<Supplement | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("supplements")
+    .select("key, name, emoji, why, timing, dose, tags")
+    .eq("key", key)
+    .maybeSingle();
+
+  if (error) throw error;
+
+  return data;
+}
