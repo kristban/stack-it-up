@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+// Every /admin page reads live, secret-gated data — never prerender at build time.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Admin — StackItUp",
   robots: { index: false, follow: false },
