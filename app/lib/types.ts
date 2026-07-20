@@ -13,6 +13,7 @@ export interface Option {
 }
 
 export interface Supplement {
+  key: string;
   name: string;
   emoji: string;
   why: string;

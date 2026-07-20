@@ -7,6 +7,7 @@ import {
   getSupplementDetails,
   getRelatedTopics,
 } from "../../lib/optimizeContent";
+import { getSupplements } from "../../lib/supplements";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { Card, SectionHeading } from "../../components/PageCard";
@@ -40,7 +41,8 @@ export default async function OptimizeTopicPage({
 
   if (!topic) notFound();
 
-  const supplements = getSupplementDetails(topic.canHelp);
+  const allSupplements = await getSupplements();
+  const supplements = getSupplementDetails(allSupplements, topic.canHelp);
   const relatedTopics = getRelatedTopics(topic);
   const accent = accentFor(topic.slug);
 

@@ -1,4 +1,3 @@
-import { ALL_SUPPLEMENTS } from "./engine";
 import { Supplement } from "./types";
 
 export interface FaqItem {
@@ -306,10 +305,9 @@ export function getOptimizeTopic(slug: string): OptimizeTopic | undefined {
   return OPTIMIZE_TOPICS.find((t) => t.slug === slug);
 }
 
-export function getSupplementDetails(names: string[]): Supplement[] {
-  const byName = Object.values(ALL_SUPPLEMENTS);
+export function getSupplementDetails(supplements: Supplement[], names: string[]): Supplement[] {
   return names
-    .map((name) => byName.find((s) => s.name === name))
+    .map((name) => supplements.find((s) => s.name === name))
     .filter((s): s is Supplement => Boolean(s));
 }
 
