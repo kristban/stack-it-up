@@ -3,7 +3,7 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { getSupplements } from "../lib/supplements";
-import { accentFor } from "../lib/theme";
+import SupplementSearch from "../components/SupplementSearch";
 
 export const metadata: Metadata = {
   title: "Supplements — StackItUp",
@@ -44,42 +44,7 @@ export default async function SupplementsPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mb-14">
-              {supplements.map((supp) => {
-                const accent = accentFor(supp.key);
-                return (
-                  <Link
-                    key={supp.key}
-                    href={`/supplements/${supp.key}`}
-                    className="group block h-full rounded-3xl p-6 border transition-all duration-200 hover:-translate-y-1 hover:shadow-md focus:outline-none focus-visible:ring-2"
-                    style={{ background: "#FFFFFF", borderColor: "rgba(17,17,17,0.08)" }}
-                  >
-                    <div
-                      aria-hidden="true"
-                      className="w-12 h-12 rounded-2xl mb-4 flex items-center justify-center text-2xl"
-                      style={{ background: accent.bg }}
-                    >
-                      {supp.emoji}
-                    </div>
-                    <h2
-                      className="text-lg mb-1 leading-snug tracking-tight"
-                      style={{ color: "#111111", fontFamily: "var(--font-heading)", fontWeight: 700 }}
-                    >
-                      {supp.name}
-                    </h2>
-                    <p className="text-sm leading-relaxed mb-4 line-clamp-2" style={{ color: "#6B6558" }}>
-                      {supp.why}
-                    </p>
-                    <span
-                      className="inline-flex items-center gap-1 text-xs font-semibold transition-transform duration-200 group-hover:translate-x-1"
-                      style={{ color: "#111111" }}
-                    >
-                      Learn more →
-                    </span>
-                  </Link>
-                );
-              })}
-            </div>
+            <SupplementSearch supplements={supplements} />
 
             <div
               className="rounded-3xl p-8 sm:p-10 text-center mb-10"
