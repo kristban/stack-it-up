@@ -160,6 +160,18 @@ export default function Navbar({ onLogoClick, onStartQuiz }: NavbarProps) {
           Newsletter
         </a>
 
+        <Link
+          href="/supplements?focus=search"
+          aria-label="Search supplements"
+          className="w-9 h-9 ml-1 flex items-center justify-center rounded-full transition-colors hover:bg-[rgba(17,17,17,0.06)] focus:outline-none focus-visible:ring-2"
+          style={{ color: "#111111" }}
+        >
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.6" />
+            <path d="M14 14L17 17" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+        </Link>
+
         {onStartQuiz ? (
           <button onClick={handleStartQuizClick} className={`${quizButtonClass} ml-2`} style={quizButtonStyle}>
             Start Quiz
@@ -259,6 +271,19 @@ export default function Navbar({ onLogoClick, onStartQuiz }: NavbarProps) {
               style={{ color: "#111111" }}
             >
               Supplements
+            </Link>
+
+            <Link
+              href="/supplements?focus=search"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-3 px-3 py-3 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
+              style={{ color: "#111111" }}
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.6" />
+                <path d="M14 14L17 17" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
+              Search supplements
             </Link>
 
             <Link
