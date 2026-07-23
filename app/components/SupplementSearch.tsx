@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { Supplement } from "../lib/types";
 import { searchSupplements } from "../lib/fuzzySearch";
@@ -18,6 +18,25 @@ export default function SupplementSearch({ supplements }: SupplementSearchProps)
     () => searchSupplements(query, supplements),
     [query, supplements],
   );
+
+  // When arriving from the navbar search entry (/supplements?focus=search),
+  // drop the cursor into the box so the visitor can type right away, then strip
+  // the param so a refresh or shared link doesn't re-trigger it. Mirrors the
+  // ?start=quiz handling in HomeClient.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("focus") !== "search") return;
+
+    const input = inputRef.current;
+    if (input) {
+      input.focus({ preventScroll: true });
+      input.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+
+    params.delete("focus");
+    const qs = params.toString();
+    window.history.replaceState(null, "", window.location.pathname + (qs ? `?${qs}` : ""));
+  }, []);
 
   const trimmed = query.trim();
   const countLabel = !trimmed
