@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { OPTIMIZE_TOPICS } from "../lib/optimizeContent";
+import { createClient } from "../lib/supabase/client";
+import { signOut } from "../lib/actions/auth";
 
 interface NavbarProps {
   onLogoClick?: () => void;
@@ -13,6 +15,48 @@ export default function Navbar({ onLogoClick, onStartQuiz }: NavbarProps) {
   const [exploreOpen, setExploreOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const exploreRef = useRef<HTMLDivElement>(null);
+
+  // Auth state for nav display ONLY — all access control is enforced server-side
+  // (proxy + data access layer + server actions). A brief flash before this
+  // resolves is harmless because none of it gates anything.
+  const [authReady, setAuthReady] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    let mounted = true;
+
+    async function apply(userId: string | null) {
+      if (!mounted) return;
+      if (!userId) {
+        setSignedIn(false);
+        setIsAdmin(false);
+        setAuthReady(true);
+        return;
+      }
+      setSignedIn(true);
+      // RLS lets a user read only their own profile row.
+      const { data } = await supabase
+        .from("profiles")
+        .select("is_admin")
+        .eq("id", userId)
+        .maybeSingle();
+      if (!mounted) return;
+      setIsAdmin(Boolean(data?.is_admin));
+      setAuthReady(true);
+    }
+
+    supabase.auth.getUser().then(({ data }) => apply(data.user?.id ?? null));
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) =>
+      apply(session?.user?.id ?? null),
+    );
+
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     function handlePointerDown(e: MouseEvent) {
@@ -172,6 +216,45 @@ export default function Navbar({ onLogoClick, onStartQuiz }: NavbarProps) {
           </svg>
         </Link>
 
+        {authReady &&
+          (signedIn ? (
+            <>
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  className="px-3 py-2 rounded-full text-sm font-medium transition-opacity hover:opacity-70"
+                  style={{ color: "#111111" }}
+                >
+                  Admin
+                </Link>
+              )}
+              <Link
+                href="/account"
+                className="px-3 py-2 rounded-full text-sm font-medium transition-opacity hover:opacity-70"
+                style={{ color: "#111111" }}
+              >
+                Account
+              </Link>
+              <form action={signOut}>
+                <button
+                  type="submit"
+                  className="px-3 py-2 rounded-full text-sm font-medium transition-opacity hover:opacity-70 focus:outline-none focus-visible:ring-2"
+                  style={{ color: "#6B6558" }}
+                >
+                  Log out
+                </button>
+              </form>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="px-3 py-2 rounded-full text-sm font-medium transition-opacity hover:opacity-70"
+              style={{ color: "#111111" }}
+            >
+              Log in
+            </Link>
+          ))}
+
         {onStartQuiz ? (
           <button onClick={handleStartQuizClick} className={`${quizButtonClass} ml-2`} style={quizButtonStyle}>
             Start Quiz
@@ -303,6 +386,55 @@ export default function Navbar({ onLogoClick, onStartQuiz }: NavbarProps) {
             >
               Newsletter
             </a>
+
+            {authReady && (
+              <div
+                className="mt-4 pt-4 border-t"
+                style={{ borderColor: "rgba(17,17,17,0.08)" }}
+              >
+                {signedIn ? (
+                  <>
+                    {isAdmin && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setMobileOpen(false)}
+                        className="flex items-center px-3 py-3 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
+                        style={{ color: "#111111" }}
+                      >
+                        Admin
+                      </Link>
+                    )}
+                    <Link
+                      href="/account"
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center px-3 py-3 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
+                      style={{ color: "#111111" }}
+                    >
+                      Account
+                    </Link>
+                    <form action={signOut}>
+                      <button
+                        type="submit"
+                        onClick={() => setMobileOpen(false)}
+                        className="w-full text-left flex items-center px-3 py-3 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
+                        style={{ color: "#9A2A2A" }}
+                      >
+                        Log out
+                      </button>
+                    </form>
+                  </>
+                ) : (
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center px-3 py-3 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
+                    style={{ color: "#111111" }}
+                  >
+                    Log in
+                  </Link>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}
