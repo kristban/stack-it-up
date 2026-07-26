@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { requireAdmin } from "../lib/auth/dal";
 
 // Every /admin page reads live, secret-gated data — never prerender at build time.
 export const dynamic = "force-dynamic";
@@ -9,7 +10,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  // First-line redirect for UX. Real enforcement lives in the admin data layer
+  // (lib/admin/*), which every admin read/write funnels through — layouts don't
+  // re-run on client navigation, so they can't be the only gate.
+  await requireAdmin();
+
   return (
     <div className="min-h-screen" style={{ background: "#F5F3EC" }}>
       <header
