@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Card, SectionHeading } from "../components/PageCard";
 import { getCurrentProfile } from "../lib/auth/dal";
-import { updateProfileAction, updateEmailAction } from "../lib/actions/account";
+import {
+  updateProfileAction,
+  updateEmailAction,
+  updateAvatarEmojiAction,
+  uploadAvatarAction,
+  removeAvatarAction,
+} from "../lib/actions/account";
 import { signOut } from "../lib/actions/auth";
+import { AVATAR_EMOJIS } from "../lib/avatarEmojis";
 
 export const metadata: Metadata = {
   title: "Your account — StackItUp",
@@ -85,6 +93,15 @@ export default async function AccountPage({
                 Your name has been saved.
               </div>
             )}
+            {updated === "avatar" && (
+              <div
+                className="mb-6 rounded-2xl px-4 py-3 text-sm"
+                style={{ background: "rgba(40,140,70,0.10)", color: "#2E6B3E" }}
+                role="status"
+              >
+                Your avatar has been updated.
+              </div>
+            )}
             {updated === "email" && (
               <div
                 className="mb-6 rounded-2xl px-4 py-3 text-sm"
@@ -104,6 +121,115 @@ export default async function AccountPage({
                 {error}
               </div>
             )}
+
+            <Card>
+              <SectionHeading emoji="🖼️">Avatar</SectionHeading>
+              <p className="text-sm mb-5" style={{ color: "#6B6558" }}>
+                Shown next to your name in the navigation bar. Pick an emoji or upload a photo.
+              </p>
+
+              <div className="flex items-center gap-4 mb-6">
+                <span
+                  aria-hidden="true"
+                  className="w-16 h-16 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0"
+                  style={{ background: "#CFE0F7" }}
+                >
+                  {profile?.avatar_url ? (
+                    <Image
+                      src={profile.avatar_url}
+                      alt=""
+                      width={64}
+                      height={64}
+                      className="w-full h-full object-cover"
+                      unoptimized
+                    />
+                  ) : profile?.avatar_emoji ? (
+                    <span className="text-3xl">{profile.avatar_emoji}</span>
+                  ) : (
+                    <svg width="30" height="30" viewBox="0 0 20 20" fill="none">
+                      <circle cx="10" cy="6.5" r="3.2" stroke="#2F5580" strokeWidth="1.6" />
+                      <path
+                        d="M4 16c0-3 2.7-4.8 6-4.8s6 1.8 6 4.8"
+                        stroke="#2F5580"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  )}
+                </span>
+                <div>
+                  <p className="text-sm font-medium" style={{ color: "#3A362E" }}>
+                    Current avatar
+                  </p>
+                  <p className="text-xs" style={{ color: "#8A8172" }}>
+                    {profile?.avatar_url
+                      ? "Uploaded photo"
+                      : profile?.avatar_emoji
+                        ? "Emoji"
+                        : "Default icon"}
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-sm font-medium mb-2" style={{ color: "#3A362E" }}>
+                Choose an emoji
+              </p>
+              <form action={updateAvatarEmojiAction} className="mb-6">
+                <div className="grid grid-cols-6 sm:grid-cols-10 gap-2">
+                  {AVATAR_EMOJIS.map((emoji) => (
+                    <button
+                      key={emoji}
+                      type="submit"
+                      name="emoji"
+                      value={emoji}
+                      aria-label={`Use ${emoji} as your avatar`}
+                      aria-pressed={profile?.avatar_emoji === emoji}
+                      className="aspect-square rounded-xl text-2xl flex items-center justify-center border transition-transform hover:scale-110 active:scale-95 focus:outline-none focus-visible:ring-2"
+                      style={{
+                        background: profile?.avatar_emoji === emoji ? "#CFE0F7" : "#FFFFFF",
+                        borderColor:
+                          profile?.avatar_emoji === emoji ? "#2F5580" : "rgba(17,17,17,0.15)",
+                      }}
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+              </form>
+
+              <p className="text-sm font-medium mb-2" style={{ color: "#3A362E" }}>
+                Or upload a photo
+              </p>
+              <form action={uploadAvatarAction} className="space-y-3">
+                <input
+                  id="avatar"
+                  name="avatar"
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/gif"
+                  required
+                  className="block w-full text-sm file:mr-4 file:rounded-full file:border-0 file:px-4 file:py-2 file:text-sm file:font-medium file:cursor-pointer hover:file:opacity-90"
+                  style={{ color: "#3A362E" }}
+                />
+                <p className="text-xs" style={{ color: "#8A8172" }}>
+                  PNG, JPEG, WebP, or GIF, up to 2 MB.
+                </p>
+                <button type="submit" className={saveButtonClass} style={saveButtonStyle}>
+                  Upload photo
+                </button>
+              </form>
+
+              {(profile?.avatar_url || profile?.avatar_emoji) && (
+                <form action={removeAvatarAction} className="pt-4">
+                  <button
+                    type="submit"
+                    className="text-sm font-medium transition-opacity hover:opacity-70 focus:outline-none focus-visible:ring-2 rounded-full px-2 py-1"
+                    style={{ color: "#9A2A2A" }}
+                  >
+                    Remove avatar
+                  </button>
+                </form>
+              )}
+            </Card>
 
             <Card>
               <SectionHeading emoji="🧑">Name</SectionHeading>

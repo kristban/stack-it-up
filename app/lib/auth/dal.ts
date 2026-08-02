@@ -7,6 +7,8 @@ export interface Profile {
   id: string;
   first_name: string | null;
   last_name: string | null;
+  avatar_url: string | null;
+  avatar_emoji: string | null;
   is_admin: boolean;
   is_super_admin: boolean;
 }
@@ -28,7 +30,7 @@ export const getCurrentProfile = cache(async () => {
   const supabase = await createClient();
   const { data } = await supabase
     .from("profiles")
-    .select("id, first_name, last_name, is_admin, is_super_admin")
+    .select("id, first_name, last_name, avatar_url, avatar_emoji, is_admin, is_super_admin")
     .eq("id", user.id)
     .maybeSingle();
 

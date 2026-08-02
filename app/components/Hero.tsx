@@ -53,7 +53,7 @@ export default function Hero({ onStart }: HeroProps) {
           >
             {[
               { stat: "5", label: "minutes" },
-              { stat: "0", label: "signup" },
+              { stat: `${OPTIMIZE_TOPICS.length}`, label: "topics" },
               { stat: "100%", label: "free" },
             ].map((item) => (
               <div key={item.label} className="text-center">
