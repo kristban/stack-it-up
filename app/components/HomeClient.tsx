@@ -40,11 +40,19 @@ export default function HomeClient({ supplements }: HomeClientProps) {
   function handleReset() {
     setView("hero");
     setStack([]);
+    // Drop any lingering hash (e.g. #newsletter) so the logo returns to a clean URL.
+    if (window.location.hash) {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function handleStartQuiz() {
     setView("quiz");
+    // Drop any lingering hash (e.g. #newsletter) so the quiz opens on a clean URL.
+    if (window.location.hash) {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
