@@ -29,6 +29,16 @@ const nextConfig: NextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1536, 1920, 2304, 2560, 3840],
     remotePatterns,
   },
+  experimental: {
+    // Avatar uploads accept files up to 2 MB (see uploadAvatarAction), but the
+    // default Server Action body limit is 1 MB — a larger photo would be
+    // rejected with a raw 500 before our own size check runs. Raise it above
+    // 2 MB so a full-size file reaches the action and hits the friendly
+    // "over 2 MB" message instead. The headroom covers multipart overhead.
+    serverActions: {
+      bodySizeLimit: "3mb",
+    },
+  },
 };
 
 export default nextConfig;
