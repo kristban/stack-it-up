@@ -6,6 +6,7 @@ import { OPTIMIZE_TOPICS } from "../../lib/optimizeContent";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { Card, SectionHeading } from "../../components/PageCard";
+import SupplementActions from "../../components/SupplementActions";
 import { accentFor } from "../../lib/theme";
 
 export async function generateMetadata({
@@ -85,6 +86,11 @@ export default async function SupplementDetailPage({
                   );
                 })}
               </div>
+
+              <SupplementActions
+                supplementKey={supplement.key}
+                supplementName={supplement.name}
+              />
             </div>
 
             {/* Why it matters */}

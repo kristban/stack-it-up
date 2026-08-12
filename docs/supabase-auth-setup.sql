@@ -104,3 +104,80 @@ create policy "avatars owner delete"
 --    to others from the in-app Admins page. Replace the email with yours.
 -- update public.profiles set is_admin = true, is_super_admin = true
 -- where id = (select id from auth.users where email = 'you@example.com');
+
+-- 7. Favorites. A user may save any supplement to their profile. The FK to
+--    supplements(key) with ON DELETE CASCADE means deleting a supplement in the
+--    admin panel also removes it from everyone's favorites. No cap on how many.
+create table if not exists public.favorites (
+  user_id        uuid not null references auth.users(id) on delete cascade,
+  supplement_key text not null references public.supplements(key) on delete cascade,
+  created_at     timestamptz not null default now(),
+  primary key (user_id, supplement_key)
+);
+
+alter table public.favorites enable row level security;
+
+-- A user may read/add/remove only their own favorites.
+drop policy if exists "own favorites read" on public.favorites;
+create policy "own favorites read"
+  on public.favorites for select
+  using (auth.uid() = user_id);
+
+drop policy if exists "own favorites insert" on public.favorites;
+create policy "own favorites insert"
+  on public.favorites for insert to authenticated
+  with check (auth.uid() = user_id);
+
+drop policy if exists "own favorites delete" on public.favorites;
+create policy "own favorites delete"
+  on public.favorites for delete to authenticated
+  using (auth.uid() = user_id);
+
+-- 8. Stack items. A user curates a "morning" and an "evening" stack — several
+--    supplements each, featured on their account page. Same cascade behavior as
+--    favorites; no cap. `position` drives the drag-to-reorder order on /account
+--    (ties break by created_at, i.e. insertion order).
+create table if not exists public.stack_items (
+  user_id        uuid not null references auth.users(id) on delete cascade,
+  slot           text not null check (slot in ('morning', 'evening')),
+  supplement_key text not null references public.supplements(key) on delete cascade,
+  position       integer not null default 0,
+  created_at     timestamptz not null default now(),
+  primary key (user_id, slot, supplement_key)
+);
+
+-- If the table pre-dates the reorder feature, add the ordering column:
+alter table public.stack_items
+  add column if not exists position integer not null default 0;
+
+alter table public.stack_items enable row level security;
+
+-- A user may read/add/remove/reorder only their own stack items.
+drop policy if exists "own stack read" on public.stack_items;
+create policy "own stack read"
+  on public.stack_items for select
+  using (auth.uid() = user_id);
+
+drop policy if exists "own stack insert" on public.stack_items;
+create policy "own stack insert"
+  on public.stack_items for insert to authenticated
+  with check (auth.uid() = user_id);
+
+drop policy if exists "own stack update" on public.stack_items;
+create policy "own stack update"
+  on public.stack_items for update to authenticated
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+drop policy if exists "own stack delete" on public.stack_items;
+create policy "own stack delete"
+  on public.stack_items for delete to authenticated
+  using (auth.uid() = user_id);
+
+-- RLS already scopes every row to its owner; these grants let signed-in users
+-- touch their own rows at all. Favorites are add/remove only (no UPDATE).
+-- Stack items also allow UPDATE, but ONLY the position column — a user must
+-- never move a row to another user, slot, or supplement.
+grant select, insert, delete          on public.favorites   to authenticated;
+grant select, insert, delete          on public.stack_items to authenticated;
+grant update (position)               on public.stack_items to authenticated;

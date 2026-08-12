@@ -24,6 +24,8 @@ export interface Supplement {
 
 export type Answers = Record<string, string[]>;
 
+export type StackSlot = "morning" | "evening";
+
 export interface Subscriber {
   id: string;
   first_name: string;

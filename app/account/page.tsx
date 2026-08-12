@@ -4,7 +4,9 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Card, SectionHeading } from "../components/PageCard";
+import StackReorderList from "../components/StackReorderList";
 import { getCurrentProfile } from "../lib/auth/dal";
+import { getUserStacks } from "../lib/library";
 import {
   updateProfileAction,
   updateEmailAction,
@@ -12,8 +14,11 @@ import {
   uploadAvatarAction,
   removeAvatarAction,
 } from "../lib/actions/account";
+import { removeFavoriteAction, removeStackItemAction } from "../lib/actions/library";
 import { signOut } from "../lib/actions/auth";
 import { AVATAR_EMOJIS } from "../lib/avatarEmojis";
+import { accentFor } from "../lib/theme";
+import type { StackSlot, Supplement } from "../lib/types";
 
 export const metadata: Metadata = {
   title: "Your account — StackItUp",
@@ -33,6 +38,46 @@ const saveButtonClass =
   "px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 focus:outline-none focus-visible:ring-2";
 const saveButtonStyle = { background: "#111111", color: "#FFFFFF" };
 
+// One saved supplement, linked to its detail page, with a Remove button. When
+// `slot` is set the row belongs to a stack; otherwise it's a favorite.
+function SupplementRow({ supp, slot }: { supp: Supplement; slot?: StackSlot }) {
+  const accent = accentFor(supp.key);
+  return (
+    <li
+      className="flex items-center gap-3 rounded-2xl border p-3"
+      style={{ background: "#FFFFFF", borderColor: "rgba(17,17,17,0.08)" }}
+    >
+      <Link
+        href={`/supplements/${supp.key}`}
+        className="group flex items-center gap-3 flex-1 min-w-0 transition-opacity hover:opacity-70"
+      >
+        <span
+          aria-hidden="true"
+          className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+          style={{ background: accent.bg }}
+        >
+          {supp.emoji}
+        </span>
+        <span className="text-sm font-medium truncate" style={{ color: "#111111" }}>
+          {supp.name}
+        </span>
+      </Link>
+      <form action={slot ? removeStackItemAction : removeFavoriteAction}>
+        <input type="hidden" name="supplementKey" value={supp.key} />
+        {slot && <input type="hidden" name="slot" value={slot} />}
+        <button
+          type="submit"
+          aria-label={`Remove ${supp.name}`}
+          className="text-xs font-medium px-3 py-1.5 rounded-full transition-colors hover:bg-[rgba(17,17,17,0.06)] focus:outline-none focus-visible:ring-2"
+          style={{ color: "#9A2A2A" }}
+        >
+          Remove
+        </button>
+      </form>
+    </li>
+  );
+}
+
 export default async function AccountPage({
   searchParams,
 }: {
@@ -45,6 +90,8 @@ export default async function AccountPage({
     // Should be unreachable via the proxy; render nothing rather than leak.
     return null;
   }
+
+  const { favorites, morning, evening } = await getUserStacks();
 
   return (
     <>
@@ -80,7 +127,7 @@ export default async function AccountPage({
                 Your account
               </h1>
               <p className="text-lg" style={{ color: "#6B6558" }}>
-                Update your name and email address.
+                Your saved supplements and daily stacks, plus your name and email.
               </p>
             </div>
 
@@ -120,6 +167,37 @@ export default async function AccountPage({
               >
                 {error}
               </div>
+            )}
+
+            <Card>
+              <SectionHeading emoji="⭐">Favorites</SectionHeading>
+              {favorites.length > 0 ? (
+                <ul className="space-y-2">
+                  {favorites.map((supp) => (
+                    <SupplementRow key={supp.key} supp={supp} />
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm" style={{ color: "#6B6558" }}>
+                  You haven&apos;t saved any favorites yet.{" "}
+                  <Link
+                    href="/supplements"
+                    className="font-semibold underline underline-offset-2 transition-opacity hover:opacity-70"
+                    style={{ color: "#111111" }}
+                  >
+                    Browse the library
+                  </Link>{" "}
+                  and tap ♥ on any supplement.
+                </p>
+              )}
+            </Card>
+
+            {morning.length > 0 && (
+              <StackReorderList slot="morning" emoji="☀️" title="Morning stack" items={morning} />
+            )}
+
+            {evening.length > 0 && (
+              <StackReorderList slot="evening" emoji="🌙" title="Evening stack" items={evening} />
             )}
 
             <Card>

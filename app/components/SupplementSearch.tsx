@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Supplement } from "../lib/types";
 import { searchSupplements } from "../lib/fuzzySearch";
 import { accentFor } from "../lib/theme";
+import { useUserLibrary } from "../hooks/useUserLibrary";
 
 interface SupplementSearchProps {
   supplements: Supplement[];
@@ -13,6 +14,7 @@ interface SupplementSearchProps {
 export default function SupplementSearch({ supplements }: SupplementSearchProps) {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const library = useUserLibrary();
 
   const results = useMemo(
     () => searchSupplements(query, supplements),
@@ -104,35 +106,71 @@ export default function SupplementSearch({ supplements }: SupplementSearchProps)
           {results.map((supp) => {
             const accent = accentFor(supp.key);
             return (
-              <Link
+              <div
                 key={supp.key}
-                href={`/supplements/${supp.key}`}
-                className="group block h-full rounded-3xl p-6 border transition-all duration-200 hover:-translate-y-1 hover:shadow-md focus:outline-none focus-visible:ring-2"
+                className="relative flex flex-col h-full rounded-3xl p-6 border transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
                 style={{ background: "#FFFFFF", borderColor: "rgba(17,17,17,0.08)" }}
               >
-                <div
-                  aria-hidden="true"
-                  className="w-12 h-12 rounded-2xl mb-4 flex items-center justify-center text-2xl"
-                  style={{ background: accent.bg }}
+                <Link
+                  href={`/supplements/${supp.key}`}
+                  className="group flex flex-col flex-1 rounded-2xl focus:outline-none focus-visible:ring-2"
                 >
-                  {supp.emoji}
-                </div>
-                <h2
-                  className="text-lg mb-1 leading-snug tracking-tight"
-                  style={{ color: "#111111", fontFamily: "var(--font-heading)", fontWeight: 700 }}
-                >
-                  {supp.name}
-                </h2>
-                <p className="text-sm leading-relaxed mb-4 line-clamp-2" style={{ color: "#6B6558" }}>
-                  {supp.why}
-                </p>
-                <span
-                  className="inline-flex items-center gap-1 text-xs font-semibold transition-transform duration-200 group-hover:translate-x-1"
-                  style={{ color: "#111111" }}
-                >
-                  Learn more →
-                </span>
-              </Link>
+                  <div
+                    aria-hidden="true"
+                    className="w-12 h-12 rounded-2xl mb-4 flex items-center justify-center text-2xl"
+                    style={{ background: accent.bg }}
+                  >
+                    {supp.emoji}
+                  </div>
+                  <h2
+                    className="text-lg mb-1 leading-snug tracking-tight"
+                    style={{ color: "#111111", fontFamily: "var(--font-heading)", fontWeight: 700 }}
+                  >
+                    {supp.name}
+                  </h2>
+                  <p className="text-sm leading-relaxed mb-4 line-clamp-2" style={{ color: "#6B6558" }}>
+                    {supp.why}
+                  </p>
+                  <span
+                    className="mt-auto inline-flex items-center gap-1 text-xs font-semibold transition-transform duration-200 group-hover:translate-x-1"
+                    style={{ color: "#111111" }}
+                  >
+                    Learn more →
+                  </span>
+                </Link>
+
+                {library.authReady && library.signedIn && (
+                  <div
+                    className="mt-4 pt-4 border-t flex items-center gap-2"
+                    style={{ borderColor: "rgba(17,17,17,0.08)" }}
+                  >
+                    <GridToggle
+                      pressed={library.favorites.has(supp.key)}
+                      onClick={() => library.toggleFavorite(supp.key)}
+                      emoji="♥"
+                      title="Favorite"
+                      phrase="favorites"
+                      name={supp.name}
+                    />
+                    <GridToggle
+                      pressed={library.morning.has(supp.key)}
+                      onClick={() => library.toggleStack(supp.key, "morning")}
+                      emoji="☀️"
+                      title="Morning stack"
+                      phrase="your morning stack"
+                      name={supp.name}
+                    />
+                    <GridToggle
+                      pressed={library.evening.has(supp.key)}
+                      onClick={() => library.toggleStack(supp.key, "evening")}
+                      emoji="🌙"
+                      title="Evening stack"
+                      phrase="your evening stack"
+                      name={supp.name}
+                    />
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
@@ -158,5 +196,36 @@ export default function SupplementSearch({ supplements }: SupplementSearchProps)
         </div>
       )}
     </div>
+  );
+}
+
+interface GridToggleProps {
+  pressed: boolean;
+  onClick: () => void;
+  emoji: string;
+  title: string;
+  phrase: string;
+  name: string;
+}
+
+// Compact icon toggle shown in a card footer. Blue #2F5580 on #CFE0F7 is the
+// AA-safe active pairing (docs/CONVENTIONS.md).
+function GridToggle({ pressed, onClick, emoji, title, phrase, name }: GridToggleProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={pressed}
+      aria-label={pressed ? `Remove ${name} from ${phrase}` : `Add ${name} to ${phrase}`}
+      title={title}
+      className="w-9 h-9 rounded-full flex items-center justify-center text-sm border transition-all duration-150 hover:scale-110 active:scale-95 focus:outline-none focus-visible:ring-2"
+      style={{
+        background: pressed ? "#CFE0F7" : "#FFFFFF",
+        borderColor: pressed ? "#2F5580" : "rgba(17,17,17,0.15)",
+        color: pressed ? "#2F5580" : "#6B6558",
+      }}
+    >
+      <span aria-hidden="true">{emoji}</span>
+    </button>
   );
 }
