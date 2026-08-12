@@ -1,5 +1,5 @@
--- StackItUp — supplement library seed data (29 rows)
--- Snapshot exported from the live database on 2026-08-12.
+-- StackItUp — supplement library seed data
+-- Snapshot exported from the live database via `npm run db:dump-supplements`.
 --
 -- Idempotent: each row upserts by `key` (on conflict do update), so this file is
 -- safe to run repeatedly. On a fresh database it populates the library; on an
@@ -8,8 +8,8 @@
 -- Prereq: the `supplements` table and its metadata columns must exist first —
 -- run docs/supabase-auth-setup.sql (through section 9) before this file.
 --
--- To refresh after editing supplements in the admin panel, RE-EXPORT from the
--- database rather than hand-editing rows here, so this stays a faithful mirror.
+-- DO NOT hand-edit rows here — re-run the dump command after admin edits so this
+-- stays a faithful mirror.
 
 begin;
 
