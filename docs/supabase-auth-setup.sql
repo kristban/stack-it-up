@@ -181,3 +181,38 @@ create policy "own stack delete"
 grant select, insert, delete          on public.favorites   to authenticated;
 grant select, insert, delete          on public.stack_items to authenticated;
 grant update (position)               on public.stack_items to authenticated;
+
+-- 9. Supplement metadata columns. These were applied to the LIVE database on
+--    2026-08-12 (expanding the library from 14 to 29 supplements with richer
+--    detail). Re-run this section only when provisioning a fresh database — the
+--    `if not exists` / guarded blocks make it safe to run again either way. The
+--    app reads these via app/lib/supplements.ts and renders them on /supplements
+--    and the admin panel.
+alter table public.supplements
+  add column if not exists category   text    not null default 'foundational',
+  add column if not exists evidence    text    not null default 'moderate',
+  add column if not exists sort_order   integer not null default 100,
+  add column if not exists is_active    boolean not null default true,
+  add column if not exists warnings     text;
+
+-- CHECK constraints for the two enum-like columns (guarded so re-runs are safe).
+do $$
+begin
+  if not exists (select 1 from pg_constraint where conname = 'supplements_category_check') then
+    alter table public.supplements
+      add constraint supplements_category_check
+      check (category in ('foundational', 'performance', 'sleep_stress', 'cognitive', 'gut_digestion', 'joints_skin'));
+  end if;
+  if not exists (select 1 from pg_constraint where conname = 'supplements_evidence_check') then
+    alter table public.supplements
+      add constraint supplements_evidence_check
+      check (evidence in ('strong', 'moderate', 'emerging'));
+  end if;
+end $$;
+
+-- Column intent (mirrors the comments on the live DB).
+comment on column public.supplements.category   is 'Grouping for site navigation.';
+comment on column public.supplements.evidence    is 'strong = large consistent human RCT evidence; moderate = mixed or context-dependent; emerging = preliminary or mostly animal/in-vitro.';
+comment on column public.supplements.sort_order   is 'Lower sorts first within a category. Leaves room: increments of 10.';
+comment on column public.supplements.is_active    is 'Soft-hide. Use instead of DELETE, since favorites and stack_items reference key.';
+comment on column public.supplements.warnings     is 'Supplement-specific caution: drug interactions, contraindications, overdose risk. NULL means no specific flag — the site-wide disclaimer still applies. Render as a visible amber notice, not fine print.';

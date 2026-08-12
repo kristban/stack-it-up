@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { Supplement } from "../../lib/types";
-import { deleteSupplementAction } from "../../lib/actions/admin";
+import { setSupplementActiveAction } from "../../lib/actions/admin";
+import { CATEGORY_LABELS } from "../../lib/categories";
 import ConfirmSubmitButton from "../ConfirmSubmitButton";
 import { useColumnFilters, FilterColumn } from "../../hooks/useColumnFilters";
 
 const COLUMNS: FilterColumn<Supplement>[] = [
   { key: "key", label: "Key", value: (s) => s.key },
   { key: "name", label: "Name", value: (s) => s.name },
+  { key: "category", label: "Category", value: (s) => CATEGORY_LABELS[s.category] },
   { key: "dose", label: "Dose", value: (s) => s.dose },
   { key: "timing", label: "Timing", value: (s) => s.timing },
 ];
@@ -80,6 +82,17 @@ export default function SupplementsTable({ supplements }: { supplements: Supplem
                   <td className="px-5 py-3 font-medium whitespace-nowrap" style={{ color: "#111111" }}>
                     <span aria-hidden="true" className="mr-2">{s.emoji}</span>
                     {s.name}
+                    {!s.is_active && (
+                      <span
+                        className="ml-2 text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded"
+                        style={{ background: "rgba(17,17,17,0.06)", color: "#8A8172" }}
+                      >
+                        Hidden
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-5 py-3 whitespace-nowrap" style={{ color: "#3A362E" }}>
+                    {CATEGORY_LABELS[s.category]}
                   </td>
                   <td className="px-5 py-3" style={{ color: "#3A362E" }}>{s.dose}</td>
                   <td className="px-5 py-3" style={{ color: "#3A362E" }}>{s.timing}</td>
@@ -91,11 +104,24 @@ export default function SupplementsTable({ supplements }: { supplements: Supplem
                     >
                       Edit
                     </Link>
-                    <form action={deleteSupplementAction} className="inline">
+                    <form action={setSupplementActiveAction} className="inline">
                       <input type="hidden" name="key" value={s.key} />
-                      <ConfirmSubmitButton confirmMessage={`Delete "${s.name}"? This can't be undone.`}>
-                        Delete
-                      </ConfirmSubmitButton>
+                      <input type="hidden" name="isActive" value={s.is_active ? "false" : "true"} />
+                      {s.is_active ? (
+                        <ConfirmSubmitButton
+                          confirmMessage={`Hide "${s.name}" from the public site? You can show it again anytime.`}
+                        >
+                          Hide
+                        </ConfirmSubmitButton>
+                      ) : (
+                        <button
+                          type="submit"
+                          className="text-sm font-medium transition-opacity hover:opacity-70"
+                          style={{ color: "#2E6B3E" }}
+                        >
+                          Show
+                        </button>
+                      )}
                     </form>
                   </td>
                 </tr>

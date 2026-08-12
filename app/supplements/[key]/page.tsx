@@ -8,6 +8,7 @@ import Footer from "../../components/Footer";
 import { Card, SectionHeading } from "../../components/PageCard";
 import SupplementActions from "../../components/SupplementActions";
 import { accentFor } from "../../lib/theme";
+import { EVIDENCE_LEVELS, WARNING_STYLE } from "../../lib/categories";
 
 export async function generateMetadata({
   params,
@@ -35,6 +36,7 @@ export default async function SupplementDetailPage({
 
   const relatedTopics = OPTIMIZE_TOPICS.filter((topic) => topic.canHelp.includes(supplement.name));
   const accent = accentFor(supplement.key);
+  const evidence = EVIDENCE_LEVELS[supplement.evidence];
 
   return (
     <>
@@ -72,6 +74,15 @@ export default async function SupplementDetailPage({
                 {supplement.name}
               </h1>
 
+              <div className="mb-3">
+                <span
+                  className="inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full"
+                  style={{ background: evidence.bg, color: evidence.text }}
+                >
+                  {evidence.label}
+                </span>
+              </div>
+
               <div className="flex flex-wrap gap-1.5">
                 {supplement.tags.map((tag) => {
                   const tagAccent = accentFor(tag);
@@ -92,6 +103,28 @@ export default async function SupplementDetailPage({
                 supplementName={supplement.name}
               />
             </div>
+
+            {/* Safety warning — supplement-specific, rendered as a visible amber
+                notice per the data model, not fine print. */}
+            {supplement.warnings && (
+              <div
+                role="note"
+                className="rounded-2xl p-5 mb-6 border flex gap-3"
+                style={{ background: WARNING_STYLE.bg, borderColor: WARNING_STYLE.border }}
+              >
+                <span aria-hidden="true" className="text-lg leading-none flex-shrink-0">
+                  ⚠️
+                </span>
+                <div>
+                  <p className="text-sm font-semibold mb-1" style={{ color: WARNING_STYLE.text }}>
+                    Important safety note
+                  </p>
+                  <p className="text-sm leading-relaxed" style={{ color: WARNING_STYLE.text }}>
+                    {supplement.warnings}
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Why it matters */}
             <Card>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createSupplementAction } from "../../../lib/actions/admin";
-import { Field, TextArea } from "../../../components/admin/FormField";
+import { Field, TextArea, Select } from "../../../components/admin/FormField";
+import { CATEGORY_OPTIONS, EVIDENCE_OPTIONS } from "../../../lib/categories";
 
 export default async function NewSupplementPage({
   searchParams,
@@ -47,6 +48,10 @@ export default async function NewSupplementPage({
         <Field label="Timing" name="timing" required />
         <Field label="Dose" name="dose" required />
         <Field label="Tags (comma-separated)" name="tags" />
+        <Select label="Category" name="category" options={CATEGORY_OPTIONS} />
+        <Select label="Evidence" name="evidence" defaultValue="moderate" options={EVIDENCE_OPTIONS} />
+        <Field label="Sort order (lower shows first in its category)" name="sort_order" type="number" defaultValue="100" />
+        <TextArea label="Warnings (safety note — leave blank if none)" name="warnings" />
         <button
           type="submit"
           className="px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95"

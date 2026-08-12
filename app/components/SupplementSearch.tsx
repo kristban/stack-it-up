@@ -5,7 +5,8 @@ import Link from "next/link";
 import { Supplement } from "../lib/types";
 import { searchSupplements } from "../lib/fuzzySearch";
 import { accentFor } from "../lib/theme";
-import { useUserLibrary } from "../hooks/useUserLibrary";
+import { SUPPLEMENT_CATEGORIES, EVIDENCE_LEVELS } from "../lib/categories";
+import { useUserLibrary, type UserLibrary } from "../hooks/useUserLibrary";
 
 interface SupplementSearchProps {
   supplements: Supplement[];
@@ -101,98 +102,144 @@ export default function SupplementSearch({ supplements }: SupplementSearchProps)
         {countLabel}
       </p>
 
-      {results.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-          {results.map((supp) => {
-            const accent = accentFor(supp.key);
+      {trimmed ? (
+        // Searching: one flat, relevance-ranked grid (grouping would be noise).
+        results.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            {results.map((supp) => (
+              <SupplementCard key={supp.key} supp={supp} library={library} />
+            ))}
+          </div>
+        ) : (
+          <div
+            className="rounded-3xl border p-10 text-center"
+            style={{ background: "#FFFFFF", borderColor: "rgba(17,17,17,0.08)" }}
+          >
+            <p className="text-base mb-1" style={{ color: "#111111", fontWeight: 600 }}>
+              No supplements match “{trimmed}”.
+            </p>
+            <p className="text-sm mb-5" style={{ color: "#6B6558" }}>
+              Check the spelling, or clear the search to browse the full library.
+            </p>
+            <button
+              type="button"
+              onClick={clear}
+              className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95"
+              style={{ background: "#111111", color: "#FFFFFF" }}
+            >
+              Clear search
+            </button>
+          </div>
+        )
+      ) : (
+        // Browsing: grouped into category sections, in curated order.
+        <div className="space-y-12">
+          {SUPPLEMENT_CATEGORIES.map((cat) => {
+            const items = supplements.filter((s) => s.category === cat.slug);
+            if (items.length === 0) return null;
             return (
-              <div
-                key={supp.key}
-                className="relative flex flex-col h-full rounded-3xl p-6 border transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
-                style={{ background: "#FFFFFF", borderColor: "rgba(17,17,17,0.08)" }}
-              >
-                <Link
-                  href={`/supplements/${supp.key}`}
-                  className="group flex flex-col flex-1 rounded-2xl focus:outline-none focus-visible:ring-2"
+              <section key={cat.slug}>
+                <h2
+                  className="text-xl mb-4 flex items-center gap-3 tracking-tight"
+                  style={{ color: "#14130F", fontFamily: "var(--font-heading)", fontWeight: 700 }}
                 >
-                  <div
-                    aria-hidden="true"
-                    className="w-12 h-12 rounded-2xl mb-4 flex items-center justify-center text-2xl"
-                    style={{ background: accent.bg }}
-                  >
-                    {supp.emoji}
-                  </div>
-                  <h2
-                    className="text-lg mb-1 leading-snug tracking-tight"
-                    style={{ color: "#111111", fontFamily: "var(--font-heading)", fontWeight: 700 }}
-                  >
-                    {supp.name}
-                  </h2>
-                  <p className="text-sm leading-relaxed mb-4 line-clamp-2" style={{ color: "#6B6558" }}>
-                    {supp.why}
-                  </p>
                   <span
-                    className="mt-auto inline-flex items-center gap-1 text-xs font-semibold transition-transform duration-200 group-hover:translate-x-1"
-                    style={{ color: "#111111" }}
+                    aria-hidden="true"
+                    className="w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0"
+                    style={{ background: accentFor(cat.slug).bg }}
                   >
-                    Learn more →
+                    {cat.emoji}
                   </span>
-                </Link>
-
-                {library.authReady && library.signedIn && (
-                  <div
-                    className="mt-4 pt-4 border-t flex items-center gap-2"
-                    style={{ borderColor: "rgba(17,17,17,0.08)" }}
-                  >
-                    <GridToggle
-                      pressed={library.favorites.has(supp.key)}
-                      onClick={() => library.toggleFavorite(supp.key)}
-                      emoji="♥"
-                      title="Favorite"
-                      phrase="favorites"
-                      name={supp.name}
-                    />
-                    <GridToggle
-                      pressed={library.morning.has(supp.key)}
-                      onClick={() => library.toggleStack(supp.key, "morning")}
-                      emoji="☀️"
-                      title="Morning stack"
-                      phrase="your morning stack"
-                      name={supp.name}
-                    />
-                    <GridToggle
-                      pressed={library.evening.has(supp.key)}
-                      onClick={() => library.toggleStack(supp.key, "evening")}
-                      emoji="🌙"
-                      title="Evening stack"
-                      phrase="your evening stack"
-                      name={supp.name}
-                    />
-                  </div>
-                )}
-              </div>
+                  {cat.label}
+                  <span className="text-sm font-normal" style={{ color: "#8A8172" }}>
+                    {items.length}
+                  </span>
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+                  {items.map((supp) => (
+                    <SupplementCard key={supp.key} supp={supp} library={library} />
+                  ))}
+                </div>
+              </section>
             );
           })}
         </div>
-      ) : (
+      )}
+    </div>
+  );
+}
+
+function SupplementCard({ supp, library }: { supp: Supplement; library: UserLibrary }) {
+  const accent = accentFor(supp.key);
+  const evidence = EVIDENCE_LEVELS[supp.evidence];
+  return (
+    <div
+      className="relative flex flex-col h-full rounded-3xl p-6 border transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+      style={{ background: "#FFFFFF", borderColor: "rgba(17,17,17,0.08)" }}
+    >
+      <Link
+        href={`/supplements/${supp.key}`}
+        className="group flex flex-col flex-1 rounded-2xl focus:outline-none focus-visible:ring-2"
+      >
         <div
-          className="rounded-3xl border p-10 text-center"
-          style={{ background: "#FFFFFF", borderColor: "rgba(17,17,17,0.08)" }}
+          aria-hidden="true"
+          className="w-12 h-12 rounded-2xl mb-4 flex items-center justify-center text-2xl"
+          style={{ background: accent.bg }}
         >
-          <p className="text-base mb-1" style={{ color: "#111111", fontWeight: 600 }}>
-            No supplements match “{trimmed}”.
-          </p>
-          <p className="text-sm mb-5" style={{ color: "#6B6558" }}>
-            Check the spelling, or clear the search to browse the full library.
-          </p>
-          <button
-            type="button"
-            onClick={clear}
-            className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{ background: "#111111", color: "#FFFFFF" }}
-          >
-            Clear search
-          </button>
+          {supp.emoji}
+        </div>
+        <h2
+          className="text-lg mb-1 leading-snug tracking-tight"
+          style={{ color: "#111111", fontFamily: "var(--font-heading)", fontWeight: 700 }}
+        >
+          {supp.name}
+        </h2>
+        <span
+          className="self-start inline-flex items-center text-[11px] font-semibold px-2 py-0.5 rounded-full mb-2"
+          style={{ background: evidence.bg, color: evidence.text }}
+        >
+          {evidence.label}
+        </span>
+        <p className="text-sm leading-relaxed mb-4 line-clamp-2" style={{ color: "#6B6558" }}>
+          {supp.why}
+        </p>
+        <span
+          className="mt-auto inline-flex items-center gap-1 text-xs font-semibold transition-transform duration-200 group-hover:translate-x-1"
+          style={{ color: "#111111" }}
+        >
+          Learn more →
+        </span>
+      </Link>
+
+      {library.authReady && library.signedIn && (
+        <div
+          className="mt-4 pt-4 border-t flex items-center gap-2"
+          style={{ borderColor: "rgba(17,17,17,0.08)" }}
+        >
+          <GridToggle
+            pressed={library.favorites.has(supp.key)}
+            onClick={() => library.toggleFavorite(supp.key)}
+            emoji="♥"
+            title="Favorite"
+            phrase="favorites"
+            name={supp.name}
+          />
+          <GridToggle
+            pressed={library.morning.has(supp.key)}
+            onClick={() => library.toggleStack(supp.key, "morning")}
+            emoji="☀️"
+            title="Morning stack"
+            phrase="your morning stack"
+            name={supp.name}
+          />
+          <GridToggle
+            pressed={library.evening.has(supp.key)}
+            onClick={() => library.toggleStack(supp.key, "evening")}
+            emoji="🌙"
+            title="Evening stack"
+            phrase="your evening stack"
+            name={supp.name}
+          />
         </div>
       )}
     </div>

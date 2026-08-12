@@ -12,6 +12,16 @@ export interface Option {
   emoji: string;
 }
 
+export type SupplementCategory =
+  | "foundational"
+  | "performance"
+  | "cognitive"
+  | "sleep_stress"
+  | "gut_digestion"
+  | "joints_skin";
+
+export type EvidenceLevel = "strong" | "moderate" | "emerging";
+
 export interface Supplement {
   key: string;
   name: string;
@@ -20,6 +30,11 @@ export interface Supplement {
   timing: string;
   dose: string;
   tags: string[];
+  category: SupplementCategory;
+  evidence: EvidenceLevel;
+  warnings: string | null;
+  sort_order: number;
+  is_active: boolean;
 }
 
 export type Answers = Record<string, string[]>;

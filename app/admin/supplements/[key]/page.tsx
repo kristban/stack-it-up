@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { adminGetSupplement } from "../../../lib/admin/supplements";
-import { updateSupplementAction, deleteSupplementAction } from "../../../lib/actions/admin";
-import { Field, TextArea } from "../../../components/admin/FormField";
+import { updateSupplementAction, setSupplementActiveAction } from "../../../lib/actions/admin";
+import { Field, TextArea, Select, Checkbox } from "../../../components/admin/FormField";
+import { CATEGORY_OPTIONS, EVIDENCE_OPTIONS } from "../../../lib/categories";
 import ConfirmSubmitButton from "../../../components/ConfirmSubmitButton";
 
 export default async function EditSupplementPage({
@@ -57,6 +58,30 @@ export default async function EditSupplementPage({
         <Field label="Timing" name="timing" defaultValue={supplement.timing} required />
         <Field label="Dose" name="dose" defaultValue={supplement.dose} required />
         <Field label="Tags (comma-separated)" name="tags" defaultValue={supplement.tags.join(", ")} />
+        <Select
+          label="Category"
+          name="category"
+          defaultValue={supplement.category}
+          options={CATEGORY_OPTIONS}
+        />
+        <Select
+          label="Evidence"
+          name="evidence"
+          defaultValue={supplement.evidence}
+          options={EVIDENCE_OPTIONS}
+        />
+        <Field
+          label="Sort order (lower shows first in its category)"
+          name="sort_order"
+          type="number"
+          defaultValue={String(supplement.sort_order)}
+        />
+        <TextArea
+          label="Warnings (safety note — leave blank if none)"
+          name="warnings"
+          defaultValue={supplement.warnings ?? ""}
+        />
+        <Checkbox label="Active (visible on the public site)" name="is_active" defaultChecked={supplement.is_active} />
         <button
           type="submit"
           className="px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95"
@@ -66,11 +91,26 @@ export default async function EditSupplementPage({
         </button>
       </form>
 
-      <form action={deleteSupplementAction}>
+      {/* Soft-hide instead of delete: keeps the row so users' saved favorites
+          and stack items (which reference this key) survive. */}
+      <form action={setSupplementActiveAction}>
         <input type="hidden" name="key" value={supplement.key} />
-        <ConfirmSubmitButton confirmMessage={`Delete "${supplement.name}"? This can't be undone.`}>
-          Delete supplement
-        </ConfirmSubmitButton>
+        <input type="hidden" name="isActive" value={supplement.is_active ? "false" : "true"} />
+        {supplement.is_active ? (
+          <ConfirmSubmitButton
+            confirmMessage={`Hide "${supplement.name}" from the public site? You can show it again anytime.`}
+          >
+            Hide supplement
+          </ConfirmSubmitButton>
+        ) : (
+          <button
+            type="submit"
+            className="text-sm font-medium transition-opacity hover:opacity-70"
+            style={{ color: "#2E6B3E" }}
+          >
+            Show supplement (currently hidden)
+          </button>
+        )}
       </form>
     </div>
   );

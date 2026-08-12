@@ -5,8 +5,10 @@ import { revalidatePath } from "next/cache";
 import {
   adminCreateSupplement,
   adminUpdateSupplement,
-  adminDeleteSupplement,
+  adminSetSupplementActive,
 } from "../admin/supplements";
+import { isCategory, isEvidence } from "../categories";
+import { SupplementCategory, EvidenceLevel } from "../types";
 import {
   adminCreateSubscriber,
   adminUpdateSubscriber,
@@ -22,6 +24,19 @@ function parseTags(raw: string): string[] {
     .split(",")
     .map((t) => t.trim())
     .filter(Boolean);
+}
+
+function parseCategory(raw: string): SupplementCategory {
+  return isCategory(raw) ? raw : "foundational";
+}
+
+function parseEvidence(raw: string): EvidenceLevel {
+  return isEvidence(raw) ? raw : "moderate";
+}
+
+function parseSortOrder(raw: string): number {
+  const n = parseInt(raw, 10);
+  return Number.isFinite(n) ? n : 100;
 }
 
 function slugifyKey(raw: string): string {
@@ -44,13 +59,30 @@ export async function createSupplementAction(formData: FormData) {
   const timing = field(formData, "timing");
   const dose = field(formData, "dose");
   const tags = parseTags(field(formData, "tags"));
+  const category = parseCategory(field(formData, "category"));
+  const evidence = parseEvidence(field(formData, "evidence"));
+  const sort_order = parseSortOrder(field(formData, "sort_order"));
+  const warnings = field(formData, "warnings") || null;
 
   if (!key || !name || !emoji || !why || !timing || !dose) {
     redirect(`/admin/supplements/new?error=${encodeURIComponent("All fields except tags are required.")}`);
   }
 
   try {
-    await adminCreateSupplement({ key, name, emoji, why, timing, dose, tags });
+    await adminCreateSupplement({
+      key,
+      name,
+      emoji,
+      why,
+      timing,
+      dose,
+      tags,
+      category,
+      evidence,
+      warnings,
+      sort_order,
+      is_active: true,
+    });
   } catch (err) {
     const message = isUniqueViolation(err)
       ? `A supplement with the key "${key}" already exists.`
@@ -71,13 +103,30 @@ export async function updateSupplementAction(formData: FormData) {
   const timing = field(formData, "timing");
   const dose = field(formData, "dose");
   const tags = parseTags(field(formData, "tags"));
+  const category = parseCategory(field(formData, "category"));
+  const evidence = parseEvidence(field(formData, "evidence"));
+  const sort_order = parseSortOrder(field(formData, "sort_order"));
+  const warnings = field(formData, "warnings") || null;
+  const is_active = formData.get("is_active") === "on";
 
   if (!name || !emoji || !why || !timing || !dose) {
     redirect(`/admin/supplements/${key}?error=${encodeURIComponent("All fields except tags are required.")}`);
   }
 
   try {
-    await adminUpdateSupplement(key, { name, emoji, why, timing, dose, tags });
+    await adminUpdateSupplement(key, {
+      name,
+      emoji,
+      why,
+      timing,
+      dose,
+      tags,
+      category,
+      evidence,
+      warnings,
+      sort_order,
+      is_active,
+    });
   } catch {
     redirect(`/admin/supplements/${key}?error=${encodeURIComponent("Something went wrong saving changes.")}`);
   }
@@ -89,13 +138,17 @@ export async function updateSupplementAction(formData: FormData) {
   redirect("/admin/supplements");
 }
 
-export async function deleteSupplementAction(formData: FormData) {
+// Soft-hide / restore instead of deleting (see adminSetSupplementActive):
+// deleting would cascade to users' favorites and stack_items.
+export async function setSupplementActiveAction(formData: FormData) {
   const key = field(formData, "key");
+  const isActive = field(formData, "isActive") === "true";
 
-  await adminDeleteSupplement(key);
+  await adminSetSupplementActive(key, isActive);
 
   revalidatePath("/admin/supplements");
   revalidatePath("/supplements");
+  revalidatePath(`/supplements/${key}`);
   revalidatePath("/");
   redirect("/admin/supplements");
 }
