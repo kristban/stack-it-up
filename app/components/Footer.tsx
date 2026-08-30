@@ -7,6 +7,7 @@ const LINK_COLUMNS = [
     links: [
       { label: "How it works", href: "/#how-it-works" },
       { label: "Build my stack", href: "/?start=quiz" },
+      { label: "Featured stacks", href: "/stacks" },
       { label: "FAQ", href: "/faq" },
       { label: "Newsletter", href: "#newsletter" },
     ],

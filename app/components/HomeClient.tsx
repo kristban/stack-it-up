@@ -5,19 +5,22 @@ import Navbar from "./Navbar";
 import Hero from "./Hero";
 import HowItWorks from "./HowItWorks";
 import WhatYouCanOptimize from "./WhatYouCanOptimize";
+import FeaturedStacks from "./FeaturedStacks";
 import Quiz from "./Quiz";
 import Results from "./Results";
 import Footer from "./Footer";
 import { generateStack } from "../lib/engine";
 import { Answers, Supplement } from "../lib/types";
+import { FeaturedStack } from "../lib/featuredStacks";
 
 type View = "hero" | "quiz" | "results";
 
 interface HomeClientProps {
   supplements: Supplement[];
+  featuredStacks: FeaturedStack[];
 }
 
-export default function HomeClient({ supplements }: HomeClientProps) {
+export default function HomeClient({ supplements, featuredStacks }: HomeClientProps) {
   const [view, setView] = useState<View>("hero");
   const [stack, setStack] = useState<Supplement[]>([]);
 
@@ -65,6 +68,7 @@ export default function HomeClient({ supplements }: HomeClientProps) {
             <Hero onStart={() => setView("quiz")} />
             <HowItWorks />
             <WhatYouCanOptimize />
+            <FeaturedStacks stacks={featuredStacks} />
           </>
         )}
         {view === "quiz" && (

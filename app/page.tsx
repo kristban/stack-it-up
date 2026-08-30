@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import HomeClient from "./components/HomeClient";
 import { getSupplements } from "./lib/supplements";
+import { getFeaturedStacks } from "./lib/featuredStacks";
 import { pageMetadata } from "./lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -12,6 +13,6 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default async function Home() {
-  const supplements = await getSupplements();
-  return <HomeClient supplements={supplements} />;
+  const [supplements, featuredStacks] = await Promise.all([getSupplements(), getFeaturedStacks()]);
+  return <HomeClient supplements={supplements} featuredStacks={featuredStacks} />;
 }
