@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getSupplement } from "../../lib/supplements";
+import { getSupplement, getSupplements } from "../../lib/supplements";
 import { OPTIMIZE_TOPICS } from "../../lib/optimizeContent";
+import { getSupplementContent } from "../../lib/supplementContent";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { Card, SectionHeading } from "../../components/PageCard";
@@ -11,7 +12,7 @@ import JsonLd from "../../components/JsonLd";
 import { accentFor } from "../../lib/theme";
 import { EVIDENCE_LEVELS, WARNING_STYLE } from "../../lib/categories";
 import { pageMetadata } from "../../lib/seo";
-import { dietarySupplementJsonLd } from "../../lib/structuredData";
+import { supplementJsonLd } from "../../lib/structuredData";
 
 export async function generateMetadata({
   params,
@@ -41,10 +42,17 @@ export default async function SupplementDetailPage({
   const relatedTopics = OPTIMIZE_TOPICS.filter((topic) => topic.canHelp.includes(supplement.name));
   const accent = accentFor(supplement.key);
   const evidence = EVIDENCE_LEVELS[supplement.evidence];
+  const content = getSupplementContent(supplement.key);
+
+  const relatedSupplements = content?.relatedSupplements.length
+    ? (await getSupplements()).filter((s) => content.relatedSupplements.includes(s.key))
+    : [];
 
   return (
     <>
-      <JsonLd data={dietarySupplementJsonLd(supplement)} />
+      {supplementJsonLd(supplement, content).map((data, i) => (
+        <JsonLd key={i} data={data} />
+      ))}
       <Navbar />
       <main className="pt-24">
         <section className="px-4 py-16 sm:py-24 relative overflow-hidden">
@@ -139,6 +147,26 @@ export default async function SupplementDetailPage({
               </p>
             </Card>
 
+            {/* How it works */}
+            {content?.howItWorks && (
+              <Card>
+                <SectionHeading emoji="⚙️">How it works</SectionHeading>
+                <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
+                  {content.howItWorks}
+                </p>
+              </Card>
+            )}
+
+            {/* Who might benefit */}
+            {content?.whoMightBenefit && (
+              <Card>
+                <SectionHeading emoji="🎯">Who might benefit</SectionHeading>
+                <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
+                  {content.whoMightBenefit}
+                </p>
+              </Card>
+            )}
+
             {/* Dose + Timing */}
             <Card>
               <SectionHeading emoji="🧪">Dose & timing</SectionHeading>
@@ -161,6 +189,50 @@ export default async function SupplementDetailPage({
                 </div>
               </div>
             </Card>
+
+            {/* Safety & interactions — general tolerability context. Complements,
+                doesn't replace, the admin-managed warning callout above, which
+                stays the authoritative supplement-specific notice. */}
+            {content?.safetyNotes && (
+              <Card>
+                <SectionHeading emoji="🛡️">Safety & interactions</SectionHeading>
+                <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
+                  {content.safetyNotes}
+                </p>
+              </Card>
+            )}
+
+            {/* Common questions */}
+            {content?.faq && content.faq.length > 0 && (
+              <Card>
+                <SectionHeading emoji="❓">Common questions</SectionHeading>
+                <div className="space-y-2">
+                  {content.faq.map((item) => (
+                    <details
+                      key={item.question}
+                      className="group rounded-2xl p-4"
+                      style={{ background: "rgba(17,17,17,0.03)" }}
+                    >
+                      <summary
+                        className="font-semibold text-base cursor-pointer list-none flex items-center justify-between gap-3"
+                        style={{ color: "#111111" }}
+                      >
+                        {item.question}
+                        <span
+                          className="flex-shrink-0 transition-transform duration-200 group-open:rotate-45 text-lg"
+                          style={{ color: "#4A6FA5" }}
+                        >
+                          +
+                        </span>
+                      </summary>
+                      <p className="text-sm leading-relaxed mt-3" style={{ color: "#6B6558" }}>
+                        {item.answer}
+                      </p>
+                    </details>
+                  ))}
+                </div>
+              </Card>
+            )}
 
             {/* Featured in */}
             {relatedTopics.length > 0 && (
@@ -186,6 +258,43 @@ export default async function SupplementDetailPage({
                       </span>
                     </Link>
                   ))}
+                </div>
+              </Card>
+            )}
+
+            {/* Related supplements */}
+            {relatedSupplements.length > 0 && (
+              <Card>
+                <SectionHeading emoji="🧩">Related supplements</SectionHeading>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {relatedSupplements.map((related) => {
+                    const relatedAccent = accentFor(related.key);
+                    return (
+                      <Link
+                        key={related.key}
+                        href={`/supplements/${related.key}`}
+                        className="group flex items-center gap-3 rounded-2xl p-4 border transition-all duration-150 hover:-translate-y-0.5 hover:shadow-sm"
+                        style={{ background: "#FFFFFF", borderColor: "rgba(17,17,17,0.08)" }}
+                      >
+                        <span
+                          aria-hidden="true"
+                          className="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
+                          style={{ background: relatedAccent.bg }}
+                        >
+                          {related.emoji}
+                        </span>
+                        <span className="text-sm font-medium" style={{ color: "#111111" }}>
+                          {related.name}
+                        </span>
+                        <span
+                          className="ml-auto text-sm transition-transform duration-200 group-hover:translate-x-1"
+                          style={{ color: "#111111" }}
+                        >
+                          →
+                        </span>
+                      </Link>
+                    );
+                  })}
                 </div>
               </Card>
             )}
