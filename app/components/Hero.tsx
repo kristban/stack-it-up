@@ -77,7 +77,7 @@ export default function Hero({ onStart }: HeroProps) {
           >
             <div>
               <p className="text-lg sm:text-xl leading-relaxed mb-3" style={{ color: "#14130F" }}>
-                Answer five gentle questions and get a routine grounded in your
+                Answer six gentle questions and get a routine grounded in your
                 goals, your body, and your day.
               </p>
               <p className="text-sm" style={{ color: "#6B6558" }}>

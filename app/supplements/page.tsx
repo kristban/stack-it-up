@@ -73,7 +73,7 @@ export default async function SupplementsPage() {
                 Not sure where to start?
               </h2>
               <p className="text-base mb-6" style={{ color: "rgba(255,255,255,0.7)" }}>
-                Answer five gentle questions and get a personalized routine pulled from this library.
+                Answer six gentle questions and get a personalized routine pulled from this library.
               </p>
               <Link
                 href="/?start=quiz"

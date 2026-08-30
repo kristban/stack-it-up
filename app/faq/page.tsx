@@ -37,7 +37,7 @@ const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         question: "How long does the quiz take?",
-        answer: "About a minute — five questions covering your goal, activity level, diet, and any specific concerns.",
+        answer: "About a minute — six questions covering your goal, activity level, diet, any specific concerns, and your life stage.",
       },
       {
         question: "Can I retake the quiz?",
@@ -176,7 +176,7 @@ export default function FaqPage() {
                 Ready to build your routine?
               </h2>
               <p className="text-base mb-6" style={{ color: "rgba(255,255,255,0.7)" }}>
-                Answer five gentle questions and get a personalized routine, free.
+                Answer six gentle questions and get a personalized routine, free.
               </p>
               <Link
                 href="/?start=quiz"

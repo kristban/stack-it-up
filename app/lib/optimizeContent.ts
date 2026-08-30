@@ -35,7 +35,7 @@ export const OPTIMIZE_TOPICS: OptimizeTopic[] = [
       "Trouble concentrating during focused work",
       "Energy feels inconsistent day to day",
     ],
-    canHelp: ["Caffeine + L-Theanine", "Vitamin B12", "Lion's Mane Mushroom"],
+    canHelp: ["Caffeine + L-Theanine", "Vitamin B12", "Citicoline (CDP-Choline)"],
     dailyHabits: [
       "Get natural light within 30 minutes of waking — it helps set your circadian rhythm for the day.",
       "Keep a water bottle nearby; mild dehydration is one of the most common causes of afternoon fatigue.",
@@ -61,8 +61,8 @@ export const OPTIMIZE_TOPICS: OptimizeTopic[] = [
     tagline: "Fall asleep easier, stay asleep longer, wake up rested.",
     blob: "#8B9174",
     whyItMatters: [
-      "Sleep is the foundation everything else builds on. Magnesium and calming adaptogens like ashwagandha can help settle an overactive nervous system so your body can actually wind down at night.",
-      "Supplements work best as part of a wind-down routine, not a replacement for one. Think of magnesium as lowering the barrier to falling asleep — the habits below are what get you there consistently.",
+      "Sleep is the foundation everything else builds on. Magnesium helps settle an overactive nervous system, while melatonin and glycine work on the two different halves of the problem — timing and onset.",
+      "Supplements work best as part of a wind-down routine, not a replacement for one. Think of them as lowering the barrier to falling asleep — the habits below are what get you there consistently.",
     ],
     signs: [
       "Lying awake with a racing mind",
@@ -70,7 +70,7 @@ export const OPTIMIZE_TOPICS: OptimizeTopic[] = [
       "Restless or interrupted sleep",
       "Relying on your phone to unwind before bed",
     ],
-    canHelp: ["Magnesium Glycinate", "Ashwagandha KSM-66", "ZMA (Zinc + Magnesium + B6)"],
+    canHelp: ["Magnesium Glycinate", "Melatonin", "Glycine"],
     dailyHabits: [
       "Dim the lights and put screens away 60 minutes before bed — blue light suppresses melatonin production.",
       "Keep a consistent wake-up time, even on weekends; it anchors your whole sleep cycle.",
@@ -83,9 +83,9 @@ export const OPTIMIZE_TOPICS: OptimizeTopic[] = [
           "30–60 minutes before bed is typical. Glycinate is the gentlest form on digestion of the common varieties.",
       },
       {
-        question: "Can I take ashwagandha and magnesium together?",
+        question: "Can I take melatonin and magnesium together?",
         answer:
-          "Yes — they're commonly stacked together and target different parts of the stress-sleep cycle.",
+          "Yes — they work on different mechanisms, timing your body clock versus calming your nervous system, and are commonly used together.",
       },
     ],
   },
@@ -105,7 +105,7 @@ export const OPTIMIZE_TOPICS: OptimizeTopic[] = [
       "Slow progress on your main lifts",
       "Training three or more times a week",
     ],
-    canHelp: ["Creatine Monohydrate", "Whey Protein", "Vitamin D3 + K2"],
+    canHelp: ["Creatine Monohydrate", "Whey Protein", "Plant Protein (Pea + Rice)"],
     dailyHabits: [
       "Prioritize protein at each meal, not just post-workout — aim for 20–40g per sitting.",
       "Track your lifts; progressive overload drives strength gains more than any supplement stack.",
@@ -131,7 +131,7 @@ export const OPTIMIZE_TOPICS: OptimizeTopic[] = [
     tagline: "Bounce back faster between sessions.",
     blob: "#262B30",
     whyItMatters: [
-      "Recovery is where the actual adaptation happens. Replenishing electrolytes, magnesium, and omega-3s helps reduce soreness and inflammation so you can train again sooner.",
+      "Recovery is where the actual adaptation happens. Replenishing electrolytes, omega-3s, and tart cherry helps reduce soreness and inflammation so you can train again sooner.",
       "Recovery supplements work best alongside adequate rest days — no supplement can fully offset chronic under-recovery from training too hard, too often.",
     ],
     signs: [
@@ -140,7 +140,7 @@ export const OPTIMIZE_TOPICS: OptimizeTopic[] = [
       "Frequent muscle cramps",
       "Training intensely four or more times a week",
     ],
-    canHelp: ["Electrolytes", "Omega-3 Fish Oil", "Magnesium Glycinate"],
+    canHelp: ["Electrolytes", "Omega-3 Fish Oil", "Tart Cherry (Montmorency)"],
     dailyHabits: [
       "Build at least one full rest day into your week, even during a hard training block.",
       "Rehydrate with electrolytes, not just water, after heavy sweating sessions.",
@@ -175,7 +175,7 @@ export const OPTIMIZE_TOPICS: OptimizeTopic[] = [
       "Tension headaches or a tight jaw",
       "Stress spilling over into your sleep",
     ],
-    canHelp: ["Ashwagandha KSM-66", "Magnesium Glycinate", "Vitamin D3 + K2"],
+    canHelp: ["Ashwagandha KSM-66", "L-Theanine", "Saffron Extract"],
     dailyHabits: [
       "Try five minutes of slow breathing — four seconds in, six seconds out — when tension builds.",
       "Step outside for a short walk without your phone; even ten minutes resets your nervous system.",
@@ -201,8 +201,8 @@ export const OPTIMIZE_TOPICS: OptimizeTopic[] = [
     tagline: "Ease digestion, feel less bloated.",
     blob: "#C4744A",
     whyItMatters: [
-      "Your gut microbiome affects digestion, immunity, and even mood. A quality probiotic and collagen can support a healthier gut lining and more comfortable digestion day to day.",
-      "Probiotics work best paired with a fiber-rich diet — fiber is the food your good bacteria actually need to thrive.",
+      "Your gut microbiome affects digestion, immunity, and even mood. A quality probiotic and enough fibre are the two levers with the most consistent evidence behind them for comfortable, regular digestion.",
+      "Probiotics work best paired with a fiber-rich diet — fiber is the food your good bacteria actually need to thrive. Peppermint oil is a different tool entirely, aimed specifically at IBS-type cramping rather than general gut support.",
     ],
     signs: [
       "Regular bloating after meals",
@@ -210,7 +210,7 @@ export const OPTIMIZE_TOPICS: OptimizeTopic[] = [
       "Recently finished a course of antibiotics",
       "A diet that's light on fiber",
     ],
-    canHelp: ["Probiotic (Multi-Strain)", "Collagen Peptides", "Omega-3 Fish Oil"],
+    canHelp: ["Probiotic (Multi-Strain)", "Psyllium Fibre", "Enteric-Coated Peppermint Oil"],
     dailyHabits: [
       "Add one fiber-rich food to a meal today — oats, beans, or leafy greens all feed a healthy gut microbiome.",
       "Eat slowly and chew thoroughly; digestion starts in your mouth, not your stomach.",
@@ -236,7 +236,7 @@ export const OPTIMIZE_TOPICS: OptimizeTopic[] = [
     tagline: "Stay resilient through the seasons.",
     blob: "#E3C39C",
     whyItMatters: [
-      "Vitamin D deficiency is extremely common and directly tied to immune function. Pairing it with zinc and a healthy gut gives your body a stronger baseline defense.",
+      "Vitamin D deficiency is extremely common and directly tied to immune function. Vitamin C and zinc round out the picture — one for daily baseline defense, the other for shortening a cold once it's already started.",
       "Immune support is a long game — think of these as lowering your susceptibility over months, not a same-day fix once you're already sick.",
     ],
     signs: [
@@ -245,7 +245,7 @@ export const OPTIMIZE_TOPICS: OptimizeTopic[] = [
       "High stress wearing down your resilience",
       "Slow to bounce back when you do get sick",
     ],
-    canHelp: ["Vitamin D3 + K2", "ZMA (Zinc + Magnesium + B6)", "Probiotic (Multi-Strain)"],
+    canHelp: ["Vitamin D3 + K2", "Vitamin C", "Zinc Acetate Lozenges"],
     dailyHabits: [
       "Get 10–15 minutes of midday sun on bare skin a few times a week, if your climate allows it.",
       "Prioritize sleep during cold and flu season — sleep deprivation measurably weakens immune response.",
@@ -271,7 +271,7 @@ export const OPTIMIZE_TOPICS: OptimizeTopic[] = [
     tagline: "Move easier, ache less.",
     blob: "#262B30",
     whyItMatters: [
-      "Joint discomfort often comes down to inflammation and connective tissue support. Omega-3s and collagen are two of the best-studied options for comfortable, mobile joints.",
+      "Joint discomfort often comes down to inflammation and connective tissue support. Omega-3s and collagen support the tissue side, while curcumin is the best-evidenced option specifically for osteoarthritis-type pain.",
       "These supplements support the building blocks of healthy joints, but they work over months, alongside movement, not as a substitute for it.",
     ],
     signs: [
@@ -280,7 +280,7 @@ export const OPTIMIZE_TOPICS: OptimizeTopic[] = [
       "Reduced range of motion",
       "Long hours on your feet or at a desk",
     ],
-    canHelp: ["Omega-3 Fish Oil", "Collagen Peptides", "Magnesium Glycinate"],
+    canHelp: ["Omega-3 Fish Oil", "Collagen Peptides", "Curcumin (with Piperine)"],
     dailyHabits: [
       "Keep moving — gentle daily mobility work keeps joints lubricated better than rest alone.",
       "Warm up before activity, especially in colder weather when joints feel stiffer.",

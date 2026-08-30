@@ -7,7 +7,7 @@ export const alt = "StackItUp — Build Your Personalized Supplement Routine";
 export default async function Image() {
   return renderOgImage({
     title: "Build Your Personalized Supplement Routine",
-    subtitle: "Answer 5 questions. Get a free, evidence-based supplement stack.",
+    subtitle: "Answer 6 questions. Get a free, evidence-based supplement stack.",
     emoji: "🌿",
     accent: "#CFE0F7",
   });

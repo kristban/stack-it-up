@@ -215,7 +215,7 @@ export default async function OptimizeTopicPage({
                 Ready to build your routine?
               </h2>
               <p className="text-base mb-6" style={{ color: "rgba(255,255,255,0.7)" }}>
-                Answer five gentle questions and get a personalized routine —
+                Answer six gentle questions and get a personalized routine —
                 including picks for {topic.title.toLowerCase()}.
               </p>
               <Link

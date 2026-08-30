@@ -125,7 +125,7 @@ export default function AboutPage() {
                 Ready to build your routine?
               </h2>
               <p className="text-base mb-6" style={{ color: "rgba(255,255,255,0.7)" }}>
-                Answer five gentle questions and get a personalized routine, free.
+                Answer six gentle questions and get a personalized routine, free.
               </p>
               <Link
                 href="/?start=quiz"

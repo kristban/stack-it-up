@@ -7,9 +7,9 @@ const STEPS = [
   {
     number: "01",
     emoji: "📋",
-    title: "Answer 5 questions",
+    title: "Answer 6 questions",
     description:
-      "Tell us your main goal, how active you are, your diet, any specific concerns, and your monthly budget.",
+      "Tell us your main goal, how active you are, your diet, any specific concerns, your life stage, and your monthly budget.",
   },
   {
     number: "02",

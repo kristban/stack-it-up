@@ -643,6 +643,424 @@ export const SUPPLEMENT_CONTENT: Record<string, SupplementContent> = {
     ],
     relatedSupplements: ["magnesium", "ashwagandha", "glycine"],
   },
+
+  plant_protein: {
+    howItWorks:
+      "Protein supplies the amino acids muscle is rebuilt from, and leucine in particular is the signal that tells your body to start rebuilding. Pea and rice have complementary gaps in their amino acid profiles, so blending them gives you a complete source that neither provides alone.",
+    whoMightBenefit:
+      "Vegans, vegetarians, and anyone who avoids dairy but trains regularly. Like whey, it's a convenience tool for hitting a daily number, not a requirement.",
+    safetyNotes:
+      "Safe at typical serving sizes. Soy isolate is a good alternative and is complete on its own. Look for a product with third-party heavy metal testing — plant proteins draw more from the soil than dairy does.",
+    faq: [
+      {
+        question: "Do I need more plant protein than whey?",
+        answer:
+          "Slightly. Plant sources are a little lower in leucine, so aiming for the upper end of the range — closer to 40g than 25g — closes the gap.",
+      },
+      {
+        question: "Is pea protein complete on its own?",
+        answer:
+          "It's low in methionine. A pea and rice blend or a soy isolate solves that, which is why the blend rather than pea alone is the default here.",
+      },
+    ],
+    relatedSupplements: ["creatine", "protein", "algal_oil"],
+  },
+
+  algal_oil: {
+    howItWorks:
+      "EPA and DHA are built into cell membranes throughout the body, where they reduce inflammatory signalling and support heart, brain and joint tissue. Marine algae are the original source; fish simply concentrate it by eating them.",
+    whoMightBenefit:
+      "Vegans and vegetarians first, but also anyone who gets reflux from fish oil or would rather avoid ocean contaminants.",
+    safetyNotes:
+      "Same consideration as fish oil: above roughly 3g a day it may increase bleeding risk, particularly alongside anticoagulants or before surgery. Otherwise well tolerated, and generally free of the heavy metal concerns that apply to some fish oils.",
+    faq: [
+      {
+        question: "Is algal oil as effective as fish oil?",
+        answer:
+          "Blood levels of EPA and DHA rise comparably when the doses are matched, so for practical purposes yes. It usually costs more per gram.",
+      },
+      {
+        question: "Can I take flaxseed oil instead?",
+        answer:
+          "No. Flaxseed provides ALA, which converts to EPA and DHA at single-digit percentages. Algal oil supplies both directly.",
+      },
+    ],
+    relatedSupplements: ["omega3", "b12", "vitd3"],
+  },
+
+  melatonin: {
+    howItWorks:
+      "Melatonin doesn't sedate you. It tells your body clock that it's dark, which is why timing matters more than dose, and why taking it a few hours before bed shifts your whole rhythm earlier rather than simply knocking you out.",
+    whoMightBenefit:
+      "People whose sleep timing is wrong rather than whose sleep is light — travellers crossing time zones, shift workers, and anyone who can't fall asleep until far too late.",
+    safetyNotes:
+      "More is not better: higher doses show no extra benefit in pooled trials and are likelier to leave you groggy the next morning. Not for pregnancy or breastfeeding, and not for children without medical supervision. May interact with anticoagulants and blood pressure medication.",
+    faq: [
+      {
+        question: "Why start at such a low dose?",
+        answer:
+          "The dose-response isn't linear. Trials consistently find low doses do the job, while 5–10mg mostly adds next-day grogginess without improving sleep.",
+      },
+      {
+        question: "Is melatonin habit-forming?",
+        answer:
+          "There's no evidence of dependence or rebound insomnia at these doses. It still works best for a specific problem — a trip, a schedule shift — than taken indefinitely.",
+      },
+    ],
+    relatedSupplements: ["magnesium", "glycine", "l_theanine"],
+  },
+
+  zinc_lozenge: {
+    howItWorks:
+      "Dissolving zinc slowly in the mouth and throat releases free zinc ions locally, where they appear to interfere with viral replication. Swallowing a zinc capsule doesn't reproduce this — the lozenge form is the mechanism, not just the format.",
+    whoMightBenefit:
+      "Anyone at the first scratchy-throat stage of a cold. It does nothing preventive, so there's no reason to take it while you're well.",
+    safetyNotes:
+      "Short courses only — sustained high-dose zinc suppresses copper absorption. A metallic taste and mild nausea are common. Avoid lozenges sweetened with citric acid, which binds the zinc and appears to cancel the effect.",
+    faq: [
+      {
+        question: "Can I just take a zinc capsule instead?",
+        answer:
+          "For a cold, no. The benefit comes from zinc ions released in the throat as the lozenge dissolves, which a swallowed capsule bypasses entirely.",
+      },
+      {
+        question: "Should I take zinc every day to prevent colds?",
+        answer:
+          "Not at this dose. Daily high-dose zinc causes copper problems over time — this is a short, acute course, and a multivitamin covers baseline needs.",
+      },
+    ],
+    relatedSupplements: ["vitamin_c", "vitd3", "probiotic"],
+  },
+
+  iodine: {
+    howItWorks:
+      "Your thyroid uses iodine as a raw material for thyroxine, the hormone that regulates metabolic rate, body temperature and energy use. There's no way to make it without dietary iodine.",
+    whoMightBenefit:
+      "Vegans and vegetarians, particularly anyone who also avoids iodised salt. Not needed by most omnivores eating dairy or fish.",
+    safetyNotes:
+      "The adult upper limit is 600mcg in the EU and it's easy to exceed with seaweed. Choose a standardised potassium iodide supplement rather than raw kelp, whose iodine content varies enormously between batches and products.",
+    faq: [
+      {
+        question: "Isn't kelp a more natural source?",
+        answer:
+          "It's the riskier one. Kelp iodine content varies by orders of magnitude between products, and excess iodine causes the same thyroid problems as deficiency.",
+      },
+      {
+        question: "Do I need this if I use iodised salt?",
+        answer:
+          "Probably not. Iodised salt is the reason deficiency is rare in many countries — but it isn't standard everywhere, including much of Europe, so it's worth checking your label.",
+      },
+    ],
+    relatedSupplements: ["b12", "algal_oil", "multivitamin"],
+  },
+
+  citicoline: {
+    howItWorks:
+      "Citicoline supplies choline for acetylcholine, the neurotransmitter most involved in attention, and cytidine for the phospholipids that make up neuronal membranes. It supports the raw materials rather than pushing a system harder.",
+    whoMightBenefit:
+      "People who want sustained focus without adding more caffeine, and older adults, where most of the memory and attention trials have been run.",
+    safetyNotes:
+      "Well tolerated. Occasional headache or insomnia if taken late in the day. Little interaction data, so mention it to your doctor if you take medication affecting the nervous system.",
+    faq: [
+      {
+        question: "How is this different from lion's mane?",
+        answer:
+          "Citicoline works on neurotransmitter supply and has more human trial data behind it. Lion's mane targets nerve growth factor and the human evidence is still early.",
+      },
+      {
+        question: "Is it a stimulant?",
+        answer:
+          "No. It won't wake you up the way caffeine does — it supports the machinery of attention rather than raising arousal.",
+      },
+    ],
+    relatedSupplements: ["caffeine_ltheanine", "l_tyrosine", "lions_mane"],
+  },
+
+  bacopa: {
+    howItWorks:
+      "Bacosides, its active compounds, appear to support synaptic communication in the hippocampus and act as antioxidants in brain tissue. The delay before benefit suggests it works by gradual adaptation rather than an acute effect.",
+    whoMightBenefit:
+      "Anyone willing to take something daily for three months for a modest memory benefit. Not useful as an occasional pick-me-up.",
+    safetyNotes:
+      "Digestive upset is the main complaint. May add to the effect of sedatives and thyroid medication. Not enough safety data for pregnancy.",
+    faq: [
+      {
+        question: "How long before I notice anything?",
+        answer:
+          "Most trials measure benefit at 8–12 weeks. If you're two weeks in and feel nothing, that's expected rather than a sign it isn't working.",
+      },
+      {
+        question: "Can I take it with caffeine?",
+        answer:
+          "Yes — they target different things. Bacopa's slight sedating effect can actually sit well alongside a morning coffee.",
+      },
+    ],
+    relatedSupplements: ["lions_mane", "citicoline", "ashwagandha"],
+  },
+
+  boswellia: {
+    howItWorks:
+      "Its boswellic acids, particularly AKBA, inhibit 5-lipoxygenase, an inflammatory enzyme that most anti-inflammatories leave untouched. That's why it complements curcumin instead of overlapping with it.",
+    whoMightBenefit:
+      "People with activity-related or osteoarthritic joint pain who want something that works on a shorter timescale than collagen.",
+    safetyNotes:
+      "Generally well tolerated; mild digestive upset is the usual complaint. May interact with anti-inflammatory and immune-modulating medication. Standardisation matters — unstandardised resin varies widely in active content.",
+    faq: [
+      {
+        question: "Boswellia or curcumin?",
+        answer:
+          "They act on different pathways and are often studied together. If you're picking one, boswellia tends to act faster; curcumin has the larger body of osteoarthritis data.",
+      },
+      {
+        question: "Is this the same as frankincense?",
+        answer:
+          "Same plant resin, yes — but the supplement is a standardised extract, not the essential oil, which is not for internal use.",
+      },
+    ],
+    relatedSupplements: ["curcumin", "collagen", "omega3"],
+  },
+
+  glucosamine: {
+    howItWorks:
+      "Glucosamine is a building block of cartilage, and the theory is that supplementing it supports cartilage maintenance. The mechanism is plausible; whether enough reaches joint tissue at oral doses is the part the trials argue about.",
+    whoMightBenefit:
+      "People with knee osteoarthritis willing to give it a three-month trial and stop if nothing changes. If you're starting from scratch, boswellia and curcumin have the cleaner evidence.",
+    safetyNotes:
+      "Well tolerated. Watch it alongside warfarin, where case reports suggest an increased effect. May slightly raise blood glucose — worth knowing if you're diabetic. Formulation matters: the positive trials used crystalline glucosamine sulfate, not hydrochloride.",
+    faq: [
+      {
+        question: "Does it actually work?",
+        answer:
+          "Honestly, the field is split. Trials using crystalline glucosamine sulfate tend to find a modest benefit; several large independent trials found none. Give it three months and judge it yourself.",
+      },
+      {
+        question: "Should I take chondroitin with it?",
+        answer:
+          "They're commonly combined and the combination is what most products sell. The evidence for the pair isn't clearly better than for glucosamine alone.",
+      },
+    ],
+    relatedSupplements: ["collagen", "boswellia", "curcumin"],
+  },
+
+  peppermint_oil: {
+    howItWorks:
+      "Menthol relaxes the smooth muscle of the intestinal wall, easing the spasms behind IBS cramping. The enteric coating is what gets it past the stomach so it releases where it's needed.",
+    whoMightBenefit:
+      "People with IBS-type abdominal pain, cramping and bloating — particularly if fibre alone hasn't helped.",
+    safetyNotes:
+      "Heartburn is the most common side effect, and it's the reason the enteric coating matters. Not for people with a hiatus hernia or significant reflux. May interact with medications processed by CYP3A4 — worth a pharmacist check if you take several prescriptions.",
+    faq: [
+      {
+        question: "Can I use peppermint tea instead?",
+        answer:
+          "No. Tea doesn't deliver a meaningful dose of the oil, and what it does deliver is released in the stomach rather than the intestine.",
+      },
+      {
+        question: "How long until it helps?",
+        answer:
+          "Faster than most things here — trials typically measure symptom improvement over two to four weeks.",
+      },
+    ],
+    relatedSupplements: ["fibre", "probiotic", "prebiotic"],
+  },
+
+  s_boulardii: {
+    howItWorks:
+      "Because it's a yeast, it survives a course of antibiotics that would wipe out a bacterial probiotic. It occupies the gut temporarily, competes with opportunistic organisms, and clears out within days of stopping.",
+    whoMightBenefit:
+      "Anyone starting a course of antibiotics, and travellers prone to stomach upset. Not a daily supplement — it's for a specific window.",
+    safetyNotes:
+      "Very well tolerated in healthy people. The exception matters: avoid it if you're immunocompromised, critically ill, or have a central venous catheter. Don't take it with antifungal medication, which will kill it.",
+    faq: [
+      {
+        question: "Won't antibiotics kill a probiotic?",
+        answer:
+          "They kill bacterial ones, which is why timing advice around them is so fiddly. This is a yeast, so antibiotics don't touch it — that's the whole point of using it here.",
+      },
+      {
+        question: "Should I take this instead of a multi-strain probiotic?",
+        answer:
+          "Alongside, and for a different reason. Multi-strain products are for ongoing digestive symptoms; this one is for a defined antibiotic or travel window.",
+      },
+    ],
+    relatedSupplements: ["probiotic", "fibre", "prebiotic"],
+  },
+
+  prebiotic: {
+    howItWorks:
+      "Your gut bacteria ferment these fibres into short-chain fatty acids like butyrate, which feed the cells lining your colon. That fermentation is also why they cause gas when introduced too quickly.",
+    whoMightBenefit:
+      "People whose diet is low in varied plant fibre, and anyone taking a probiotic who wants to give it something to work with.",
+    safetyNotes:
+      "Gas and bloating are common in the first weeks and usually settle — going up slowly is the whole trick. If you have IBS, choose PHGG; inulin and GOS commonly make symptoms worse.",
+    faq: [
+      {
+        question: "How is this different from psyllium?",
+        answer:
+          "Psyllium mostly bulks and softens stool. Prebiotic fibres are fermented by your bacteria, which is what produces the short-chain fatty acids — different job, and they're fine together.",
+      },
+      {
+        question: "Why does it make me gassy?",
+        answer:
+          "Because it's working — fermentation produces gas. Starting at 3g and increasing over a few weeks gives your bacteria time to adjust.",
+      },
+    ],
+    relatedSupplements: ["fibre", "probiotic", "s_boulardii"],
+  },
+
+  l_theanine: {
+    howItWorks:
+      "An amino acid from tea leaves that increases alpha wave activity in the brain, the pattern associated with relaxed alertness. It calms without the drowsiness of a sedative, which is why it pairs with caffeine and also works alone.",
+    whoMightBenefit:
+      "People with a racing mind at the end of the day, anyone who wants to take the edge off without feeling dulled, and those who want the calming half of the caffeine stack in the evening.",
+    safetyNotes:
+      "Very well tolerated with no known serious interactions. May mildly lower blood pressure, which is worth knowing if you're already on medication for it.",
+    faq: [
+      {
+        question: "Will it make me sleepy?",
+        answer:
+          "Not usually. It reduces the feeling of being wound up rather than inducing sleep, which is why it works during the day as well as at night.",
+      },
+      {
+        question: "Can I get enough from tea?",
+        answer:
+          "A cup of green tea has roughly 10–25mg, so reaching 200mg through tea means a lot of tea and a lot of caffeine with it.",
+      },
+    ],
+    relatedSupplements: ["caffeine_ltheanine", "magnesium", "ashwagandha"],
+  },
+
+  saffron: {
+    howItWorks:
+      "Its active compounds, crocin and safranal, appear to act on serotonin availability — the same broad system most antidepressants work on, though far more weakly and by a less well-characterised route.",
+    whoMightBenefit:
+      "People dealing with low mood rather than the wired, over-stressed feeling adaptogens address. It's for a different symptom than ashwagandha.",
+    safetyNotes:
+      "Well tolerated at supplement doses. Because it acts on serotonin, don't combine it with SSRIs, SNRIs or other serotonergic drugs without medical advice. Very high doses of raw saffron are toxic — stick to standardised extracts at the studied dose.",
+    faq: [
+      {
+        question: "Can I cook with saffron instead?",
+        answer:
+          "Culinary quantities are far below the studied dose, and the trials all used standardised extracts. It's a lovely spice, but not a delivery method.",
+      },
+      {
+        question: "Can I take it alongside my antidepressant?",
+        answer:
+          "Not without asking your doctor. It acts on the same system, and stacking serotonergic effects is the one interaction worth taking seriously here.",
+      },
+    ],
+    relatedSupplements: ["ashwagandha", "rhodiola", "vitd3"],
+  },
+
+  tart_cherry: {
+    howItWorks:
+      "Montmorency cherries are unusually high in anthocyanins, which blunt exercise-induced inflammation and oxidative stress. They also contain a small amount of natural melatonin, which is the likely explanation for the sleep findings.",
+    whoMightBenefit:
+      "Anyone training hard through a competition block or a dense week of sessions, and people who want a recovery aid that also helps them sleep.",
+    safetyNotes:
+      "Very safe as a food. The one caveat is strategic rather than medical: blunting exercise inflammation may slightly reduce muscle-building adaptation, so it's better used around competition than throughout a whole building block. The juice is also high in sugar.",
+    faq: [
+      {
+        question: "Juice or capsules?",
+        answer:
+          "Most trials used concentrate. Capsules are more convenient and lower in sugar, but check the anthocyanin content rather than the cherry weight on the label.",
+      },
+      {
+        question: "Should I take it year-round?",
+        answer:
+          "Probably not. Reducing the inflammatory signal is what helps you recover, but that signal is also part of how training makes you stronger — save it for when recovering fast matters most.",
+      },
+    ],
+    relatedSupplements: ["electrolytes", "magnesium", "curcumin"],
+  },
+
+  sodium_bicarb: {
+    howItWorks:
+      "Beta-alanine buffers acid inside the muscle cell; bicarbonate raises the buffering capacity of the blood outside it, helping pull hydrogen ions out of working muscle. The two act in different compartments, which is why they stack.",
+    whoMightBenefit:
+      "Athletes doing all-out efforts lasting roughly one to seven minutes — 800m, rowing, swimming, hard interval sessions. Little use for steady endurance or single heavy lifts.",
+    safetyNotes:
+      "Gastrointestinal distress — bloating, cramping, sometimes vomiting — is the limiting factor and affects a significant minority. Splitting the dose and taking it with food reduces it. High sodium load, so unsuitable with hypertension or fluid restriction.",
+    faq: [
+      {
+        question: "Is this just baking soda?",
+        answer:
+          "Chemically yes, and that's what the trials used. Enteric-coated capsule versions exist specifically to reduce the stomach problems.",
+      },
+      {
+        question: "Can I take it with beta-alanine?",
+        answer:
+          "Yes — they buffer in different compartments and the combination has been studied. Adding both at once means you won't know which is doing what, so introduce them separately.",
+      },
+    ],
+    relatedSupplements: ["beta_alanine", "citrulline", "beetroot"],
+  },
+
+  plant_sterols: {
+    howItWorks:
+      "Plant sterols are structurally similar enough to cholesterol to compete with it for absorption in the intestine, so less dietary and biliary cholesterol makes it into circulation.",
+    whoMightBenefit:
+      "Anyone working on cholesterol through diet, including people already on a statin — the two lower LDL by different mechanisms and the effects add up.",
+    safetyNotes:
+      "Well established and widely used in fortified foods. It slightly lowers fat-soluble vitamin and carotenoid absorption, so pair it with a varied diet. Above 3g a day there's no additional benefit.",
+    faq: [
+      {
+        question: "Can I get this from fortified spreads instead?",
+        answer:
+          "Yes — that's how most of the trial evidence was generated. The supplement is just a way to hit 2g without changing what you eat.",
+      },
+      {
+        question: "Does it work if I'm already on a statin?",
+        answer:
+          "The mechanisms are different — statins reduce production, sterols reduce absorption — so the effects generally add. Tell your doctor you've started it.",
+      },
+    ],
+    relatedSupplements: ["fibre", "omega3", "berberine"],
+  },
+
+  folate: {
+    howItWorks:
+      "Folate is required to synthesize DNA and support rapid cell division, which is why demand rises sharply in early pregnancy as the neural tube forms. Methylfolate is the form your body actually uses after conversion from folic acid.",
+    whoMightBenefit:
+      "Anyone who could become pregnant, ideally starting before conception rather than after a positive test — the neural tube closes in the first few weeks, often before pregnancy is confirmed.",
+    safetyNotes:
+      "Very safe at this dose. People with a common MTHFR gene variant convert folic acid to its active form less efficiently, which is why methylfolate is often preferred. A personal or family history of neural tube defects calls for a higher, doctor-guided dose.",
+    faq: [
+      {
+        question: "Folic acid or methylfolate?",
+        answer:
+          "Either works for most people, but methylfolate skips a conversion step that a meaningful share of people are genetically less efficient at, so it's the safer default.",
+      },
+      {
+        question: "Do I need this if I'm not actively trying to conceive?",
+        answer:
+          "If pregnancy is possible at all, starting before conception matters more than starting after — the critical window closes early, often before you'd know.",
+      },
+    ],
+    relatedSupplements: ["iodine", "algal_oil", "b12"],
+  },
+
+  calcium: {
+    howItWorks:
+      "Calcium is the primary mineral in bone, constantly being deposited and withdrawn in a cycle that shifts toward net loss with age, especially after menopause. Vitamin D governs how much of it you actually absorb from your gut.",
+    whoMightBenefit:
+      "Older adults, especially post-menopausal women, and anyone whose diet is genuinely light on dairy or fortified alternatives — it's a targeted fix for a dietary gap, not a blanket recommendation.",
+    safetyNotes:
+      "Total intake matters more than the supplement dose alone — count what you're already getting from food. Above roughly 2000mg total daily it's been linked to kidney stones and, in some research, cardiovascular risk. Separate it from iron and thyroid medication by a couple of hours.",
+    faq: [
+      {
+        question: "Should I take this if I already drink milk daily?",
+        answer:
+          "Probably not, or only a small dose — dairy already provides a substantial amount, and stacking a full supplement dose on top can push you over the upper limit.",
+      },
+      {
+        question: "Citrate or carbonate?",
+        answer:
+          "Citrate absorbs well with or without food and is gentler for people on acid-reducing medication; carbonate is cheaper but needs stomach acid, so it's best taken with meals.",
+      },
+    ],
+    relatedSupplements: ["vitd3", "multivitamin", "b12"],
+  },
 };
 
 export function getSupplementContent(key: string): SupplementContent | undefined {

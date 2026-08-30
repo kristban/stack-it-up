@@ -13,7 +13,7 @@ const geistSans = Geist({
 
 const DEFAULT_TITLE = "StackItUp — Build Your Personalized Supplement Routine";
 const DEFAULT_DESCRIPTION =
-  "Answer 5 gentle questions and get a personalized supplement routine built for your goals, activity level, and diet. Free, no account needed.";
+  "Answer 6 gentle questions and get a personalized supplement routine built for your goals, activity level, and diet. Free, no account needed.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

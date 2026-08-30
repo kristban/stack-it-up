@@ -53,6 +53,18 @@ export const questions: Question[] = [
     ],
   },
   {
+    id: "life_stage",
+    question: "Does any of this apply to you?",
+    subtitle: "This changes which supplements we do — and don't — suggest.",
+    type: "single",
+    options: [
+      { id: "none", label: "None of these apply", emoji: "✅" },
+      { id: "pregnancy", label: "Pregnant, trying to conceive, or postpartum", emoji: "🤰" },
+      { id: "menstrual", label: "Regular periods or perimenopause", emoji: "🩸" },
+      { id: "over_65", label: "Over 65", emoji: "🧓" },
+    ],
+  },
+  {
     id: "budget",
     question: "What's your monthly supplement budget?",
     type: "single",

@@ -2,6 +2,7 @@
 
 import { Supplement } from "../lib/types";
 import { accentFor } from "../lib/theme";
+import { WARNING_STYLE } from "../lib/categories";
 
 interface ResultsProps {
   stack: Supplement[];
@@ -124,6 +125,37 @@ export default function Results({ stack, onReset }: ResultsProps) {
                         </p>
                       </div>
                     </div>
+
+                    {/* Iron needs a blood test before it's a real recommendation,
+                        not just a caution — render it as a distinct prerequisite
+                        rather than an ordinary "take this" callout. */}
+                    {supp.key === "iron" && (
+                      <div
+                        role="note"
+                        className="rounded-xl p-3 mt-3 border flex gap-2.5"
+                        style={{ background: WARNING_STYLE.bg, borderColor: WARNING_STYLE.border }}
+                      >
+                        <span aria-hidden="true" className="text-base leading-none flex-shrink-0">🩸</span>
+                        <p className="text-sm leading-relaxed" style={{ color: WARNING_STYLE.text }}>
+                          <strong>Test before you take this.</strong> Iron only helps if a blood test
+                          has shown you're actually low — ask for a ferritin test rather than starting
+                          this on suspicion of fatigue alone.
+                        </p>
+                      </div>
+                    )}
+
+                    {supp.warnings && (
+                      <div
+                        role="note"
+                        className="rounded-xl p-3 mt-3 border flex gap-2.5"
+                        style={{ background: WARNING_STYLE.bg, borderColor: WARNING_STYLE.border }}
+                      >
+                        <span aria-hidden="true" className="text-base leading-none flex-shrink-0">⚠️</span>
+                        <p className="text-sm leading-relaxed" style={{ color: WARNING_STYLE.text }}>
+                          {supp.warnings}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </article>
