@@ -4,17 +4,33 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { getSupplements } from "../lib/supplements";
 import SupplementSearch from "../components/SupplementSearch";
+import JsonLd from "../components/JsonLd";
+import { pageMetadata, absoluteUrl } from "../lib/seo";
+import { collectionPageJsonLd } from "../lib/structuredData";
 
-export const metadata: Metadata = {
-  title: "Supplements — StackItUp",
-  description: "Browse every supplement in our library — what it does, the dose, and when to take it.",
-};
+const TITLE = "Supplement Library — Doses, Timing & Benefits";
+const DESCRIPTION =
+  "Browse every supplement we recommend — what it does, the evidence behind it, the right dose, and when to take it.";
+
+export const metadata: Metadata = pageMetadata({
+  title: TITLE,
+  description: DESCRIPTION,
+  path: "/supplements",
+});
 
 export default async function SupplementsPage() {
   const supplements = await getSupplements();
 
   return (
     <>
+      <JsonLd
+        data={collectionPageJsonLd({
+          name: TITLE,
+          description: DESCRIPTION,
+          path: "/supplements",
+          items: supplements.map((s) => ({ name: s.name, url: absoluteUrl(`/supplements/${s.key}`) })),
+        })}
+      />
       <Navbar />
       <main className="pt-24">
         <section className="px-4 py-16 sm:py-24 relative overflow-hidden">

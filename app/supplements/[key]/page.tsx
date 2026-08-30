@@ -7,8 +7,11 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { Card, SectionHeading } from "../../components/PageCard";
 import SupplementActions from "../../components/SupplementActions";
+import JsonLd from "../../components/JsonLd";
 import { accentFor } from "../../lib/theme";
 import { EVIDENCE_LEVELS, WARNING_STYLE } from "../../lib/categories";
+import { pageMetadata } from "../../lib/seo";
+import { dietarySupplementJsonLd } from "../../lib/structuredData";
 
 export async function generateMetadata({
   params,
@@ -17,11 +20,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { key } = await params;
   const supplement = await getSupplement(key);
-  if (!supplement) return { title: "StackItUp" };
-  return {
-    title: `${supplement.name} — StackItUp`,
-    description: supplement.why,
-  };
+  if (!supplement) return { title: "Supplement Not Found" };
+  return pageMetadata({
+    title: supplement.name,
+    description: supplement.why.slice(0, 157) + (supplement.why.length > 157 ? "…" : ""),
+    path: `/supplements/${supplement.key}`,
+  });
 }
 
 export default async function SupplementDetailPage({
@@ -40,6 +44,7 @@ export default async function SupplementDetailPage({
 
   return (
     <>
+      <JsonLd data={dietarySupplementJsonLd(supplement)} />
       <Navbar />
       <main className="pt-24">
         <section className="px-4 py-16 sm:py-24 relative overflow-hidden">

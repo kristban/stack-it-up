@@ -11,7 +11,10 @@ import { getSupplements } from "../../lib/supplements";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { Card, SectionHeading } from "../../components/PageCard";
+import JsonLd from "../../components/JsonLd";
 import { accentFor } from "../../lib/theme";
+import { pageMetadata } from "../../lib/seo";
+import { optimizeTopicJsonLd } from "../../lib/structuredData";
 
 export function generateStaticParams() {
   return OPTIMIZE_TOPICS.map((topic) => ({ slug: topic.slug }));
@@ -24,11 +27,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const topic = getOptimizeTopic(slug);
-  if (!topic) return { title: "StackItUp" };
-  return {
-    title: `${topic.title} — StackItUp`,
-    description: topic.tagline,
-  };
+  if (!topic) return { title: "Topic Not Found" };
+  return pageMetadata({
+    title: topic.title,
+    description: `${topic.tagline} See which supplements and daily habits can help.`.slice(0, 160),
+    path: `/optimize/${topic.slug}`,
+  });
 }
 
 export default async function OptimizeTopicPage({
@@ -48,6 +52,9 @@ export default async function OptimizeTopicPage({
 
   return (
     <>
+      {optimizeTopicJsonLd(topic).map((data, i) => (
+        <JsonLd key={i} data={data} />
+      ))}
       <Navbar />
       <main className="pt-24">
         <section className="px-4 py-16 sm:py-24 relative overflow-hidden">

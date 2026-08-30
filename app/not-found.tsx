@@ -1,11 +1,14 @@
 import Link from "next/link";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import { pageMetadata } from "./lib/seo";
 
-export const metadata = {
-  title: "Page Not Found — StackItUp",
-  description: "The page you're looking for doesn't exist.",
-};
+export const metadata = pageMetadata({
+  title: "Page Not Found",
+  description: "The page you're looking for doesn't exist. Head back to StackItUp to build your supplement routine.",
+  path: "/404",
+  noIndex: true,
+});
 
 export default function NotFound() {
   return (

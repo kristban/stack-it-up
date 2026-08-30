@@ -188,12 +188,12 @@ function SupplementCard({ supp, library }: { supp: Supplement; library: UserLibr
         >
           {supp.emoji}
         </div>
-        <h2
+        <h3
           className="text-lg mb-1 leading-snug tracking-tight"
           style={{ color: "#111111", fontFamily: "var(--font-heading)", fontWeight: 700 }}
         >
           {supp.name}
-        </h2>
+        </h3>
         <span
           className="self-start inline-flex items-center text-[11px] font-semibold px-2 py-0.5 rounded-full mb-2"
           style={{ background: evidence.bg, color: evidence.text }}

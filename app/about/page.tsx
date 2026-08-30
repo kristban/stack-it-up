@@ -3,15 +3,24 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Card, SectionHeading } from "../components/PageCard";
+import JsonLd from "../components/JsonLd";
+import { pageMetadata } from "../lib/seo";
+import { webPageJsonLd } from "../lib/structuredData";
 
-export const metadata: Metadata = {
-  title: "About — StackItUp",
-  description: "Why we built StackItUp and how we think about supplements.",
-};
+const TITLE = "About Us & Our Approach to Supplements";
+const DESCRIPTION =
+  "Why we built StackItUp and how we choose evidence-based, personalized supplement recommendations — no hype, no upsells.";
+
+export const metadata: Metadata = pageMetadata({
+  title: TITLE,
+  description: DESCRIPTION,
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (
     <>
+      <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/about" })} />
       <Navbar />
       <main className="pt-24">
         <section className="px-4 py-16 sm:py-24 relative overflow-hidden">

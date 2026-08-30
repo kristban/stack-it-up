@@ -54,12 +54,12 @@ export default function Footer() {
           {/* Link columns */}
           {LINK_COLUMNS.map((col) => (
             <div key={col.title}>
-              <h3
+              <h2
                 className="text-xs font-semibold uppercase tracking-wide mb-4"
                 style={{ color: "#8A8172" }}
               >
                 {col.title}
-              </h3>
+              </h2>
               <ul className="space-y-2.5">
                 {col.links.map((link) => {
                   const linkClass = "text-sm font-medium transition-colors duration-150 hover:opacity-70";

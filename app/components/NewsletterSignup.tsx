@@ -30,12 +30,12 @@ export default function NewsletterSignup() {
       style={{ background: "#F4E14F", borderColor: "rgba(17,17,17,0.08)" }}
     >
       <div className="max-w-md mx-auto text-center">
-        <h3
+        <h2
           className="text-2xl mb-2 tracking-tight"
           style={{ color: "#111111", fontFamily: "var(--font-heading)", fontWeight: 800 }}
         >
           Join the newsletter
-        </h3>
+        </h2>
         <p className="text-sm mb-6" style={{ color: "#5C512A" }}>
           Occasional tips on supplements and gut health. No spam, unsubscribe anytime.
         </p>

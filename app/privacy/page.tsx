@@ -3,17 +3,26 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Card, SectionHeading } from "../components/PageCard";
+import JsonLd from "../components/JsonLd";
+import { pageMetadata } from "../lib/seo";
+import { webPageJsonLd } from "../lib/structuredData";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy — StackItUp",
-  description: "What data StackItUp collects, why, and how you can control it.",
-};
+const TITLE = "Privacy Policy";
+const DESCRIPTION =
+  "How StackItUp handles your data: what we collect, the cookies we use, and your privacy rights under GDPR.";
+
+export const metadata: Metadata = pageMetadata({
+  title: TITLE,
+  description: DESCRIPTION,
+  path: "/privacy",
+});
 
 const LAST_UPDATED = "July 11, 2026";
 
 export default function PrivacyPage() {
   return (
     <>
+      <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/privacy" })} />
       <Navbar />
       <main className="pt-24">
         <section className="px-4 py-16 sm:py-24">

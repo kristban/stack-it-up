@@ -19,11 +19,14 @@ import { signOut } from "../lib/actions/auth";
 import { AVATAR_EMOJIS } from "../lib/avatarEmojis";
 import { accentFor } from "../lib/theme";
 import type { StackSlot, Supplement } from "../lib/types";
+import { pageMetadata } from "../lib/seo";
 
-export const metadata: Metadata = {
-  title: "Your account — StackItUp",
-  robots: { index: false, follow: false },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Your Account",
+  description: "Manage your saved supplements, morning and evening stacks, and account details.",
+  path: "/account",
+  noIndex: true,
+});
 
 // requireUser runs in the proxy + the update actions; getCurrentProfile here
 // gives us the row to prefill. force-dynamic so it never prerenders.

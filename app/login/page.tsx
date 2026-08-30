@@ -6,11 +6,14 @@ import Footer from "../components/Footer";
 import { Card } from "../components/PageCard";
 import { signInWithGoogle } from "../lib/actions/auth";
 import { getCurrentUser } from "../lib/auth/dal";
+import { pageMetadata } from "../lib/seo";
 
-export const metadata: Metadata = {
-  title: "Log in — StackItUp",
-  robots: { index: false, follow: false },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Log In",
+  description: "Sign in to StackItUp with Google to save favorites and manage your supplement stacks.",
+  path: "/login",
+  noIndex: true,
+});
 
 export default async function LoginPage({
   searchParams,

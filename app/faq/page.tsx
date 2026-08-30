@@ -3,11 +3,16 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Card, SectionHeading } from "../components/PageCard";
+import JsonLd from "../components/JsonLd";
+import { pageMetadata } from "../lib/seo";
+import { faqPageJsonLd } from "../lib/structuredData";
 
-export const metadata: Metadata = {
-  title: "FAQ — StackItUp",
-  description: "Common questions about how StackItUp works, your data, and our recommendations.",
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Frequently Asked Questions",
+  description:
+    "Answers about how StackItUp's supplement quiz works, your privacy, and where our recommendations come from.",
+  path: "/faq",
+});
 
 interface FaqGroup {
   emoji: string;
@@ -96,8 +101,10 @@ const FAQ_GROUPS: FaqGroup[] = [
 ];
 
 export default function FaqPage() {
+  const allFaqItems = FAQ_GROUPS.flatMap((group) => group.items);
   return (
     <>
+      <JsonLd data={faqPageJsonLd(allFaqItems)} />
       <Navbar />
       <main className="pt-24">
         <section className="px-4 py-16 sm:py-24 relative overflow-hidden">

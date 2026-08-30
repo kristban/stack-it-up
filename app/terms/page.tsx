@@ -3,17 +3,25 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Card, SectionHeading } from "../components/PageCard";
+import JsonLd from "../components/JsonLd";
+import { pageMetadata } from "../lib/seo";
+import { webPageJsonLd } from "../lib/structuredData";
 
-export const metadata: Metadata = {
-  title: "Terms of Service — StackItUp",
-  description: "The terms that apply when you use StackItUp.",
-};
+const TITLE = "Terms of Service";
+const DESCRIPTION = "The terms and conditions for using StackItUp's free supplement recommendation quiz and content.";
+
+export const metadata: Metadata = pageMetadata({
+  title: TITLE,
+  description: DESCRIPTION,
+  path: "/terms",
+});
 
 const LAST_UPDATED = "July 11, 2026";
 
 export default function TermsPage() {
   return (
     <>
+      <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/terms" })} />
       <Navbar />
       <main className="pt-24">
         <section className="px-4 py-16 sm:py-24">
