@@ -14,7 +14,7 @@ import { Card, SectionHeading } from "../../components/PageCard";
 import JsonLd from "../../components/JsonLd";
 import { accentFor } from "../../lib/theme";
 import { pageMetadata } from "../../lib/seo";
-import { optimizeTopicJsonLd } from "../../lib/structuredData";
+import { breadcrumbJsonLd, optimizeTopicJsonLd } from "../../lib/structuredData";
 
 export function generateStaticParams() {
   return OPTIMIZE_TOPICS.map((topic) => ({ slug: topic.slug }));
@@ -55,6 +55,7 @@ export default async function OptimizeTopicPage({
       {optimizeTopicJsonLd(topic).map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
+      <JsonLd data={breadcrumbJsonLd([{ name: topic.title, path: `/optimize/${topic.slug}` }])} />
       <Navbar />
       <main className="pt-24">
         <section className="px-4 py-16 sm:py-24 relative overflow-hidden">

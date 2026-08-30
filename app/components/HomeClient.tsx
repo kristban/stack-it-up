@@ -1,14 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import Navbar from "./Navbar";
 import Hero from "./Hero";
 import HowItWorks from "./HowItWorks";
 import WhatYouCanOptimize from "./WhatYouCanOptimize";
 import FeaturedStacks from "./FeaturedStacks";
-import Quiz from "./Quiz";
-import Results from "./Results";
 import Footer from "./Footer";
+
+// Neither is needed for the initial "hero" view — every visitor pays for
+// Navbar/Hero/etc. on first load regardless, but Quiz and Results only start
+// downloading once the visitor actually clicks in, trimming initial JS.
+const Quiz = dynamic(() => import("./Quiz"));
+const Results = dynamic(() => import("./Results"));
 import { generateStack } from "../lib/engine";
 import { Answers, Supplement } from "../lib/types";
 import { FeaturedStack } from "../lib/featuredStacks";

@@ -12,7 +12,7 @@ import JsonLd from "../../components/JsonLd";
 import { accentFor } from "../../lib/theme";
 import { EVIDENCE_LEVELS, WARNING_STYLE } from "../../lib/categories";
 import { pageMetadata } from "../../lib/seo";
-import { supplementJsonLd } from "../../lib/structuredData";
+import { breadcrumbJsonLd, supplementJsonLd } from "../../lib/structuredData";
 
 export async function generateMetadata({
   params,
@@ -53,6 +53,12 @@ export default async function SupplementDetailPage({
       {supplementJsonLd(supplement, content).map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Supplements", path: "/supplements" },
+          { name: supplement.name, path: `/supplements/${supplement.key}` },
+        ])}
+      />
       <Navbar />
       <main className="pt-24">
         <section className="px-4 py-16 sm:py-24 relative overflow-hidden">

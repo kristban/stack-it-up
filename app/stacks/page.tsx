@@ -6,7 +6,7 @@ import { getFeaturedStacks } from "../lib/featuredStacks";
 import JsonLd from "../components/JsonLd";
 import { accentFor } from "../lib/theme";
 import { pageMetadata, absoluteUrl } from "../lib/seo";
-import { collectionPageJsonLd } from "../lib/structuredData";
+import { breadcrumbJsonLd, collectionPageJsonLd } from "../lib/structuredData";
 
 const TITLE = "Featured Supplement Stacks";
 const DESCRIPTION =
@@ -31,6 +31,7 @@ export default async function StacksPage() {
           items: stacks.map((s) => ({ name: s.name, url: absoluteUrl(`/stacks/${s.key}`) })),
         })}
       />
+      <JsonLd data={breadcrumbJsonLd([{ name: "Stacks", path: "/stacks" }])} />
       <Navbar />
       <main className="pt-24">
         <section className="px-4 py-16 sm:py-24 relative overflow-hidden">

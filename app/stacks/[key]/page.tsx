@@ -14,7 +14,7 @@ import { Card, SectionHeading } from "../../components/PageCard";
 import JsonLd from "../../components/JsonLd";
 import { accentFor } from "../../lib/theme";
 import { pageMetadata, absoluteUrl } from "../../lib/seo";
-import { collectionPageJsonLd, webPageJsonLd } from "../../lib/structuredData";
+import { breadcrumbJsonLd, collectionPageJsonLd, webPageJsonLd } from "../../lib/structuredData";
 
 export async function generateMetadata({
   params,
@@ -66,6 +66,12 @@ export default async function StackDetailPage({
           path: `/stacks/${stack.key}`,
           items: supplements.map((s) => ({ name: s.name, url: absoluteUrl(`/supplements/${s.key}`) })),
         })}
+      />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Stacks", path: "/stacks" },
+          { name: stack.name, path: `/stacks/${stack.key}` },
+        ])}
       />
       <Navbar />
       <main className="pt-24">

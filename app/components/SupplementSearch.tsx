@@ -26,8 +26,15 @@ export default function SupplementSearch({ supplements }: SupplementSearchProps)
   // drop the cursor into the box so the visitor can type right away, then strip
   // the param so a refresh or shared link doesn't re-trigger it. Mirrors the
   // ?start=quiz handling in HomeClient.
+  //
+  // Also seeds the query from ?q=, which is the target the sitewide SearchAction
+  // JSON-LD (structuredData.ts) points a Google sitelinks search box at — that
+  // markup is only honest if the URL it promises actually runs the search.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const q = params.get("q");
+    if (q) setQuery(q);
+
     if (params.get("focus") !== "search") return;
 
     const input = inputRef.current;

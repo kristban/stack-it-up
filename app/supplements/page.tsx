@@ -6,7 +6,7 @@ import { getSupplements } from "../lib/supplements";
 import SupplementSearch from "../components/SupplementSearch";
 import JsonLd from "../components/JsonLd";
 import { pageMetadata, absoluteUrl } from "../lib/seo";
-import { collectionPageJsonLd } from "../lib/structuredData";
+import { breadcrumbJsonLd, collectionPageJsonLd } from "../lib/structuredData";
 
 const TITLE = "Supplement Library — Doses, Timing & Benefits";
 const DESCRIPTION =
@@ -31,6 +31,7 @@ export default async function SupplementsPage() {
           items: supplements.map((s) => ({ name: s.name, url: absoluteUrl(`/supplements/${s.key}`) })),
         })}
       />
+      <JsonLd data={breadcrumbJsonLd([{ name: "Supplements", path: "/supplements" }])} />
       <Navbar />
       <main className="pt-24">
         <section className="px-4 py-16 sm:py-24 relative overflow-hidden">

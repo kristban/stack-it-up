@@ -21,6 +21,31 @@ export function websiteJsonLd() {
     "@type": "WebSite",
     name: SITE_NAME,
     url: SITE_URL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${absoluteUrl("/supplements")}?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+}
+
+// Home > ... > current page trail, shown by Google as the result's breadcrumb
+// path instead of a bare URL. `items` excludes Home — it's prepended here so
+// every call site doesn't have to repeat it.
+export function breadcrumbJsonLd(items: { name: string; path: string }[]) {
+  const trail = [{ name: "Home", path: "/" }, ...items];
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: trail.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: absoluteUrl(item.path),
+    })),
   };
 }
 
