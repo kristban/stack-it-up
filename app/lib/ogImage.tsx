@@ -8,12 +8,20 @@ interface RenderOgImageOptions {
   subtitle?: string;
   emoji?: string;
   accent?: string;
+  /** Short call-to-action shown as a pill in the bottom-right corner. Pass "" to omit it. */
+  cta?: string;
 }
 
 // Shared 1200x630 social preview template, reused by each route segment's
 // opengraph-image.tsx so every page gets a branded, on-theme image without
 // duplicating the layout in every file.
-export function renderOgImage({ title, subtitle, emoji = "🌿", accent = "#CFE0F7" }: RenderOgImageOptions) {
+export function renderOgImage({
+  title,
+  subtitle,
+  emoji = "🌿",
+  accent = "#CFE0F7",
+  cta = "Get Your Free Routine →",
+}: RenderOgImageOptions) {
   return new ImageResponse(
     (
       <div
@@ -87,17 +95,44 @@ export function renderOgImage({ title, subtitle, emoji = "🌿", accent = "#CFE0
           </div>
         )}
 
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: "auto", paddingTop: 40 }}>
-          <div
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: 15,
-              background: "linear-gradient(135deg, #CFE0F7 50%, #F4E14F 50%)",
-              display: "flex",
-            }}
-          />
-          <div style={{ display: "flex", fontSize: 28, fontWeight: 800, color: "#111111" }}>StackItUp</div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginTop: "auto",
+            paddingTop: 40,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 15,
+                background: "linear-gradient(135deg, #CFE0F7 50%, #F4E14F 50%)",
+                display: "flex",
+              }}
+            />
+            <div style={{ display: "flex", fontSize: 28, fontWeight: 800, color: "#111111" }}>StackItUp</div>
+          </div>
+
+          {cta && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "16px 30px",
+                borderRadius: 999,
+                background: "#111111",
+                color: "#FFFFFF",
+                fontSize: 26,
+                fontWeight: 700,
+              }}
+            >
+              {cta}
+            </div>
+          )}
         </div>
       </div>
     ),

@@ -14,12 +14,32 @@ export function absoluteUrl(path: string = "/"): string {
 interface PageMetadataOptions {
   /** Page-specific title fragment, WITHOUT the "— StackItUp" suffix — the root layout's title template adds that automatically for the <title> tag. */
   title: string;
-  /** Meta description, ideally under 160 characters. */
+  /** Meta description used for search results, ideally under 160 characters. */
   description: string;
   /** Path this page is served at, e.g. "/about". Used for the canonical URL and social preview URL. */
   path: string;
   /** Marks the page as excluded from search indexing (still crawlable unless robots.ts also blocks the path). */
   noIndex?: boolean;
+  /**
+   * Shorter description for social cards (og:description / twitter:description).
+   * Facebook/LinkedIn/X truncate well before the ~160 chars search engines
+   * allow — often around 125 — so a 160-char SEO description reads as cut
+   * off on a shared link. Defaults to a word-boundary truncation of
+   * `description`; pass a hand-written one for higher-traffic pages where
+   * the auto-truncated sentence would end awkwardly.
+   */
+  socialDescription?: string;
+}
+
+const SOCIAL_DESCRIPTION_MAX = 125;
+
+// Cuts text to a social-card-safe length at a word boundary, so a long SEO
+// description doesn't get chopped mid-word on Facebook/LinkedIn/X previews.
+export function truncateForSocial(text: string, max: number = SOCIAL_DESCRIPTION_MAX): string {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max - 1);
+  const lastSpace = cut.lastIndexOf(" ");
+  return (lastSpace > 0 ? cut.slice(0, lastSpace) : cut) + "…";
 }
 
 // Builds a consistent Metadata object — title, description, canonical URL,
@@ -27,9 +47,10 @@ interface PageMetadataOptions {
 // opengraph-image.tsx file colocated in the same route segment supplies the
 // actual 1200x630 preview image; Next.js wires it into both og:image and
 // twitter:image automatically.
-export function pageMetadata({ title, description, path, noIndex }: PageMetadataOptions): Metadata {
+export function pageMetadata({ title, description, path, noIndex, socialDescription }: PageMetadataOptions): Metadata {
   const url = absoluteUrl(path);
   const fullTitle = `${title} — ${SITE_NAME}`;
+  const ogDescription = socialDescription ?? truncateForSocial(description);
 
   return {
     // The root layout's title.template doesn't apply to app/page.tsx ("/"),
@@ -42,7 +63,7 @@ export function pageMetadata({ title, description, path, noIndex }: PageMetadata
     robots: noIndex ? { index: false, follow: false } : undefined,
     openGraph: {
       title: fullTitle,
-      description,
+      description: ogDescription,
       url,
       siteName: SITE_NAME,
       type: "website",
@@ -51,7 +72,7 @@ export function pageMetadata({ title, description, path, noIndex }: PageMetadata
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
-      description,
+      description: ogDescription,
     },
   };
 }
