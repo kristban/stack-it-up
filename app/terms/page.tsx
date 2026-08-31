@@ -16,7 +16,7 @@ export const metadata: Metadata = pageMetadata({
   path: "/terms",
 });
 
-const LAST_UPDATED = "July 11, 2026";
+const LAST_UPDATED = "August 31, 2026";
 
 export default function TermsPage() {
   return (
@@ -67,11 +67,32 @@ export default function TermsPage() {
 
             <Card>
               <SectionHeading emoji="🧾">Using the service</SectionHeading>
+              <div className="space-y-3">
+                <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
+                  StackItUp is free to use and doesn't require an account to take
+                  the quiz. You agree not to misuse the service — for example, by
+                  attempting to disrupt it, scrape it at scale, or use it in a way
+                  that violates applicable law.
+                </p>
+                <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
+                  The "Copy link" feature encodes your quiz answers into a URL you
+                  can share. Anything you copy a link to is visible to anyone you
+                  give that link to — don't share a link if you'd rather keep your
+                  answers private.
+                </p>
+              </div>
+            </Card>
+
+            <Card>
+              <SectionHeading emoji="👤">Accounts</SectionHeading>
               <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
-                StackItUp is free to use and doesn't require an account. You agree
-                not to misuse the service — for example, by attempting to disrupt
-                it, scrape it at scale, or use it in a way that violates applicable
-                law.
+                Signing in is optional and currently done through Google. You're
+                responsible for keeping your Google account secure, since that's
+                how access to your StackItUp account is controlled. Don't upload a
+                profile photo you don't have the rights to use, or content that's
+                unlawful, abusive, or infringes on someone else's rights — we may
+                remove it and suspend or terminate accounts that misuse the
+                service.
               </p>
             </Card>
 
@@ -81,7 +102,9 @@ export default function TermsPage() {
                 The StackItUp name, design, and content are owned by us or our
                 licensors. You're welcome to use the site for personal, non-commercial
                 purposes, but please don't copy or republish our content without
-                permission.
+                permission. Anything you upload (like a profile photo) remains
+                yours — you're just granting us the license needed to store and
+                display it back to you as part of the service.
               </p>
             </Card>
 

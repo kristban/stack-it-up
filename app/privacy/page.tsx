@@ -17,7 +17,7 @@ export const metadata: Metadata = pageMetadata({
   path: "/privacy",
 });
 
-const LAST_UPDATED = "July 11, 2026";
+const LAST_UPDATED = "August 31, 2026";
 
 export default function PrivacyPage() {
   return (
@@ -48,11 +48,12 @@ export default function PrivacyPage() {
             <Card>
               <SectionHeading emoji="🔍">The short version</SectionHeading>
               <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
-                StackItUp doesn't require an account, doesn't ask for your email, and
-                doesn't sell data to anyone. Your quiz answers and results are
-                calculated in your browser and are not sent to or stored on our
-                servers. The only thing we store is a cookie preference, described
-                below.
+                You can use StackItUp's quiz without an account — your answers and
+                results are calculated in your browser and aren't sent to our
+                servers. If you choose to sign in with Google, we store a small
+                account record (name, email, avatar, and anything you save to your
+                library) so it's there next time you visit. We don't sell your data
+                to anyone.
               </p>
             </Card>
 
@@ -62,7 +63,34 @@ export default function PrivacyPage() {
                 <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
                   <strong>Quiz answers &amp; results.</strong> Processed entirely in
                   your browser to generate your supplement routine. We do not receive
-                  or log your answers.
+                  or log your answers. While you're mid-quiz, your in-progress
+                  answers are saved to your browser's local storage so a refresh
+                  doesn't lose your progress — this never leaves your device.
+                </p>
+                <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
+                  <strong>Account information.</strong> If you sign in with Google,
+                  we receive your name, email address, and profile photo from
+                  Google, and create an account record with our hosting provider,
+                  Supabase. You can replace your photo with an emoji or upload your
+                  own image instead, edit your name, or change your email at any
+                  time from your account page.
+                </p>
+                <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
+                  <strong>Saved library data.</strong> If you're signed in, the
+                  supplements you favorite and add to your morning or evening stack
+                  (including their order) are saved to your account so they're there
+                  next time you visit.
+                </p>
+                <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
+                  <strong>Shared results links.</strong> The "Copy link" button on
+                  your results encodes your quiz answers directly into the URL — we
+                  don't store shared links on our servers, but anyone you send the
+                  link to will be able to see the answers and routine it contains.
+                </p>
+                <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
+                  <strong>Newsletter signup.</strong> If you subscribe to our
+                  newsletter, we store the first name and email address you provide
+                  so we can send it to you.
                 </p>
                 <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
                   <strong>Cookie preference.</strong> When you accept or decline our
@@ -80,22 +108,48 @@ export default function PrivacyPage() {
             </Card>
 
             <Card>
-              <SectionHeading emoji="🍪">Cookies</SectionHeading>
-              <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
-                We use a single piece of local storage to remember your cookie
-                consent choice. We don't use tracking or advertising cookies. You can
-                clear this at any time through your browser's site settings — the
-                consent banner will simply reappear on your next visit.
-              </p>
+              <SectionHeading emoji="🍪">Cookies &amp; analytics</SectionHeading>
+              <div className="space-y-3">
+                <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
+                  We use local storage to remember your cookie consent choice and,
+                  if you're signed in, a strictly-necessary session cookie (set by
+                  Supabase) that keeps you logged in. We don't use advertising
+                  cookies.
+                </p>
+                <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
+                  We use Umami, a privacy-focused analytics tool, to understand
+                  aggregate traffic to the site (pages visited, referrers, general
+                  device/browser type). Umami doesn't use cookies and doesn't build
+                  an individual profile of you.
+                </p>
+                <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
+                  You can clear your cookie preference at any time through your
+                  browser's site settings — the consent banner will simply reappear
+                  on your next visit.
+                </p>
+              </div>
             </Card>
 
             <Card>
               <SectionHeading emoji="🔗">Third parties</SectionHeading>
               <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
-                We don't share data with third parties because we don't collect any
-                to share. If that ever changes — for example, if we add optional
-                analytics — we'll update this page and, where required, ask for your
-                consent first.
+                We use a small number of service providers to run StackItUp:{" "}
+                <strong>Google</strong> (for sign-in, if you choose to use it),{" "}
+                <strong>Supabase</strong> (our database, authentication, and file
+                storage provider — this is where account, library, and uploaded
+                avatar data lives), and <strong>Umami</strong> (privacy-focused
+                analytics, described above). We don't sell your data, and we don't
+                share it with anyone else beyond what's needed to run the site.
+              </p>
+            </Card>
+
+            <Card>
+              <SectionHeading emoji="🗄️">Data retention</SectionHeading>
+              <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
+                We keep your account and library data for as long as your account
+                exists. Newsletter details are kept until you unsubscribe. We don't
+                currently offer self-service account deletion — email us and we'll
+                delete your account and associated data promptly.
               </p>
             </Card>
 
@@ -103,10 +157,11 @@ export default function PrivacyPage() {
               <SectionHeading emoji="⚖️">Your rights</SectionHeading>
               <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
                 If you're in the EU/EEA or UK, GDPR gives you rights to access,
-                correct, delete, or export any personal data we hold about you. Since
-                we don't store quiz data or accounts on our servers, there's typically
-                nothing to request — but if you have questions about server logs or
-                cookies, reach out and we'll help.
+                correct, delete, or export any personal data we hold about you. If
+                you don't have an account, there's typically nothing to request
+                beyond server logs and cookies — but if you do have an account or
+                have subscribed to our newsletter, email us and we'll action your
+                request.
               </p>
             </Card>
 
