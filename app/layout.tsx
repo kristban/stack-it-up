@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import CookieBanner from "./components/CookieBanner";
 import JsonLd from "./components/JsonLd";
@@ -49,6 +50,11 @@ export default function RootLayout({
       style={{ colorScheme: "light" }}
     >
       <body className="min-h-full flex flex-col">
+        <Script
+          src="https://cloud.umami.is/script.js"
+          data-website-id="9285b6f8-fd83-4f35-a9ab-8ef4339ba893"
+          strategy="afterInteractive"
+        />
         <JsonLd data={organizationJsonLd()} />
         <JsonLd data={websiteJsonLd()} />
         <noscript>
