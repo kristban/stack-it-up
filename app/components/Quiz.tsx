@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { questions } from "../lib/questions";
 import { Answers } from "../lib/types";
 
@@ -9,13 +9,52 @@ interface QuizProps {
   onBack: () => void;
 }
 
+const STORAGE_KEY = "stackitup-quiz-progress";
+
+interface SavedProgress {
+  step: number;
+  answers: Answers;
+}
+
+// Read once, synchronously, so the first render already reflects any
+// in-progress quiz rather than flashing question 1 before an effect restores it.
+function loadSaved(): SavedProgress | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (typeof parsed?.step !== "number" || typeof parsed?.answers !== "object") return null;
+    return parsed as SavedProgress;
+  } catch {
+    return null;
+  }
+}
+
 export default function Quiz({ onComplete, onBack }: QuizProps) {
-  const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<Answers>({});
+  const [initial] = useState(loadSaved);
+  const [step, setStep] = useState(() =>
+    Math.min(Math.max(initial?.step ?? 0, 0), questions.length - 1),
+  );
+  const [answers, setAnswers] = useState<Answers>(() => initial?.answers ?? {});
+
+  // Persist on every change so a refresh (or an accidental tab close) resumes
+  // where the visitor left off, instead of restarting a 6-question quiz.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (Object.keys(answers).length === 0) {
+      window.localStorage.removeItem(STORAGE_KEY);
+      return;
+    }
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ step, answers }));
+    } catch {
+      // Storage unavailable — progress just won't survive a refresh.
+    }
+  }, [step, answers]);
 
   const current = questions[step];
   const selected = answers[current.id] ?? [];
-  const progress = ((step + 1) / questions.length) * 100;
   const isLast = step === questions.length - 1;
 
   function toggle(optionId: string) {
@@ -37,6 +76,7 @@ export default function Quiz({ onComplete, onBack }: QuizProps) {
   function next() {
     if (selected.length === 0) return;
     if (isLast) {
+      if (typeof window !== "undefined") window.localStorage.removeItem(STORAGE_KEY);
       onComplete(answers);
     } else {
       setStep((s) => s + 1);
@@ -68,18 +108,22 @@ export default function Quiz({ onComplete, onBack }: QuizProps) {
           </span>
         </div>
 
-        {/* Progress bar */}
-        <div
-          className="w-full h-1.5 rounded-full mb-10 overflow-hidden"
-          style={{ background: "rgba(17,17,17,0.08)" }}
-        >
-          <div
-            className="h-full rounded-full transition-all duration-500"
-            style={{
-              width: `${progress}%`,
-              background: "#111111",
-            }}
-          />
+        {/* Progress — each segment is a step. Answered steps are clickable so a
+            visitor can jump back to fix an earlier answer without clicking
+            "Back" repeatedly; unreached steps stay disabled. */}
+        <div className="w-full flex gap-1.5 mb-10" role="group" aria-label="Quiz progress">
+          {questions.map((q, i) => (
+            <button
+              key={q.id}
+              type="button"
+              onClick={() => setStep(i)}
+              disabled={i > step}
+              aria-current={i === step ? "step" : undefined}
+              aria-label={`Question ${i + 1} of ${questions.length}: ${q.question}`}
+              className="h-1.5 flex-1 rounded-full transition-all duration-300 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2"
+              style={{ background: i <= step ? "#111111" : "rgba(17,17,17,0.08)" }}
+            />
+          ))}
         </div>
 
         {/* Question */}

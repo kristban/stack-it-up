@@ -350,7 +350,16 @@ export default function Navbar({ onLogoClick, onStartQuiz }: NavbarProps) {
       </div>
 
       {/* User — outside the nav pill, to the right of Start Quiz (desktop only;
-          on mobile the account links live in the hamburger panel below). */}
+          on mobile the account links live in the hamburger panel below). While
+          auth is still resolving, reserve the same footprint with a skeleton so
+          nothing else in the nav shifts once it's known whether to show this. */}
+      {!authReady && (
+        <div
+          aria-hidden="true"
+          className="hidden sm:block h-14 w-32 rounded-full border shadow-sm flex-shrink-0 animate-pulse"
+          style={glassStyle}
+        />
+      )}
       {authReady && (
         <div className="hidden sm:block relative flex-shrink-0" ref={accountRef}>
           {signedIn ? (
@@ -464,54 +473,70 @@ export default function Navbar({ onLogoClick, onStartQuiz }: NavbarProps) {
               ))}
             </div>
 
-            <Link
-              href="/supplements"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center px-3 py-3 mt-4 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
-              style={{ color: "#111111" }}
+            <h3
+              className="text-xs font-semibold uppercase tracking-wide mb-3 mt-6 px-1"
+              style={{ color: "#6B6558" }}
             >
-              Supplements
-            </Link>
+              Browse
+            </h3>
+            <div className="flex flex-col gap-1">
+              <Link
+                href="/supplements"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center px-3 py-3 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
+                style={{ color: "#111111" }}
+              >
+                Supplements
+              </Link>
 
-            <Link
-              href="/stacks"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center px-3 py-3 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
-              style={{ color: "#111111" }}
-            >
-              Stacks
-            </Link>
+              <Link
+                href="/stacks"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center px-3 py-3 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
+                style={{ color: "#111111" }}
+              >
+                Stacks
+              </Link>
 
-            <Link
-              href="/supplements?focus=search"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-3 px-3 py-3 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
-              style={{ color: "#111111" }}
-            >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.6" />
-                <path d="M14 14L17 17" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-              </svg>
-              Search supplements
-            </Link>
+              <Link
+                href="/supplements?focus=search"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-3 px-3 py-3 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
+                style={{ color: "#111111" }}
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.6" />
+                  <path d="M14 14L17 17" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+                Search supplements
+              </Link>
+            </div>
 
-            <Link
-              href="/faq"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center px-3 py-3 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
-              style={{ color: "#111111" }}
+            <h3
+              className="text-xs font-semibold uppercase tracking-wide mb-3 mt-6 px-1"
+              style={{ color: "#6B6558" }}
             >
-              FAQ
-            </Link>
+              More
+            </h3>
+            <div className="flex flex-col gap-1">
+              <Link
+                href="/faq"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center px-3 py-3 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
+                style={{ color: "#111111" }}
+              >
+                FAQ
+              </Link>
 
-            <a
-              href="#newsletter"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center px-3 py-3 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
-              style={{ color: "#111111" }}
-            >
-              Newsletter
-            </a>
+              <a
+                href="#newsletter"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center px-3 py-3 rounded-xl text-base font-medium transition-colors duration-150 active:bg-[rgba(207,224,247,0.4)]"
+                style={{ color: "#111111" }}
+              >
+                Newsletter
+              </a>
+            </div>
 
             {authReady && (
               <div

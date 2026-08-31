@@ -18,6 +18,8 @@ import { removeFavoriteAction, removeStackItemAction } from "../lib/actions/libr
 import { signOut } from "../lib/actions/auth";
 import { AVATAR_EMOJIS } from "../lib/avatarEmojis";
 import { accentFor } from "../lib/theme";
+import { WARNING_STYLE } from "../lib/categories";
+import { getStackWarnings } from "../lib/engine";
 import type { StackSlot, Supplement } from "../lib/types";
 import { pageMetadata } from "../lib/seo";
 
@@ -95,6 +97,8 @@ export default async function AccountPage({
   }
 
   const { favorites, morning, evening } = await getUserStacks();
+  const stackWarnings = getStackWarnings([...morning, ...evening]);
+  const totalSaved = favorites.length + morning.length + evening.length;
 
   return (
     <>
@@ -132,7 +136,29 @@ export default async function AccountPage({
               <p className="text-lg" style={{ color: "#6B6558" }}>
                 Your saved supplements and daily stacks, plus your name and email.
               </p>
+              {totalSaved > 0 && (
+                <p className="text-sm mt-2" style={{ color: "#8A8172" }}>
+                  {totalSaved} supplement{totalSaved !== 1 ? "s" : ""} saved — {morning.length} morning,{" "}
+                  {evening.length} evening, {favorites.length} favorited.
+                </p>
+              )}
             </div>
+
+            {stackWarnings.length > 0 && (
+              <div className="space-y-3 mb-6">
+                {stackWarnings.map((message, i) => (
+                  <div
+                    key={i}
+                    role="note"
+                    className="rounded-2xl p-4 border flex gap-2.5 text-sm leading-relaxed"
+                    style={{ background: WARNING_STYLE.bg, borderColor: WARNING_STYLE.border, color: WARNING_STYLE.text }}
+                  >
+                    <span aria-hidden="true" className="text-base leading-none flex-shrink-0">⚠️</span>
+                    <p>{message}</p>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {updated === "profile" && (
               <div

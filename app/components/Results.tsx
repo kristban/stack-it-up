@@ -1,11 +1,17 @@
 "use client";
 
-import { Supplement } from "../lib/types";
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import { Answers, Supplement } from "../lib/types";
 import { accentFor } from "../lib/theme";
 import { WARNING_STYLE } from "../lib/categories";
+import { useUserLibrary } from "../hooks/useUserLibrary";
+import { LibraryToggleRow } from "./LibraryToggle";
+import { encodeAnswers } from "../lib/shareStack";
 
 interface ResultsProps {
   stack: Supplement[];
+  answers?: Answers | null;
   onReset: () => void;
 }
 
@@ -21,7 +27,28 @@ function Tag({ label }: { label: string }) {
   );
 }
 
-export default function Results({ stack, onReset }: ResultsProps) {
+export default function Results({ stack, answers, onReset }: ResultsProps) {
+  const library = useUserLibrary();
+  const [copied, setCopied] = useState(false);
+
+  const shareUrl = useMemo(() => {
+    if (!answers || typeof window === "undefined") return null;
+    const encoded = encodeAnswers(answers);
+    if (!encoded) return null;
+    return `${window.location.origin}${window.location.pathname}?stack=${encoded}`;
+  }, [answers]);
+
+  async function copyLink() {
+    if (!shareUrl) return;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard permission denied or unavailable — nothing to fall back to here.
+    }
+  }
+
   return (
     <section className="min-h-screen px-4 py-16">
       <div className="max-w-3xl mx-auto">
@@ -49,6 +76,22 @@ export default function Results({ stack, onReset }: ResultsProps) {
             your goals, activity level, and diet.
           </p>
         </div>
+
+        {library.authReady && !library.signedIn && (
+          <div
+            className="rounded-2xl p-4 mb-8 border flex flex-wrap items-center justify-between gap-3 text-sm"
+            style={{ background: "#FFFFFF", borderColor: "rgba(17,17,17,0.08)", color: "#3A362E" }}
+          >
+            <span>Want to save this routine to your account?</span>
+            <Link
+              href="/login"
+              className="font-semibold underline underline-offset-2 transition-opacity hover:opacity-70"
+              style={{ color: "#111111" }}
+            >
+              Log in →
+            </Link>
+          </div>
+        )}
 
         {/* Cards */}
         <div className="space-y-4 mb-14">
@@ -156,6 +199,12 @@ export default function Results({ stack, onReset }: ResultsProps) {
                         </p>
                       </div>
                     )}
+
+                    {library.authReady && library.signedIn && (
+                      <div className="mt-4 pt-4 border-t" style={{ borderColor: "rgba(17,17,17,0.08)" }}>
+                        <LibraryToggleRow supp={supp} library={library} />
+                      </div>
+                    )}
                   </div>
                 </div>
               </article>
@@ -179,7 +228,7 @@ export default function Results({ stack, onReset }: ResultsProps) {
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 justify-center">
           <button
             onClick={onReset}
             className="px-8 py-4 rounded-full font-medium text-base transition-all duration-200 hover:scale-105 active:scale-95 border-2"
@@ -191,6 +240,19 @@ export default function Results({ stack, onReset }: ResultsProps) {
           >
             ← Start Over
           </button>
+          {shareUrl && (
+            <button
+              onClick={copyLink}
+              className="px-8 py-4 rounded-full font-medium text-base transition-all duration-200 hover:scale-105 active:scale-95 border-2"
+              style={{
+                borderColor: "#111111",
+                color: "#111111",
+                background: "transparent",
+              }}
+            >
+              {copied ? "Link copied!" : "Copy link"}
+            </button>
+          )}
           <button
             onClick={() => window.print()}
             className="px-8 py-4 rounded-full font-medium text-base transition-all duration-200 hover:scale-105 active:scale-95"

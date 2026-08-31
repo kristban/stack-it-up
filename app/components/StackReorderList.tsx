@@ -118,8 +118,13 @@ export default function StackReorderList({ slot, emoji, title, items }: StackReo
                 >
                   {supp.emoji}
                 </span>
-                <span className="text-sm font-medium truncate" style={{ color: "#111111" }}>
-                  {supp.name}
+                <span className="flex flex-col min-w-0">
+                  <span className="text-sm font-medium truncate" style={{ color: "#111111" }}>
+                    {supp.name}
+                  </span>
+                  <span className="text-xs truncate" style={{ color: "#8A8172" }}>
+                    {supp.dose} · {supp.timing}
+                  </span>
                 </span>
               </Link>
 

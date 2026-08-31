@@ -25,11 +25,16 @@ const LIFE_STAGE_BOOST: Record<string, string[]> = {
 // Supplements that supply enough of the same nutrient that stacking more than
 // one risks exceeding a safe daily ceiling (e.g. a multivitamin plus ZMA plus
 // zinc lozenges can together clear the 40mg/day zinc upper limit). Only one
-// supplement per group is kept in a generated stack.
-const NUTRIENT_GROUP: Record<string, string> = {
+// supplement per group is kept in a generated stack; getStackWarnings below
+// re-checks the same grouping for stacks users assemble by hand.
+export const NUTRIENT_GROUP: Record<string, string> = {
   multivitamin: "zinc",
   zinc_mag: "zinc",
   zinc_lozenge: "zinc",
+};
+
+const NUTRIENT_GROUP_LABEL: Record<string, string> = {
+  zinc: "zinc",
 };
 
 function score(supp: Supplement, answers: Answers): number {
@@ -102,4 +107,33 @@ export function generateStack(answers: Answers, supplements: Supplement[]): Supp
   }
 
   return result;
+}
+
+// Flags supplements in a stack that supply overlapping nutrients past a safe
+// daily ceiling when combined (see NUTRIENT_GROUP). generateStack already
+// avoids this by construction; this is for /account, where a signed-in user
+// assembles their morning/evening stack from the catalog unconstrained.
+export function getStackWarnings(supplements: Supplement[]): string[] {
+  const byGroup = new Map<string, Supplement[]>();
+  for (const supp of supplements) {
+    const group = NUTRIENT_GROUP[supp.key];
+    if (!group) continue;
+    const list = byGroup.get(group) ?? [];
+    list.push(supp);
+    byGroup.set(group, list);
+  }
+
+  const warnings: string[] = [];
+  for (const [group, members] of byGroup) {
+    // The same supplement can appear in both morning and evening; that's not
+    // a nutrient overlap, so dedupe by key before counting distinct sources.
+    const distinct = Array.from(new Map(members.map((s) => [s.key, s])).values());
+    if (distinct.length < 2) continue;
+    const names = distinct.map((s) => s.name).join(" and ");
+    const nutrient = NUTRIENT_GROUP_LABEL[group] ?? group;
+    warnings.push(
+      `${names} are both in your stack and both supply ${nutrient} — together they may push you past the recommended daily amount. Consider keeping just one.`,
+    );
+  }
+  return warnings;
 }

@@ -2,24 +2,52 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Supplement } from "../lib/types";
+import { Supplement, EvidenceLevel } from "../lib/types";
 import { searchSupplements } from "../lib/fuzzySearch";
 import { accentFor } from "../lib/theme";
-import { SUPPLEMENT_CATEGORIES, EVIDENCE_LEVELS } from "../lib/categories";
+import { SUPPLEMENT_CATEGORIES, EVIDENCE_LEVELS, EVIDENCE_ORDER } from "../lib/categories";
 import { useUserLibrary, type UserLibrary } from "../hooks/useUserLibrary";
+import { LibraryToggleRow, LibraryToggleRowSkeleton } from "./LibraryToggle";
 
 interface SupplementSearchProps {
   supplements: Supplement[];
 }
 
+const EVIDENCE_HINT_KEY = "stackitup-library-hint-dismissed";
+const EVIDENCE_FILTERS: Array<EvidenceLevel | "all"> = ["all", ...EVIDENCE_ORDER];
+
 export default function SupplementSearch({ supplements }: SupplementSearchProps) {
   const [query, setQuery] = useState("");
+  const [evidenceFilter, setEvidenceFilter] = useState<EvidenceLevel | "all">("all");
+  const [hintDismissed, setHintDismissed] = useState(() => {
+    if (typeof window === "undefined") return true;
+    try {
+      return Boolean(window.localStorage.getItem(EVIDENCE_HINT_KEY));
+    } catch {
+      // Storage unavailable (private mode, etc.) — just skip the one-time tip.
+      return true;
+    }
+  });
   const inputRef = useRef<HTMLInputElement>(null);
   const library = useUserLibrary();
 
+  function dismissHint() {
+    setHintDismissed(true);
+    try {
+      window.localStorage.setItem(EVIDENCE_HINT_KEY, "1");
+    } catch {
+      // Nothing to do if storage isn't available — it'll just show again next visit.
+    }
+  }
+
+  const pool = useMemo(
+    () => (evidenceFilter === "all" ? supplements : supplements.filter((s) => s.evidence === evidenceFilter)),
+    [supplements, evidenceFilter],
+  );
+
   const results = useMemo(
-    () => searchSupplements(query, supplements),
-    [query, supplements],
+    () => searchSupplements(query, pool),
+    [query, pool],
   );
 
   // When arriving from the navbar search entry (/supplements?focus=search),
@@ -50,7 +78,7 @@ export default function SupplementSearch({ supplements }: SupplementSearchProps)
 
   const trimmed = query.trim();
   const countLabel = !trimmed
-    ? `${supplements.length} supplement${supplements.length === 1 ? "" : "s"}`
+    ? `${pool.length} supplement${pool.length === 1 ? "" : "s"}`
     : `${results.length} result${results.length === 1 ? "" : "s"} for “${trimmed}”`;
 
   function clear() {
@@ -60,6 +88,28 @@ export default function SupplementSearch({ supplements }: SupplementSearchProps)
 
   return (
     <div className="mb-14">
+      {library.authReady && library.signedIn && !hintDismissed && (
+        <div
+          className="mb-6 rounded-2xl p-4 border flex items-start justify-between gap-3 text-sm"
+          style={{ background: "#CFE0F7", borderColor: "rgba(17,17,17,0.08)", color: "#2F5580" }}
+        >
+          <p className="leading-relaxed">
+            <strong>Tip:</strong> tap ♥ favorite, ☀️ morning, or 🌙 evening on any supplement below to save
+            it to your account.
+          </p>
+          <button
+            type="button"
+            onClick={dismissHint}
+            aria-label="Dismiss tip"
+            className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors hover:bg-[rgba(255,255,255,0.4)] focus:outline-none focus-visible:ring-2"
+          >
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2 2L10 10M10 2L2 10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
+      )}
+
       <form
         role="search"
         onSubmit={(e) => e.preventDefault()}
@@ -105,6 +155,29 @@ export default function SupplementSearch({ supplements }: SupplementSearchProps)
         </div>
       </form>
 
+      <div className="flex flex-wrap gap-2 mb-4" role="group" aria-label="Filter by evidence level">
+        {EVIDENCE_FILTERS.map((level) => {
+          const active = evidenceFilter === level;
+          const meta = level === "all" ? null : EVIDENCE_LEVELS[level];
+          return (
+            <button
+              key={level}
+              type="button"
+              onClick={() => setEvidenceFilter(level)}
+              aria-pressed={active}
+              className="px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-150 border focus:outline-none focus-visible:ring-2"
+              style={{
+                background: active ? (meta?.bg ?? "#111111") : "#FFFFFF",
+                borderColor: active ? "transparent" : "rgba(17,17,17,0.15)",
+                color: active ? (meta?.text ?? "#FFFFFF") : "#6B6558",
+              }}
+            >
+              {level === "all" ? "All evidence levels" : meta!.label}
+            </button>
+          );
+        })}
+      </div>
+
       <p className="text-sm mb-6" style={{ color: "#8A8172" }} aria-live="polite" role="status">
         {countLabel}
       </p>
@@ -138,11 +211,31 @@ export default function SupplementSearch({ supplements }: SupplementSearchProps)
             </button>
           </div>
         )
+      ) : pool.length === 0 ? (
+        <div
+          className="rounded-3xl border p-10 text-center"
+          style={{ background: "#FFFFFF", borderColor: "rgba(17,17,17,0.08)" }}
+        >
+          <p className="text-base mb-1" style={{ color: "#111111", fontWeight: 600 }}>
+            No supplements match this filter.
+          </p>
+          <p className="text-sm mb-5" style={{ color: "#6B6558" }}>
+            Try a different evidence level, or clear the filter to browse everything.
+          </p>
+          <button
+            type="button"
+            onClick={() => setEvidenceFilter("all")}
+            className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{ background: "#111111", color: "#FFFFFF" }}
+          >
+            Clear filter
+          </button>
+        </div>
       ) : (
         // Browsing: grouped into category sections, in curated order.
         <div className="space-y-12">
           {SUPPLEMENT_CATEGORIES.map((cat) => {
-            const items = supplements.filter((s) => s.category === cat.slug);
+            const items = pool.filter((s) => s.category === cat.slug);
             if (items.length === 0) return null;
             return (
               <section key={cat.slug}>
@@ -219,67 +312,15 @@ function SupplementCard({ supp, library }: { supp: Supplement; library: UserLibr
       </Link>
 
       {library.authReady && library.signedIn && (
-        <div
-          className="mt-4 pt-4 border-t flex items-center gap-2"
-          style={{ borderColor: "rgba(17,17,17,0.08)" }}
-        >
-          <GridToggle
-            pressed={library.favorites.has(supp.key)}
-            onClick={() => library.toggleFavorite(supp.key)}
-            emoji="♥"
-            title="Favorite"
-            phrase="favorites"
-            name={supp.name}
-          />
-          <GridToggle
-            pressed={library.morning.has(supp.key)}
-            onClick={() => library.toggleStack(supp.key, "morning")}
-            emoji="☀️"
-            title="Morning stack"
-            phrase="your morning stack"
-            name={supp.name}
-          />
-          <GridToggle
-            pressed={library.evening.has(supp.key)}
-            onClick={() => library.toggleStack(supp.key, "evening")}
-            emoji="🌙"
-            title="Evening stack"
-            phrase="your evening stack"
-            name={supp.name}
-          />
+        <div className="mt-4 pt-4 border-t" style={{ borderColor: "rgba(17,17,17,0.08)" }}>
+          <LibraryToggleRow supp={supp} library={library} />
+        </div>
+      )}
+      {!library.authReady && (
+        <div className="mt-4 pt-4 border-t" style={{ borderColor: "rgba(17,17,17,0.08)" }}>
+          <LibraryToggleRowSkeleton />
         </div>
       )}
     </div>
-  );
-}
-
-interface GridToggleProps {
-  pressed: boolean;
-  onClick: () => void;
-  emoji: string;
-  title: string;
-  phrase: string;
-  name: string;
-}
-
-// Compact icon toggle shown in a card footer. Blue #2F5580 on #CFE0F7 is the
-// AA-safe active pairing (docs/CONVENTIONS.md).
-function GridToggle({ pressed, onClick, emoji, title, phrase, name }: GridToggleProps) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={pressed}
-      aria-label={pressed ? `Remove ${name} from ${phrase}` : `Add ${name} to ${phrase}`}
-      title={title}
-      className="w-9 h-9 rounded-full flex items-center justify-center text-sm border transition-all duration-150 hover:scale-110 active:scale-95 focus:outline-none focus-visible:ring-2"
-      style={{
-        background: pressed ? "#CFE0F7" : "#FFFFFF",
-        borderColor: pressed ? "#2F5580" : "rgba(17,17,17,0.15)",
-        color: pressed ? "#2F5580" : "#6B6558",
-      }}
-    >
-      <span aria-hidden="true">{emoji}</span>
-    </button>
   );
 }

@@ -15,6 +15,7 @@ import Footer from "./Footer";
 const Quiz = dynamic(() => import("./Quiz"));
 const Results = dynamic(() => import("./Results"));
 import { generateStack } from "../lib/engine";
+import { decodeAnswers } from "../lib/shareStack";
 import { Answers, Supplement } from "../lib/types";
 import { FeaturedStack } from "../lib/featuredStacks";
 
@@ -28,18 +29,32 @@ interface HomeClientProps {
 export default function HomeClient({ supplements, featuredStacks }: HomeClientProps) {
   const [view, setView] = useState<View>("hero");
   const [stack, setStack] = useState<Supplement[]>([]);
+  const [answers, setAnswers] = useState<Answers | null>(null);
 
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).get("start") === "quiz") {
+    const params = new URLSearchParams(window.location.search);
+    const sharedStack = params.get("stack");
+    const decoded = sharedStack ? decodeAnswers(sharedStack) : null;
+
+    if (decoded) {
+      // A shared routine link (?stack=...) — regenerate it from the encoded
+      // answers rather than storing the resolved stack itself, so it always
+      // reflects the current supplement library.
+      setAnswers(decoded);
+      setStack(generateStack(decoded, supplements));
+      setView("results");
+      window.history.replaceState(null, "", window.location.pathname);
+    } else if (params.get("start") === "quiz") {
       setView("quiz");
       window.history.replaceState(null, "", window.location.pathname);
     } else if (window.location.hash) {
       document.getElementById(window.location.hash.slice(1))?.scrollIntoView();
     }
-  }, []);
+  }, [supplements]);
 
-  function handleComplete(answers: Answers) {
-    const result = generateStack(answers, supplements);
+  function handleComplete(quizAnswers: Answers) {
+    const result = generateStack(quizAnswers, supplements);
+    setAnswers(quizAnswers);
     setStack(result);
     setView("results");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -48,6 +63,7 @@ export default function HomeClient({ supplements, featuredStacks }: HomeClientPr
   function handleReset() {
     setView("hero");
     setStack([]);
+    setAnswers(null);
     // Drop any lingering hash (e.g. #newsletter) so the logo returns to a clean URL.
     if (window.location.hash) {
       window.history.replaceState(null, "", window.location.pathname + window.location.search);
@@ -80,7 +96,7 @@ export default function HomeClient({ supplements, featuredStacks }: HomeClientPr
           <Quiz onComplete={handleComplete} onBack={() => setView("hero")} />
         )}
         {view === "results" && (
-          <Results stack={stack} onReset={handleReset} />
+          <Results stack={stack} answers={answers} onReset={handleReset} />
         )}
       </main>
       <Footer />
