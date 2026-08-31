@@ -14,6 +14,11 @@ import { EVIDENCE_LEVELS, WARNING_STYLE } from "../../lib/categories";
 import { pageMetadata } from "../../lib/seo";
 import { breadcrumbJsonLd, supplementJsonLd } from "../../lib/structuredData";
 
+export async function generateStaticParams() {
+  const supplements = await getSupplements();
+  return supplements.map((supplement) => ({ key: supplement.key }));
+}
+
 export async function generateMetadata({
   params,
 }: {

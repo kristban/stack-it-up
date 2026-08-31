@@ -16,6 +16,11 @@ import { accentFor } from "../../lib/theme";
 import { pageMetadata, absoluteUrl } from "../../lib/seo";
 import { breadcrumbJsonLd, collectionPageJsonLd, webPageJsonLd } from "../../lib/structuredData";
 
+export async function generateStaticParams() {
+  const stacks = await getFeaturedStacks();
+  return stacks.map((stack) => ({ key: stack.key }));
+}
+
 export async function generateMetadata({
   params,
 }: {

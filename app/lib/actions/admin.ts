@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import {
   adminCreateSupplement,
   adminUpdateSupplement,
@@ -90,6 +90,7 @@ export async function createSupplementAction(formData: FormData) {
     redirect(`/admin/supplements/new?error=${encodeURIComponent(message)}`);
   }
 
+  updateTag("supplements");
   revalidatePath("/admin/supplements");
   revalidatePath("/supplements");
   redirect("/admin/supplements");
@@ -131,6 +132,7 @@ export async function updateSupplementAction(formData: FormData) {
     redirect(`/admin/supplements/${key}?error=${encodeURIComponent("Something went wrong saving changes.")}`);
   }
 
+  updateTag("supplements");
   revalidatePath("/admin/supplements");
   revalidatePath("/supplements");
   revalidatePath(`/supplements/${key}`);
@@ -146,6 +148,7 @@ export async function setSupplementActiveAction(formData: FormData) {
 
   await adminSetSupplementActive(key, isActive);
 
+  updateTag("supplements");
   revalidatePath("/admin/supplements");
   revalidatePath("/supplements");
   revalidatePath(`/supplements/${key}`);
