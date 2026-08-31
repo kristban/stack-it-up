@@ -6,6 +6,7 @@ import { FeaturedStack } from "../lib/featuredStacks";
 import { accentFor, BLUE_ACCENT, YELLOW_ACCENT } from "../lib/theme";
 
 const GRID_COLS = 3;
+const MAX_VISIBLE = 6;
 
 function FadeInSection({
   children,
@@ -32,6 +33,8 @@ interface FeaturedStacksProps {
 
 export default function FeaturedStacks({ stacks }: FeaturedStacksProps) {
   if (stacks.length === 0) return null;
+
+  const visibleStacks = stacks.slice(0, MAX_VISIBLE);
 
   return (
     <section className="px-4 py-20 sm:py-28" style={{ background: "#F5F3EC" }}>
@@ -68,7 +71,7 @@ export default function FeaturedStacks({ stacks }: FeaturedStacksProps) {
 
         {/* Stack cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-          {stacks.map((stack, i) => {
+          {visibleStacks.map((stack, i) => {
             const col = i % GRID_COLS;
             const featuredAccent = col % 2 === 0 ? BLUE_ACCENT : YELLOW_ACCENT;
             const iconAccent = accentFor(stack.key);
