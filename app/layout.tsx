@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import CookieBanner from "./components/CookieBanner";
+import ChatBubble from "./components/ChatBubble";
 import JsonLd from "./components/JsonLd";
 import { SITE_NAME, SITE_URL } from "./lib/seo";
 import { organizationJsonLd, websiteJsonLd } from "./lib/structuredData";
@@ -62,6 +63,7 @@ export default function RootLayout({
         </noscript>
         {children}
         <CookieBanner />
+        <ChatBubble />
       </body>
     </html>
   );
