@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect, FormEvent } from "react";
+import { useState, useRef, useEffect, FormEvent, ReactNode } from "react";
+import Link from "next/link";
 
 interface Message {
   role: "user" | "model";
@@ -11,6 +12,42 @@ const GREETING: Message = {
   role: "model",
   text: "Hi! I'm here to help with supplement and fitness questions. What's on your mind?",
 };
+
+// Matches the [Name](/path) links the chat system prompt instructs the model
+// to use. Only /supplements/ and /stacks/ paths are turned into real links —
+// a defense-in-depth backstop alongside the prompt instructions, in case the
+// model ever emits something else.
+const LINK_PATTERN = /\[([^\]]+)\]\((\/(?:supplements|stacks)\/[a-zA-Z0-9_-]+)\)/g;
+
+function renderWithLinks(text: string): ReactNode[] {
+  const parts: ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+
+  LINK_PATTERN.lastIndex = 0;
+  while ((match = LINK_PATTERN.exec(text))) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    const [, label, href] = match;
+    parts.push(
+      <Link
+        key={key++}
+        href={href}
+        className="underline focus-visible:ring-2"
+        style={{ color: "#2F5580" }}
+      >
+        {label}
+      </Link>,
+    );
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+  return parts;
+}
 
 export default function ChatBubble() {
   const [isOpen, setIsOpen] = useState(false);
@@ -106,7 +143,7 @@ export default function ChatBubble() {
                       }
                 }
               >
-                {m.text}
+                {m.role === "model" ? renderWithLinks(m.text) : m.text}
               </div>
             ))}
             {isLoading && (
