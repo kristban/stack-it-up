@@ -13,6 +13,37 @@ const GREETING: Message = {
   text: "Hi! I'm here to help with supplement and fitness questions. What's on your mind?",
 };
 
+const STORAGE_KEY = "stackitup-chat-history";
+// Caps localStorage growth across many sessions — well above what a single
+// conversation needs, just a backstop against unbounded growth.
+const MAX_STORED_MESSAGES = 40;
+// Caps what's sent to Gemini per request so a long-running conversation
+// doesn't keep growing the token cost of every new message.
+const MAX_HISTORY_TO_SEND = 10;
+
+// Read once, synchronously, so the first render already shows a returning
+// visitor's history instead of flashing the greeting before an effect
+// restores it (same pattern as Quiz.tsx's quiz-progress persistence). Safe
+// here because the panel starts closed, so this never renders into the
+// server-sent HTML regardless of what's in storage.
+function loadSaved(): Message[] {
+  if (typeof window === "undefined") return [GREETING];
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [GREETING];
+    const parsed = JSON.parse(raw);
+    const isValid =
+      Array.isArray(parsed) &&
+      parsed.length > 0 &&
+      parsed.every(
+        (m) => (m?.role === "user" || m?.role === "model") && typeof m?.text === "string",
+      );
+    return isValid ? (parsed as Message[]) : [GREETING];
+  } catch {
+    return [GREETING];
+  }
+}
+
 // Matches the [Name](/path) links the chat system prompt instructs the model
 // to use. Only /supplements/ and /stacks/ paths are turned into real links —
 // a defense-in-depth backstop alongside the prompt instructions, in case the
@@ -51,7 +82,7 @@ function renderWithLinks(text: string): ReactNode[] {
 
 export default function ChatBubble() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([GREETING]);
+  const [messages, setMessages] = useState<Message[]>(loadSaved);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -60,6 +91,20 @@ export default function ChatBubble() {
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [messages, isOpen]);
+
+  // Persist on every change so a refresh or a different page resumes the
+  // same conversation, trimmed so storage can't grow without bound.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(messages.slice(-MAX_STORED_MESSAGES)),
+      );
+    } catch {
+      // Storage unavailable (private mode, quota) — chat just won't survive a refresh.
+    }
+  }, [messages]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -76,7 +121,7 @@ export default function ChatBubble() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: nextMessages }),
+        body: JSON.stringify({ messages: nextMessages.slice(-MAX_HISTORY_TO_SEND) }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error ?? "Chat request failed");
@@ -85,6 +130,17 @@ export default function ChatBubble() {
       setError("Couldn't get a reply — please try again.");
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  function handleClear() {
+    setMessages([GREETING]);
+    setError(null);
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // Storage unavailable — nothing to clear.
     }
   }
 
@@ -102,11 +158,11 @@ export default function ChatBubble() {
           }}
         >
           <div
-            className="flex items-center justify-between px-4 py-3"
+            className="flex items-center justify-between gap-2 px-4 py-3"
             style={{ borderBottom: "1px solid var(--border)" }}
           >
             <span
-              className="font-bold"
+              className="truncate font-bold"
               style={{
                 fontFamily: "var(--font-heading)",
                 color: "var(--foreground)",
@@ -114,15 +170,27 @@ export default function ChatBubble() {
             >
               <span aria-hidden="true">🌿</span> Ask about supplements
             </span>
-            <button
-              type="button"
-              onClick={() => setIsOpen(false)}
-              aria-label="Close chat"
-              className="rounded-full px-2 py-1 focus-visible:ring-2"
-              style={{ color: "var(--foreground-muted)" }}
-            >
-              ✕
-            </button>
+            <div className="flex shrink-0 items-center gap-1">
+              <button
+                type="button"
+                onClick={handleClear}
+                disabled={messages.length <= 1}
+                aria-label="Clear chat"
+                className="whitespace-nowrap rounded-full px-2 py-1 text-xs font-medium focus-visible:ring-2 disabled:opacity-40"
+                style={{ color: "var(--foreground-muted)" }}
+              >
+                Clear
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsOpen(false)}
+                aria-label="Close chat"
+                className="rounded-full px-2 py-1 focus-visible:ring-2"
+                style={{ color: "var(--foreground-muted)" }}
+              >
+                ✕
+              </button>
+            </div>
           </div>
 
           <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
