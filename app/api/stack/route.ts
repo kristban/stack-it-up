@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupplements } from "@/app/lib/supplements";
 import { buildStackPrompt, buildStackSchema, sanitizeAnswers } from "@/app/lib/stackPrompt";
-import { generateStructured } from "@/app/lib/gemini";
-import { generateStack, budgetLimit, LIFE_STAGE_SUPPRESS, NUTRIENT_GROUP } from "@/app/lib/engine";
+import { generateStructured, GeminiError } from "@/app/lib/gemini";
+import { budgetLimit, LIFE_STAGE_SUPPRESS, NUTRIENT_GROUP } from "@/app/lib/engine";
 import { Supplement } from "@/app/lib/types";
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 8;
+
+const QUOTA_MESSAGE = "We've reached today's free AI limit — please try again tomorrow.";
+const GENERIC_MESSAGE = "Something went wrong — please try again.";
 
 // Per-IP sliding window, held in memory — same simple pattern as /api/chat;
 // good enough to blunt a single abusive visitor on this low-traffic site.
@@ -46,28 +49,51 @@ function applySafetyFilters(stack: Supplement[], answers: ReturnType<typeof sani
   return result;
 }
 
+// Never leak the underlying Gemini error (status text, response body, key
+// hints) to the client — log it here for us, and hand the visitor only a
+// safe, friendly message plus an error code the UI can branch on.
+function failureResponse(err: unknown) {
+  console.error("Stack generation failed:", err);
+  if (err instanceof GeminiError && err.status === 429) {
+    return NextResponse.json(
+      { error: "quota_exceeded", message: QUOTA_MESSAGE },
+      { status: 429 },
+    );
+  }
+  return NextResponse.json(
+    { error: "generation_failed", message: GENERIC_MESSAGE },
+    { status: 502 },
+  );
+}
+
 export async function POST(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   if (isRateLimited(ip)) {
     return NextResponse.json(
-      { error: "Too many requests — please wait a minute and try again." },
+      {
+        error: "too_many_requests",
+        message: "Too many requests — please wait a minute and try again.",
+      },
       { status: 429 },
     );
   }
 
   const body = await req.json().catch(() => null);
   const answers = sanitizeAnswers(body?.answers);
-  const supplements = await getSupplements();
 
   if (Object.keys(answers).length === 0) {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    return NextResponse.json(
+      { error: "invalid_request", message: "Invalid request." },
+      { status: 400 },
+    );
   }
 
   if (!process.env.GEMINI_API_KEY) {
-    return NextResponse.json({ stack: generateStack(answers, supplements) });
+    return failureResponse(new Error("GEMINI_API_KEY is not set"));
   }
 
   try {
+    const supplements = await getSupplements();
     const validKeys = supplements.map((s) => s.key);
     const prompt = buildStackPrompt(answers, supplements);
     const schema = buildStackSchema(validKeys);
@@ -89,7 +115,6 @@ export async function POST(req: NextRequest) {
     const stack = applySafetyFilters(hydrated, answers);
     return NextResponse.json({ stack });
   } catch (err) {
-    console.error("Stack generation failed, falling back to rule-based engine:", err);
-    return NextResponse.json({ stack: generateStack(answers, supplements) });
+    return failureResponse(err);
   }
 }

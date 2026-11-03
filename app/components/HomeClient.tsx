@@ -15,12 +15,18 @@ import Footer from "./Footer";
 const Quiz = dynamic(() => import("./Quiz"));
 const Results = dynamic(() => import("./Results"));
 const GeneratingStack = dynamic(() => import("./GeneratingStack"));
+const StackError = dynamic(() => import("./StackError"));
 import { generateStack } from "../lib/engine";
 import { decodeAnswers } from "../lib/shareStack";
 import { Answers, Supplement } from "../lib/types";
 import { FeaturedStack } from "../lib/featuredStacks";
 
-type View = "hero" | "quiz" | "generating" | "results";
+type View = "hero" | "quiz" | "generating" | "results" | "error";
+
+// Shown when our own /api/stack fetch never got a response at all (e.g. the
+// visitor is offline) — the server's own copy covers every case it can
+// actually detect, so this is only the "couldn't even ask" fallback.
+const UNREACHABLE_MESSAGE = "Something went wrong — please try again.";
 
 interface HomeClientProps {
   supplements: Supplement[];
@@ -31,6 +37,7 @@ export default function HomeClient({ supplements, featuredStacks }: HomeClientPr
   const [view, setView] = useState<View>("hero");
   const [stack, setStack] = useState<Supplement[]>([]);
   const [answers, setAnswers] = useState<Answers | null>(null);
+  const [stackError, setStackError] = useState<{ message: string; canRetry: boolean } | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -53,8 +60,7 @@ export default function HomeClient({ supplements, featuredStacks }: HomeClientPr
     }
   }, [supplements]);
 
-  async function handleComplete(quizAnswers: Answers) {
-    setAnswers(quizAnswers);
+  async function requestStack(quizAnswers: Answers) {
     setView("generating");
     window.scrollTo({ top: 0, behavior: "smooth" });
 
@@ -64,21 +70,43 @@ export default function HomeClient({ supplements, featuredStacks }: HomeClientPr
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answers: quizAnswers }),
       });
-      const data = await res.json();
-      if (!Array.isArray(data?.stack)) throw new Error("Invalid response");
-      setStack(data.stack);
+      const data = await res.json().catch(() => null);
+
+      if (res.ok && Array.isArray(data?.stack)) {
+        setStack(data.stack);
+        setView("results");
+        return;
+      }
+
+      // Server already logged the real error and sent back a safe message —
+      // never surface the raw response here. Quota exhaustion won't resolve
+      // by retrying today, so that's the one case with no retry button.
+      setStackError({
+        message: typeof data?.message === "string" ? data.message : UNREACHABLE_MESSAGE,
+        canRetry: data?.error !== "quota_exceeded",
+      });
+      setView("error");
     } catch {
-      // Network failure reaching our own API — fall back to the rule-based
-      // engine client-side so the quiz never dead-ends on results.
-      setStack(generateStack(quizAnswers, supplements));
+      // Didn't even get a response from our own API (e.g. offline).
+      setStackError({ message: UNREACHABLE_MESSAGE, canRetry: true });
+      setView("error");
     }
-    setView("results");
+  }
+
+  function handleComplete(quizAnswers: Answers) {
+    setAnswers(quizAnswers);
+    requestStack(quizAnswers);
+  }
+
+  function handleRetry() {
+    if (answers) requestStack(answers);
   }
 
   function handleReset() {
     setView("hero");
     setStack([]);
     setAnswers(null);
+    setStackError(null);
     // Drop any lingering hash (e.g. #newsletter) so the logo returns to a clean URL.
     if (window.location.hash) {
       window.history.replaceState(null, "", window.location.pathname + window.location.search);
@@ -111,6 +139,14 @@ export default function HomeClient({ supplements, featuredStacks }: HomeClientPr
           <Quiz onComplete={handleComplete} onBack={() => setView("hero")} />
         )}
         {view === "generating" && <GeneratingStack />}
+        {view === "error" && stackError && (
+          <StackError
+            message={stackError.message}
+            canRetry={stackError.canRetry}
+            onRetry={handleRetry}
+            onReset={handleReset}
+          />
+        )}
         {view === "results" && (
           <Results stack={stack} answers={answers} onReset={handleReset} />
         )}

@@ -5,6 +5,19 @@ export interface ChatTurn {
   text: string;
 }
 
+// Carries the HTTP status Gemini responded with (e.g. 429 for rate-limit/quota)
+// so callers can distinguish "try again later" from "something's actually
+// broken" without parsing response text themselves.
+export class GeminiError extends Error {
+  status: number;
+
+  constructor(status: number, body: string) {
+    super(`Gemini API error ${status}: ${body}`);
+    this.name = "GeminiError";
+    this.status = status;
+  }
+}
+
 // Flash-Lite: cheapest Gemini model still free on the unpaid tier, which is
 // all this feature needs for short supplement/fitness Q&A. gemini-3.1-flash-lite
 // is nominally cheaper but was consistently 503 UNAVAILABLE (high demand) when
@@ -81,7 +94,7 @@ export async function generateStructured(
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Gemini API error ${res.status}: ${body}`);
+    throw new GeminiError(res.status, body);
   }
 
   const data = await res.json();
