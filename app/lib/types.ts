@@ -2,8 +2,11 @@ export interface Question {
   id: string;
   question: string;
   subtitle?: string;
-  type: "single" | "multi";
+  type: "single" | "multi" | "text";
   options: Option[];
+  // "text" questions only: textarea placeholder + character cap.
+  placeholder?: string;
+  maxLength?: number;
 }
 
 export interface Option {

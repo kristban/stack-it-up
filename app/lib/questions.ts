@@ -74,4 +74,13 @@ export const questions: Question[] = [
       { id: "high", label: "$80+ — go all in", emoji: "💎" },
     ],
   },
+  {
+    id: "notes",
+    question: "Anything else we should know?",
+    subtitle: "Optional — e.g. where you live, your daily routine, sleep, budget.",
+    type: "text",
+    options: [],
+    placeholder: "Tell us anything that might help personalize your stack…",
+    maxLength: 500,
+  },
 ];

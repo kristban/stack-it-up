@@ -55,6 +55,7 @@ export default function Quiz({ onComplete, onBack }: QuizProps) {
 
   const current = questions[step];
   const selected = answers[current.id] ?? [];
+  const text = selected[0] ?? "";
   const isLast = step === questions.length - 1;
 
   function toggle(optionId: string) {
@@ -73,8 +74,20 @@ export default function Quiz({ onComplete, onBack }: QuizProps) {
     }
   }
 
+  function setText(value: string) {
+    setAnswers((prev) => {
+      if (value.length === 0) {
+        const rest = { ...prev };
+        delete rest[current.id];
+        return rest;
+      }
+      return { ...prev, [current.id]: [value] };
+    });
+  }
+
   function next() {
-    if (selected.length === 0) return;
+    // "text" questions are optional — skippable with nothing entered.
+    if (selected.length === 0 && current.type !== "text") return;
     if (isLast) {
       if (typeof window !== "undefined") window.localStorage.removeItem(STORAGE_KEY);
       onComplete(answers);
@@ -147,46 +160,63 @@ export default function Quiz({ onComplete, onBack }: QuizProps) {
         </div>
 
         {/* Options */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10">
-          {current.options.map((opt) => {
-            const isSelected = selected.includes(opt.id);
-            return (
-              <button
-                key={opt.id}
-                onClick={() => toggle(opt.id)}
-                className="flex items-center gap-4 p-4 rounded-2xl border-2 text-left transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus-visible:ring-2"
-                style={{
-                  borderColor: isSelected ? "#111111" : "rgba(17,17,17,0.1)",
-                  background: isSelected ? "#CFE0F7" : "#FFFFFF",
-                  color: "#111111",
-                }}
-                aria-pressed={isSelected}
-              >
-                <span aria-hidden="true" className="text-2xl flex-shrink-0">{opt.emoji}</span>
-                <span className="font-medium text-sm sm:text-base leading-snug">
-                  {opt.label}
-                </span>
-                {isSelected && (
-                  <span
-                    aria-hidden="true"
-                    className="ml-auto flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-white text-xs"
-                    style={{ background: "#111111" }}
-                  >
-                    ✓
+        {current.type === "text" ? (
+          <div className="mb-10">
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value.slice(0, current.maxLength ?? 500))}
+              placeholder={current.placeholder}
+              maxLength={current.maxLength ?? 500}
+              rows={4}
+              className="w-full p-4 rounded-2xl border-2 text-sm sm:text-base resize-none outline-none transition-colors focus:border-[#111111]"
+              style={{ borderColor: "rgba(17,17,17,0.1)", background: "#FFFFFF", color: "#111111" }}
+            />
+            <p className="text-xs mt-2 text-right" style={{ color: "#8A8172" }}>
+              {text.length} / {current.maxLength ?? 500}
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10">
+            {current.options.map((opt) => {
+              const isSelected = selected.includes(opt.id);
+              return (
+                <button
+                  key={opt.id}
+                  onClick={() => toggle(opt.id)}
+                  className="flex items-center gap-4 p-4 rounded-2xl border-2 text-left transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus-visible:ring-2"
+                  style={{
+                    borderColor: isSelected ? "#111111" : "rgba(17,17,17,0.1)",
+                    background: isSelected ? "#CFE0F7" : "#FFFFFF",
+                    color: "#111111",
+                  }}
+                  aria-pressed={isSelected}
+                >
+                  <span aria-hidden="true" className="text-2xl flex-shrink-0">{opt.emoji}</span>
+                  <span className="font-medium text-sm sm:text-base leading-snug">
+                    {opt.label}
                   </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
+                  {isSelected && (
+                    <span
+                      aria-hidden="true"
+                      className="ml-auto flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-white text-xs"
+                      style={{ background: "#111111" }}
+                    >
+                      ✓
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {/* CTA */}
         <button
           onClick={next}
-          disabled={selected.length === 0}
+          disabled={selected.length === 0 && current.type !== "text"}
           className="w-full py-5 rounded-full font-medium text-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
           style={{
-            background: selected.length > 0 ? "#111111" : "#DCD8CB",
+            background: selected.length > 0 || current.type === "text" ? "#111111" : "#DCD8CB",
             color: "#FFFFFF",
           }}
         >
