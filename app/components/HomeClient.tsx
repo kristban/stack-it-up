@@ -14,12 +14,13 @@ import Footer from "./Footer";
 // downloading once the visitor actually clicks in, trimming initial JS.
 const Quiz = dynamic(() => import("./Quiz"));
 const Results = dynamic(() => import("./Results"));
+const GeneratingStack = dynamic(() => import("./GeneratingStack"));
 import { generateStack } from "../lib/engine";
 import { decodeAnswers } from "../lib/shareStack";
 import { Answers, Supplement } from "../lib/types";
 import { FeaturedStack } from "../lib/featuredStacks";
 
-type View = "hero" | "quiz" | "results";
+type View = "hero" | "quiz" | "generating" | "results";
 
 interface HomeClientProps {
   supplements: Supplement[];
@@ -52,12 +53,26 @@ export default function HomeClient({ supplements, featuredStacks }: HomeClientPr
     }
   }, [supplements]);
 
-  function handleComplete(quizAnswers: Answers) {
-    const result = generateStack(quizAnswers, supplements);
+  async function handleComplete(quizAnswers: Answers) {
     setAnswers(quizAnswers);
-    setStack(result);
-    setView("results");
+    setView("generating");
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    try {
+      const res = await fetch("/api/stack", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ answers: quizAnswers }),
+      });
+      const data = await res.json();
+      if (!Array.isArray(data?.stack)) throw new Error("Invalid response");
+      setStack(data.stack);
+    } catch {
+      // Network failure reaching our own API — fall back to the rule-based
+      // engine client-side so the quiz never dead-ends on results.
+      setStack(generateStack(quizAnswers, supplements));
+    }
+    setView("results");
   }
 
   function handleReset() {
@@ -95,6 +110,7 @@ export default function HomeClient({ supplements, featuredStacks }: HomeClientPr
         {view === "quiz" && (
           <Quiz onComplete={handleComplete} onBack={() => setView("hero")} />
         )}
+        {view === "generating" && <GeneratingStack />}
         {view === "results" && (
           <Results stack={stack} answers={answers} onReset={handleReset} />
         )}

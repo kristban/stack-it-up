@@ -50,3 +50,45 @@ export async function askGemini(
 
   return text;
 }
+
+// Single-shot structured-output call (no chat history): used by the quiz's
+// stack generation, which needs a strictly-typed JSON pick from a fixed set
+// of valid values rather than a conversational reply. responseSchema makes
+// the API itself reject anything outside the given enum, so the caller still
+// validates the result but can't get an invented value back.
+export async function generateStructured(
+  prompt: string,
+  schema: Record<string, unknown>,
+): Promise<unknown> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY is not set");
+  }
+
+  const res = await fetch(`${ENDPOINT}?key=${apiKey}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature: 0.3,
+        maxOutputTokens: 500,
+        responseMimeType: "application/json",
+        responseSchema: schema,
+      },
+    }),
+  });
+
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Gemini API error ${res.status}: ${body}`);
+  }
+
+  const data = await res.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (typeof text !== "string") {
+    throw new Error("Gemini API returned no text");
+  }
+
+  return JSON.parse(text);
+}

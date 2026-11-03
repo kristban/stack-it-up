@@ -10,7 +10,7 @@ const LIFE_STAGE_FORCE_INCLUDE: Record<string, string[]> = {
   menstrual: ["inositol"],
 };
 
-const LIFE_STAGE_SUPPRESS: Record<string, string[]> = {
+export const LIFE_STAGE_SUPPRESS: Record<string, string[]> = {
   // Suppressed in pregnancy: contraindicated or insufficiently studied adaptogens/herbs,
   // plus fish-oil omega-3 (algal oil is force-included above as the mercury-free source).
   pregnancy: ["berberine", "saffron", "ashwagandha", "rhodiola", "melatonin", "omega3"],
@@ -54,7 +54,7 @@ function score(supp: Supplement, answers: Answers): number {
   return pts;
 }
 
-function budgetLimit(budget: string): number {
+export function budgetLimit(budget: string): number {
   if (budget === "low") return 3;
   if (budget === "mid") return 6;
   return 10;
