@@ -4,26 +4,11 @@ import { buildStackPrompt, buildStackSchema, sanitizeAnswers } from "@/app/lib/s
 import { generateStructured, GeminiError } from "@/app/lib/gemini";
 import { generateStack, budgetLimit, LIFE_STAGE_SUPPRESS, NUTRIENT_GROUP } from "@/app/lib/engine";
 import { Supplement } from "@/app/lib/types";
+import { attachVisitorCookie, checkAiRateLimit } from "@/app/lib/aiRateLimit";
 
-const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX_REQUESTS = 8;
 const GEMINI_TIMEOUT_MS = 30_000;
 
 const GENERIC_MESSAGE = "Something went wrong — please try again.";
-
-// Per-IP sliding window, held in memory — same simple pattern as /api/chat;
-// good enough to blunt a single abusive visitor on this low-traffic site.
-const requestLog = new Map<string, number[]>();
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const recent = (requestLog.get(ip) ?? []).filter(
-    (t) => now - t < RATE_LIMIT_WINDOW_MS,
-  );
-  recent.push(now);
-  requestLog.set(ip, recent);
-  return recent.length > RATE_LIMIT_MAX_REQUESTS;
-}
 
 // Deterministic safety net applied on top of whatever Gemini picked, so the
 // pregnancy-contraindication list and the zinc-overlap ceiling are guaranteed
@@ -91,17 +76,6 @@ async function generateWithGemini(
 }
 
 export async function POST(req: NextRequest) {
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  if (isRateLimited(ip)) {
-    return NextResponse.json(
-      {
-        error: "too_many_requests",
-        message: "Too many requests — please wait a minute and try again.",
-      },
-      { status: 429 },
-    );
-  }
-
   const body = await req.json().catch(() => null);
   const answers = sanitizeAnswers(body?.answers);
 
@@ -130,14 +104,32 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ stack: generateStack(answers, supplements), aiGenerated: false });
   }
 
+  const rateLimit = await checkAiRateLimit(req, "quiz");
+  // Every response that reached this point carries the (possibly newly
+  // created) visitor cookie, so the rate limit keeps tracking the same
+  // visitor on their next request.
+  const respond = (responseBody: Record<string, unknown>, status = 200) => {
+    const res = NextResponse.json(responseBody, { status });
+    attachVisitorCookie(res, rateLimit.visitorId, rateLimit.isNewVisitor);
+    return res;
+  };
+
+  if (!rateLimit.allowed) {
+    // Rate-limited: same UX as any other Gemini failure — the visitor still
+    // gets a result, just the deterministic one, marked as such, never a
+    // block message.
+    console.warn(`Quiz AI rate limit hit (${rateLimit.reason}) — serving the rule-based stack instead`);
+    return respond({ stack: generateStack(answers, supplements), aiGenerated: false });
+  }
+
   try {
     const stack = await generateWithGemini(answers, supplements);
-    return NextResponse.json({ stack, aiGenerated: true });
+    return respond({ stack, aiGenerated: true });
   } catch (err) {
     // The AI pick failed or timed out — the visitor still gets a result,
     // just the deterministic one; the client marks it as non-AI so it's
     // never presented as something it isn't.
     console.error(`Gemini stack generation failed (${describeFailure(err)}), falling back to the rule-based stack:`, err);
-    return NextResponse.json({ stack: generateStack(answers, supplements), aiGenerated: false });
+    return respond({ stack: generateStack(answers, supplements), aiGenerated: false });
   }
 }

@@ -117,6 +117,13 @@ export default function PrivacyPage() {
                   cookies.
                 </p>
                 <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
+                  <strong>AI usage limit.</strong> To stop any single visitor, bot,
+                  or bug from overloading our AI chat and quiz features, we set a
+                  random, anonymous id in a cookie (no account or profile data
+                  attached) and use it to count how often those features are used.
+                  It isn't used for analytics or advertising.
+                </p>
+                <p className="text-base leading-relaxed" style={{ color: "#3A362E" }}>
                   We use Umami, a privacy-focused analytics tool, to understand
                   aggregate traffic to the site (pages visited, referrers, general
                   device/browser type). Umami doesn't use cookies and doesn't build
