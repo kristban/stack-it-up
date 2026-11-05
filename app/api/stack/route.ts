@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupplements } from "@/app/lib/supplements";
 import { buildStackPrompt, buildStackSchema, sanitizeAnswers } from "@/app/lib/stackPrompt";
 import { generateStructured, GeminiError } from "@/app/lib/gemini";
-import { budgetLimit, LIFE_STAGE_SUPPRESS, NUTRIENT_GROUP } from "@/app/lib/engine";
+import { generateStack, budgetLimit, LIFE_STAGE_SUPPRESS, NUTRIENT_GROUP } from "@/app/lib/engine";
 import { Supplement } from "@/app/lib/types";
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 8;
+const GEMINI_TIMEOUT_MS = 30_000;
 
-const QUOTA_MESSAGE = "We've reached today's free AI limit — please try again tomorrow.";
 const GENERIC_MESSAGE = "Something went wrong — please try again.";
 
 // Per-IP sliding window, held in memory — same simple pattern as /api/chat;
@@ -49,21 +49,45 @@ function applySafetyFilters(stack: Supplement[], answers: ReturnType<typeof sani
   return result;
 }
 
-// Never leak the underlying Gemini error (status text, response body, key
-// hints) to the client — log it here for us, and hand the visitor only a
-// safe, friendly message plus an error code the UI can branch on.
-function failureResponse(err: unknown) {
-  console.error("Stack generation failed:", err);
-  if (err instanceof GeminiError && err.status === 429) {
-    return NextResponse.json(
-      { error: "quota_exceeded", message: QUOTA_MESSAGE },
-      { status: 429 },
-    );
+// Logged for us only — never sent to the client — so we can tell a quota
+// exhaustion apart from a genuine bug without exposing either to visitors.
+function describeFailure(err: unknown): string {
+  if (err instanceof GeminiError) return `Gemini API error ${err.status}`;
+  if (err instanceof Error && err.name === "AbortError") return `Gemini request timed out after ${GEMINI_TIMEOUT_MS}ms`;
+  return "Unknown error";
+}
+
+async function generateWithGemini(
+  answers: ReturnType<typeof sanitizeAnswers>,
+  supplements: Supplement[],
+): Promise<Supplement[]> {
+  const validKeys = supplements.map((s) => s.key);
+  const prompt = buildStackPrompt(answers, supplements);
+  const schema = buildStackSchema(validKeys);
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), GEMINI_TIMEOUT_MS);
+  let result: { keys?: unknown };
+  try {
+    result = (await generateStructured(prompt, schema, controller.signal)) as { keys?: unknown };
+  } finally {
+    clearTimeout(timeout);
   }
-  return NextResponse.json(
-    { error: "generation_failed", message: GENERIC_MESSAGE },
-    { status: 502 },
-  );
+
+  if (!Array.isArray(result?.keys) || result.keys.length === 0) {
+    throw new Error("Gemini returned no keys");
+  }
+
+  const byKey = new Map(supplements.map((s) => [s.key, s]));
+  const hydrated = result.keys
+    .filter((k): k is string => typeof k === "string" && byKey.has(k))
+    .map((k) => byKey.get(k) as Supplement);
+
+  if (hydrated.length === 0) {
+    throw new Error("Gemini returned no valid keys");
+  }
+
+  return applySafetyFilters(hydrated, answers);
 }
 
 export async function POST(req: NextRequest) {
@@ -88,33 +112,32 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  let supplements: Supplement[];
+  try {
+    supplements = await getSupplements();
+  } catch (err) {
+    // No catalog means no stack at all — rule-based or AI — so this is the
+    // one genuine dead end, surfaced as an error rather than a silent fallback.
+    console.error("Could not load the supplement catalog:", err);
+    return NextResponse.json(
+      { error: "generation_failed", message: GENERIC_MESSAGE },
+      { status: 502 },
+    );
+  }
+
   if (!process.env.GEMINI_API_KEY) {
-    return failureResponse(new Error("GEMINI_API_KEY is not set"));
+    console.error("GEMINI_API_KEY is not set — serving the rule-based stack instead");
+    return NextResponse.json({ stack: generateStack(answers, supplements), aiGenerated: false });
   }
 
   try {
-    const supplements = await getSupplements();
-    const validKeys = supplements.map((s) => s.key);
-    const prompt = buildStackPrompt(answers, supplements);
-    const schema = buildStackSchema(validKeys);
-    const result = (await generateStructured(prompt, schema)) as { keys?: unknown };
-
-    if (!Array.isArray(result?.keys) || result.keys.length === 0) {
-      throw new Error("Gemini returned no keys");
-    }
-
-    const byKey = new Map(supplements.map((s) => [s.key, s]));
-    const hydrated = result.keys
-      .filter((k): k is string => typeof k === "string" && byKey.has(k))
-      .map((k) => byKey.get(k) as Supplement);
-
-    if (hydrated.length === 0) {
-      throw new Error("Gemini returned no valid keys");
-    }
-
-    const stack = applySafetyFilters(hydrated, answers);
-    return NextResponse.json({ stack });
+    const stack = await generateWithGemini(answers, supplements);
+    return NextResponse.json({ stack, aiGenerated: true });
   } catch (err) {
-    return failureResponse(err);
+    // The AI pick failed or timed out — the visitor still gets a result,
+    // just the deterministic one; the client marks it as non-AI so it's
+    // never presented as something it isn't.
+    console.error(`Gemini stack generation failed (${describeFailure(err)}), falling back to the rule-based stack:`, err);
+    return NextResponse.json({ stack: generateStack(answers, supplements), aiGenerated: false });
   }
 }

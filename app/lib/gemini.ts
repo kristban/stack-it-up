@@ -72,6 +72,7 @@ export async function askGemini(
 export async function generateStructured(
   prompt: string,
   schema: Record<string, unknown>,
+  signal?: AbortSignal,
 ): Promise<unknown> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
@@ -81,6 +82,7 @@ export async function generateStructured(
   const res = await fetch(`${ENDPOINT}?key=${apiKey}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    signal,
     body: JSON.stringify({
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       generationConfig: {

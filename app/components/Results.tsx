@@ -11,6 +11,10 @@ import { encodeAnswers } from "../lib/shareStack";
 
 interface ResultsProps {
   stack: Supplement[];
+  // False when Gemini failed, timed out, or wasn't reachable — the stack
+  // still came from the deterministic rule-based engine, so the header says
+  // so rather than calling it AI-personalized.
+  aiGenerated?: boolean;
   answers?: Answers | null;
   onReset: () => void;
 }
@@ -27,7 +31,7 @@ function Tag({ label }: { label: string }) {
   );
 }
 
-export default function Results({ stack, answers, onReset }: ResultsProps) {
+export default function Results({ stack, aiGenerated = true, answers, onReset }: ResultsProps) {
   const library = useUserLibrary();
   const [copied, setCopied] = useState(false);
 
@@ -55,16 +59,21 @@ export default function Results({ stack, answers, onReset }: ResultsProps) {
         {/* Header */}
         <div className="text-center mb-14">
           <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6 border"
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border ${aiGenerated ? "mb-6" : "mb-3"}`}
             style={{
               background: "#F4E14F",
               borderColor: "rgba(17,17,17,0.1)",
               color: "#8A6F0E",
             }}
           >
-            <span>✨</span>
-            <span>Your personalized routine is ready</span>
+            <span>{aiGenerated ? "✨" : "📋"}</span>
+            <span>{aiGenerated ? "Your personalized routine is ready" : "Your standard recommendation is ready"}</span>
           </div>
+          {!aiGenerated && (
+            <p className="text-xs mb-3" style={{ color: "#8A8172" }}>
+              Our AI assistant wasn&apos;t available just now, so this uses our standard rule-based matching instead of full AI personalization.
+            </p>
+          )}
           <h2
             className="text-4xl sm:text-5xl mb-4 leading-tight tracking-tight"
             style={{ color: "#111111", fontFamily: "var(--font-heading)", fontWeight: 800 }}

@@ -23,9 +23,9 @@ import { FeaturedStack } from "../lib/featuredStacks";
 
 type View = "hero" | "quiz" | "generating" | "results" | "error";
 
-// Shown when our own /api/stack fetch never got a response at all (e.g. the
-// visitor is offline) — the server's own copy covers every case it can
-// actually detect, so this is only the "couldn't even ask" fallback.
+// Fallback copy for the rare case where /api/stack responds but without the
+// friendly message it normally includes — the server's own message covers
+// every case it can actually detect, so this is just a safety net.
 const UNREACHABLE_MESSAGE = "Something went wrong — please try again.";
 
 interface HomeClientProps {
@@ -36,6 +36,7 @@ interface HomeClientProps {
 export default function HomeClient({ supplements, featuredStacks }: HomeClientProps) {
   const [view, setView] = useState<View>("hero");
   const [stack, setStack] = useState<Supplement[]>([]);
+  const [aiGenerated, setAiGenerated] = useState(true);
   const [answers, setAnswers] = useState<Answers | null>(null);
   const [stackError, setStackError] = useState<{ message: string; canRetry: boolean } | null>(null);
 
@@ -47,9 +48,12 @@ export default function HomeClient({ supplements, featuredStacks }: HomeClientPr
     if (decoded) {
       // A shared routine link (?stack=...) — regenerate it from the encoded
       // answers rather than storing the resolved stack itself, so it always
-      // reflects the current supplement library.
+      // reflects the current supplement library. This is always the
+      // rule-based engine (never Gemini — see Results' "standard
+      // recommendation" note), so it's marked as such too.
       setAnswers(decoded);
       setStack(generateStack(decoded, supplements));
+      setAiGenerated(false);
       setView("results");
       window.history.replaceState(null, "", window.location.pathname);
     } else if (params.get("start") === "quiz") {
@@ -73,23 +77,31 @@ export default function HomeClient({ supplements, featuredStacks }: HomeClientPr
       const data = await res.json().catch(() => null);
 
       if (res.ok && Array.isArray(data?.stack)) {
+        // /api/stack itself already falls back to the rule-based engine
+        // (and logs the real error) when Gemini fails or times out, so a
+        // 200 here is always a usable result — aiGenerated just says which
+        // kind, for the "standard recommendation" note on Results.
         setStack(data.stack);
+        setAiGenerated(data.aiGenerated === true);
         setView("results");
         return;
       }
 
-      // Server already logged the real error and sent back a safe message —
-      // never surface the raw response here. Quota exhaustion won't resolve
-      // by retrying today, so that's the one case with no retry button.
+      // A non-200 here means even the rule-based fallback couldn't run
+      // (bad request, our own rate limit, or the catalog itself failed to
+      // load) — there's nothing to show instead, so this is a real error.
       setStackError({
         message: typeof data?.message === "string" ? data.message : UNREACHABLE_MESSAGE,
-        canRetry: data?.error !== "quota_exceeded",
+        canRetry: true,
       });
       setView("error");
     } catch {
-      // Didn't even get a response from our own API (e.g. offline).
-      setStackError({ message: UNREACHABLE_MESSAGE, canRetry: true });
-      setView("error");
+      // Didn't get a response from our own API at all (e.g. offline) — we
+      // still have the catalog and the answers client-side, so fall back
+      // to the same rule-based engine rather than dead-ending on an error.
+      setStack(generateStack(quizAnswers, supplements));
+      setAiGenerated(false);
+      setView("results");
     }
   }
 
@@ -105,6 +117,7 @@ export default function HomeClient({ supplements, featuredStacks }: HomeClientPr
   function handleReset() {
     setView("hero");
     setStack([]);
+    setAiGenerated(true);
     setAnswers(null);
     setStackError(null);
     // Drop any lingering hash (e.g. #newsletter) so the logo returns to a clean URL.
@@ -148,7 +161,7 @@ export default function HomeClient({ supplements, featuredStacks }: HomeClientPr
           />
         )}
         {view === "results" && (
-          <Results stack={stack} answers={answers} onReset={handleReset} />
+          <Results stack={stack} aiGenerated={aiGenerated} answers={answers} onReset={handleReset} />
         )}
       </main>
       <Footer />
